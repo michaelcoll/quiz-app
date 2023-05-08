@@ -1,0 +1,15 @@
+# Nodes
+node_modules
+
+# build
+quizz-app
+internal/web/dist
+
+# ide
+.idea/*
+!.idea/runConfigurations
+!.idea/inspectionProfiles
+!.idea/copyright
+*.iml
+internal/web/.idea/*
+!internal/web/.idea/copyright

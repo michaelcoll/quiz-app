@@ -1,0 +1,45 @@
+name: release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  releases-matrix:
+    name: Release Go Binary
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # build and publish in parallel: linux/amd64, linux/arm64
+        goos: [linux]
+        goarch: [amd64, arm64]
+        exclude:
+          - goarch: arm64
+            goos: windows
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set APP_VERSION env
+        run: echo APP_VERSION=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev ) >> ${GITHUB_ENV}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: Prepare Vue App
+        run: |
+          make prepare
+
+      - name: Build Vue App
+        run: |
+          make build-web
+
+      - uses: wangyoucao577/go-release-action@v1.38
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          binary_name: "quizz-app"
+          ldflags: -X "github.com/schoolbyhiit/quizz-app/cmd.version=${{ env.APP_VERSION }}" -s -w
+          executable_compression: upx
