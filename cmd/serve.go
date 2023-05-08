@@ -17,8 +17,8 @@
 package cmd
 
 import (
-	"github.com/schoolbyhiit/quizz-app/internal/back"
-	"github.com/schoolbyhiit/quizz-app/internal/back/domain/banner"
+	"github.com/school-by-hiit/quizz-app/internal/back"
+	"github.com/school-by-hiit/quizz-app/internal/back/domain/banner"
 
 	"github.com/spf13/cobra"
 )

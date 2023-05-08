@@ -17,8 +17,8 @@
 package back
 
 import (
-	"github.com/schoolbyhiit/quizz-app/internal/back/domain/service"
-	"github.com/schoolbyhiit/quizz-app/internal/back/presentation"
+	"github.com/school-by-hiit/quizz-app/internal/back/domain/service"
+	"github.com/school-by-hiit/quizz-app/internal/back/presentation"
 )
 
 type Module struct {

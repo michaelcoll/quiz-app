@@ -23,7 +23,7 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 
-	"github.com/schoolbyhiit/quizz-app/internal/back/domain/consts"
+	"github.com/school-by-hiit/quizz-app/internal/back/domain/consts"
 )
 
 func Connect(readOnly bool, baseLocation string) *sql.DB {

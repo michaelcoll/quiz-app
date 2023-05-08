@@ -24,7 +24,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/schoolbyhiit/quizz-app/internal/back/domain/model"
+	"github.com/school-by-hiit/quizz-app/internal/back/domain/model"
 )
 
 var rangeRxp = regexp.MustCompile(`(?P<Unit>.*)=(?P<Start>[0-9]+)-(?P<End>[0-9]*)`)

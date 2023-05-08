@@ -30,7 +30,7 @@ import (
 	"github.com/gin-gonic/gin"
 	adapter "github.com/gwatts/gin-adapter"
 
-	"github.com/schoolbyhiit/quizz-app/internal/back/domain/model"
+	"github.com/school-by-hiit/quizz-app/internal/back/domain/model"
 )
 
 const (
