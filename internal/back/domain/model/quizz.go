@@ -19,5 +19,20 @@ package model
 type Quizz struct {
 	Id string `json:"id"`
 
-	Name string `json:"name"`
+	Name      string          `json:"name"`
+	Questions []QuizzQuestion `json:"questions"`
+}
+
+type QuizzQuestion struct {
+	Id string `json:"id"`
+
+	Content string                `json:"content"`
+	Answers []QuizzQuestionAnswer `json:"answers"`
+}
+
+type QuizzQuestionAnswer struct {
+	Id string `json:"id"`
+
+	Content string `json:"content"`
+	Valid   bool   `json:"valid"`
 }
