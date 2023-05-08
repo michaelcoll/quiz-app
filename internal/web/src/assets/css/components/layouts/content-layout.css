@@ -1,0 +1,70 @@
+/*
+ * Copyright (c) 2023 Michaël COLL.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.content-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+
+  width: 100%;
+  min-height: 640px;
+
+  /* responsive */
+
+  padding: 48px;
+}
+
+.content__title {
+  margin-top: 0;
+
+  color: var(--white);
+}
+
+.content__body {
+  /* responsive */
+
+  font-size: 1.6rem;
+  line-height: 2.4rem;
+}
+
+#page-description {
+  display: flex;
+  flex-direction: column;
+}
+
+#page-description span {
+  margin-bottom: 1.6rem;
+}
+
+#page-description span:last-child {
+  margin-bottom: 0;
+}
+
+.content-layout.daemon-page {
+  max-width: 120rem;
+  margin: 0 auto;
+}
+
+@media only screen and (max-width: 480px) {
+  .content-layout {
+    padding: 1.6rem;
+  }
+
+  .content__title {
+    font-size: 2.4rem;
+  }
+}

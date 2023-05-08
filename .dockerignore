@@ -1,0 +1,10 @@
+.github
+.idea
+doc
+internal/web/node_modules
+.editorconfig
+.gitignore
+quizz-app
+LICENSE
+Makefile
+README.md
