@@ -23,7 +23,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/gin-gonic/gin"
 
-	"github.com/schoolbyhiit/quizz-app/internal/back/domain/service"
+	"github.com/school-by-hiit/quizz-app/internal/back/domain/service"
 )
 
 const apiPort = ":8080"
