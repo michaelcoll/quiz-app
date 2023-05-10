@@ -1,38 +1,47 @@
-/*
- * Copyright (c) 2023 Michaël COLL.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 CREATE TABLE quizz
 (
-    id   TEXT PRIMARY KEY,
-    name TEXT NOT NULL
+    filename TEXT PRIMARY KEY
+);
+
+CREATE TABLE quizz_version
+(
+    sha1     TEXT PRIMARY KEY,
+    filename TEXT,
+    version  INTEGER NOT NULL,
+    active   INTEGER DEFAULT 1,
+
+    CONSTRAINT filename_fk FOREIGN KEY (filename) REFERENCES quizz (filename),
+    CONSTRAINT quizz_version_unique UNIQUE (filename, version)
 );
 
 CREATE TABLE quizz_question
 (
-    id       TEXT PRIMARY KEY,
-    quizz_id TEXT,
+    sha1    TEXT PRIMARY KEY,
+    content TEXT NOT NULL
+);
 
-    CONSTRAINT quizz_fk FOREIGN KEY (quizz_id) REFERENCES quizz (id)
+CREATE TABLE quizz_question_version
+(
+    version_sha1  TEXT,
+    question_sha1 TEXT,
+
+    CONSTRAINT pk PRIMARY KEY (version_sha1, question_sha1),
+    CONSTRAINT version_fk FOREIGN KEY (version_sha1) REFERENCES quizz_version (sha1),
+    CONSTRAINT question_fk FOREIGN KEY (question_sha1) REFERENCES quizz_question (sha1)
+);
+
+CREATE TABLE quizz_answer
+(
+    sha1    TEXT PRIMARY KEY,
+    valid   INTEGER,
+    content TEXT NOT NULL
 );
 
 CREATE TABLE quizz_question_answer
 (
-    id                TEXT PRIMARY KEY,
-    quizz_question_id TEXT,
-    valid             INTEGER,
+    question_sha1 TEXT,
+    answer_sha1 TEXT,
 
-    CONSTRAINT quizz_question_fk FOREIGN KEY (quizz_question_id) REFERENCES quizz_question (id)
+    CONSTRAINT question_fk FOREIGN KEY (question_sha1) REFERENCES quizz_question (sha1),
+    CONSTRAINT answer_fk FOREIGN KEY (answer_sha1) REFERENCES quizz_answer (sha1)
 );

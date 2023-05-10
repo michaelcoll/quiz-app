@@ -1,0 +1,3 @@
+version: "1"
+addon_out: "internal/back/infrastructure/db"
+database_name: "data.db"
