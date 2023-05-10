@@ -17,21 +17,24 @@
 package model
 
 type Quizz struct {
-	Id string `json:"id"`
+	Sha1 string `json:"id"`
 
-	Name      string          `json:"name"`
+	Filename string `json:"filename"`
+	Name     string `json:"name"`
+	Version  int    `json:"version"`
+
 	Questions []QuizzQuestion `json:"questions"`
 }
 
 type QuizzQuestion struct {
-	Id string `json:"id"`
+	Sha1 string `json:"id"`
 
 	Content string                `json:"content"`
 	Answers []QuizzQuestionAnswer `json:"answers"`
 }
 
 type QuizzQuestionAnswer struct {
-	Id string `json:"id"`
+	Sha1 string `json:"id"`
 
 	Content string `json:"content"`
 	Valid   bool   `json:"valid"`

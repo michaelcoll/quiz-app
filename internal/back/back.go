@@ -22,7 +22,7 @@ import (
 )
 
 type Module struct {
-	s         service.QuizzService
+	s         service.QuizzParseService
 	photoCtrl presentation.ApiController
 }
 
@@ -30,7 +30,7 @@ func (m *Module) GetPhotoController() *presentation.ApiController {
 	return &m.photoCtrl
 }
 
-func (m *Module) GetService() *service.QuizzService {
+func (m *Module) GetService() *service.QuizzParseService {
 	return &m.s
 }
 
