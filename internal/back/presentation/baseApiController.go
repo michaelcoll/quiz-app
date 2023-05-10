@@ -29,10 +29,10 @@ import (
 const apiPort = ":8080"
 
 type ApiController struct {
-	quizzService *service.QuizzService
+	quizzService *service.QuizzParseService
 }
 
-func NewApiController(s *service.QuizzService) ApiController {
+func NewApiController(s *service.QuizzParseService) ApiController {
 	return ApiController{quizzService: s}
 }
 

@@ -17,6 +17,8 @@
 package service
 
 import (
+	"crypto/sha1"
+	"encoding/hex"
 	"fmt"
 	"regexp"
 	"strings"
@@ -24,15 +26,15 @@ import (
 	"github.com/school-by-hiit/quizz-app/internal/back/domain/model"
 )
 
-type QuizzService struct {
+type QuizzParseService struct {
 }
 
-func NewQuizzService() QuizzService {
-	return QuizzService{}
+func NewQuizzService() QuizzParseService {
+	return QuizzParseService{}
 }
 
 // Parse parse the content of a quizz file
-func Parse(content string) (model.Quizz, error) {
+func Parse(filename string, content string) (model.Quizz, error) {
 
 	name, err := extractQuizzName(content)
 	if err != nil {
@@ -45,9 +47,17 @@ func Parse(content string) (model.Quizz, error) {
 	}
 
 	return model.Quizz{
+		Sha1:      getSha1(content),
 		Name:      name,
+		Filename:  filename,
 		Questions: questions,
 	}, nil
+}
+
+func getSha1(content string) string {
+	algorithm := sha1.New()
+	algorithm.Write([]byte(content))
+	return hex.EncodeToString(algorithm.Sum(nil))
 }
 
 func extractQuizzName(content string) (string, error) {
@@ -94,6 +104,7 @@ func extractQuestion(content string) (model.QuizzQuestion, error) {
 	}
 
 	return model.QuizzQuestion{
+		Sha1:    getSha1(content),
 		Content: strings.Trim(questionContent, " \n"),
 		Answers: answers,
 	}, nil
@@ -111,6 +122,7 @@ func extractAnswers(answersStr string) ([]model.QuizzQuestionAnswer, error) {
 		valid := validTestRegex.MatchString(s)
 
 		answers[i] = model.QuizzQuestionAnswer{
+			Sha1:    getSha1(answersStr),
 			Content: string([]rune(s)[6:]),
 			Valid:   valid,
 		}

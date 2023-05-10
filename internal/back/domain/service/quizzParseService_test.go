@@ -30,7 +30,7 @@ func TestParse(t *testing.T) {
 		log.Fatalf("unable to test file: %v", err)
 	}
 
-	actual, err := Parse(string(body))
+	actual, err := Parse("quizz.md", string(body))
 	if err != nil {
 		assert.Failf(t, "Fail to parse : %w", err.Error())
 	}
