@@ -5,17 +5,22 @@
 package sqlc
 
 import (
-	"database/sql"
+	"time"
 )
 
 type Quizz struct {
-	Filename string `db:"filename"`
+	Sha1      string    `db:"sha1"`
+	Name      string    `db:"name"`
+	Filename  string    `db:"filename"`
+	Version   int64     `db:"version"`
+	Active    int64     `db:"active"`
+	CreatedAt time.Time `db:"created_at"`
 }
 
 type QuizzAnswer struct {
-	Sha1    string        `db:"sha1"`
-	Valid   sql.NullInt64 `db:"valid"`
-	Content string        `db:"content"`
+	Sha1    string `db:"sha1"`
+	Valid   int64  `db:"valid"`
+	Content string `db:"content"`
 }
 
 type QuizzQuestion struct {
@@ -24,18 +29,11 @@ type QuizzQuestion struct {
 }
 
 type QuizzQuestionAnswer struct {
-	QuestionSha1 sql.NullString `db:"question_sha1"`
-	AnswerSha1   sql.NullString `db:"answer_sha1"`
+	QuestionSha1 string `db:"question_sha1"`
+	AnswerSha1   string `db:"answer_sha1"`
 }
 
-type QuizzQuestionVersion struct {
-	VersionSha1  sql.NullString `db:"version_sha1"`
-	QuestionSha1 sql.NullString `db:"question_sha1"`
-}
-
-type QuizzVersion struct {
-	Sha1     string         `db:"sha1"`
-	Filename sql.NullString `db:"filename"`
-	Version  int64          `db:"version"`
-	Active   sql.NullInt64  `db:"active"`
+type QuizzQuestionQuizz struct {
+	QuizzSha1    string `db:"quizz_sha1"`
+	QuestionSha1 string `db:"question_sha1"`
 }

@@ -17,6 +17,10 @@
 package cmd
 
 import (
+	"context"
+	"fmt"
+	"os"
+
 	"github.com/school-by-hiit/quizz-app/internal/back"
 	"github.com/school-by-hiit/quizz-app/internal/back/domain/banner"
 
@@ -33,10 +37,21 @@ Starts the server`,
 		banner.Print(version, banner.Serve)
 
 		module := back.New()
+		err := module.GetService().Sync(context.Background(), repoUrl, token)
+		if err != nil {
+			fmt.Printf("Can't sync quizzes (%v)\n", err)
+			os.Exit(-1)
+		}
 		module.GetPhotoController().Serve()
 	},
 }
 
+var repoUrl string
+var token string
+
 func init() {
+	serveCmd.Flags().StringVarP(&repoUrl, "repository-url", "r", "https://github.com/school-by-hiit/quizz-app.git", "The url of the repository containing the quizzes")
+	serveCmd.Flags().StringVarP(&token, "token", "t", "", "The P.A.T. used to access the repository")
+
 	rootCmd.AddCommand(serveCmd)
 }

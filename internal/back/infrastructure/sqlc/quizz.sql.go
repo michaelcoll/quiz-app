@@ -9,14 +9,98 @@ import (
 	"context"
 )
 
-const getQuizz = `-- name: GetQuizz :one
-SELECT filename
+const createOrReplaceAnswer = `-- name: CreateOrReplaceAnswer :exec
+REPLACE INTO quizz_answer (sha1, content, valid)
+VALUES (?, ?, ?)
+`
+
+type CreateOrReplaceAnswerParams struct {
+	Sha1    string `db:"sha1"`
+	Content string `db:"content"`
+	Valid   int64  `db:"valid"`
+}
+
+func (q *Queries) CreateOrReplaceAnswer(ctx context.Context, arg CreateOrReplaceAnswerParams) error {
+	_, err := q.db.ExecContext(ctx, createOrReplaceAnswer, arg.Sha1, arg.Content, arg.Valid)
+	return err
+}
+
+const createOrReplaceQuestion = `-- name: CreateOrReplaceQuestion :exec
+REPLACE INTO quizz_question (sha1, content)
+VALUES (?, ?)
+`
+
+type CreateOrReplaceQuestionParams struct {
+	Sha1    string `db:"sha1"`
+	Content string `db:"content"`
+}
+
+func (q *Queries) CreateOrReplaceQuestion(ctx context.Context, arg CreateOrReplaceQuestionParams) error {
+	_, err := q.db.ExecContext(ctx, createOrReplaceQuestion, arg.Sha1, arg.Content)
+	return err
+}
+
+const createOrReplaceQuizz = `-- name: CreateOrReplaceQuizz :exec
+REPLACE INTO quizz (sha1, name, filename, version)
+VALUES (?, ?, ?, ?)
+`
+
+type CreateOrReplaceQuizzParams struct {
+	Sha1     string `db:"sha1"`
+	Name     string `db:"name"`
+	Filename string `db:"filename"`
+	Version  int64  `db:"version"`
+}
+
+func (q *Queries) CreateOrReplaceQuizz(ctx context.Context, arg CreateOrReplaceQuizzParams) error {
+	_, err := q.db.ExecContext(ctx, createOrReplaceQuizz,
+		arg.Sha1,
+		arg.Name,
+		arg.Filename,
+		arg.Version,
+	)
+	return err
+}
+
+const findLatestVersionByFilename = `-- name: FindLatestVersionByFilename :one
+SELECT max(version)
 FROM quizz
 WHERE filename = ?
 `
 
-func (q *Queries) GetQuizz(ctx context.Context, db DBTX, filename string) (string, error) {
-	row := db.QueryRowContext(ctx, getQuizz, filename)
-	err := row.Scan(&filename)
-	return filename, err
+func (q *Queries) FindLatestVersionByFilename(ctx context.Context, filename string) (interface{}, error) {
+	row := q.db.QueryRowContext(ctx, findLatestVersionByFilename, filename)
+	var max interface{}
+	err := row.Scan(&max)
+	return max, err
+}
+
+const linkAnswer = `-- name: LinkAnswer :exec
+REPLACE INTO quizz_question_answer (question_sha1, answer_sha1)
+VALUES (?, ?)
+`
+
+type LinkAnswerParams struct {
+	QuestionSha1 string `db:"question_sha1"`
+	AnswerSha1   string `db:"answer_sha1"`
+}
+
+func (q *Queries) LinkAnswer(ctx context.Context, arg LinkAnswerParams) error {
+	_, err := q.db.ExecContext(ctx, linkAnswer, arg.QuestionSha1, arg.AnswerSha1)
+	return err
+}
+
+const linkQuestion = `-- name: LinkQuestion :exec
+REPLACE INTO quizz_question_quizz (quizz_sha1, question_sha1)
+VALUES (?, ?)
+`
+
+type LinkQuestionParams struct {
+	QuizzSha1    string `db:"quizz_sha1"`
+	QuestionSha1 string `db:"question_sha1"`
+}
+
+func (q *Queries) LinkQuestion(ctx context.Context, arg LinkQuestionParams) error {
+	_, err := q.db.ExecContext(ctx, linkQuestion, arg.QuizzSha1, arg.QuestionSha1)
+	return err
 }
