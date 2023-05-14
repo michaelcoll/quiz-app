@@ -23,23 +23,23 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/school-by-hiit/quizz-app/internal/back/domain/model"
+	"github.com/school-by-hiit/quiz-app/internal/back/domain/model"
 )
 
-// Parse parse the content of a quizz file
-func (s *QuizzService) Parse(filename string, content string) (model.Quizz, error) {
+// Parse parse the content of a quiz file
+func (s *QuizService) Parse(filename string, content string) (model.Quiz, error) {
 
-	name, err := extractQuizzName(content)
+	name, err := extractQuizName(content)
 	if err != nil {
-		return model.Quizz{}, err
+		return model.Quiz{}, err
 	}
 
 	questions, err := extractQuestions(content)
 	if err != nil {
-		return model.Quizz{}, err
+		return model.Quiz{}, err
 	}
 
-	return model.Quizz{
+	return model.Quiz{
 		Sha1:      getSha1(content),
 		Name:      name,
 		Filename:  filename,
@@ -53,24 +53,24 @@ func getSha1(content string) string {
 	return hex.EncodeToString(algorithm.Sum(nil))
 }
 
-func extractQuizzName(content string) (string, error) {
+func extractQuizName(content string) (string, error) {
 	r := regexp.MustCompile(`^# .*`)
 
 	if r.MatchString(content) {
 		return string([]rune(r.FindString(content))[2:]), nil
 	} else {
-		return "", fmt.Errorf("no quizz name found")
+		return "", fmt.Errorf("no quiz name found")
 	}
 }
 
-func extractQuestions(content string) ([]model.QuizzQuestion, error) {
+func extractQuestions(content string) ([]model.QuizQuestion, error) {
 	r := regexp.MustCompile(`^# .*\n`)
 
-	quizzName := r.FindString(content)
-	questionsStr := strings.ReplaceAll(content, quizzName, "")
+	quizName := r.FindString(content)
+	questionsStr := strings.ReplaceAll(content, quizName, "")
 	questionsUnParsed := strings.Split(questionsStr, "---\n")
 
-	questions := make([]model.QuizzQuestion, len(questionsUnParsed))
+	questions := make([]model.QuizQuestion, len(questionsUnParsed))
 
 	for i, s := range questionsUnParsed {
 		question, err := extractQuestion(s)
@@ -84,7 +84,7 @@ func extractQuestions(content string) ([]model.QuizzQuestion, error) {
 	return questions, nil
 }
 
-func extractQuestion(content string) (model.QuizzQuestion, error) {
+func extractQuestion(content string) (model.QuizQuestion, error) {
 
 	r := regexp.MustCompile(`(- \[[ xX]] .*\n)+`)
 	answersStr := r.FindString(content)
@@ -93,28 +93,28 @@ func extractQuestion(content string) (model.QuizzQuestion, error) {
 
 	answers, err := extractAnswers(answersStr)
 	if err != nil {
-		return model.QuizzQuestion{}, err
+		return model.QuizQuestion{}, err
 	}
 
-	return model.QuizzQuestion{
+	return model.QuizQuestion{
 		Sha1:    getSha1(content),
 		Content: strings.Trim(questionContent, " \n"),
 		Answers: answers,
 	}, nil
 }
 
-func extractAnswers(answersStr string) ([]model.QuizzQuestionAnswer, error) {
+func extractAnswers(answersStr string) ([]model.QuizQuestionAnswer, error) {
 
 	r := regexp.MustCompile(`- \[[ xX]] .*`)
 	validTestRegex := regexp.MustCompile(`- \[[xX]] .*`)
 	answersStrSplit := r.FindAllString(answersStr, 10)
 
-	answers := make([]model.QuizzQuestionAnswer, len(answersStrSplit))
+	answers := make([]model.QuizQuestionAnswer, len(answersStrSplit))
 
 	for i, s := range answersStrSplit {
 		valid := validTestRegex.MatchString(s)
 
-		answers[i] = model.QuizzQuestionAnswer{
+		answers[i] = model.QuizQuestionAnswer{
 			Sha1:    getSha1(s),
 			Content: string([]rune(s)[6:]),
 			Valid:   valid,

@@ -25,14 +25,14 @@ import (
 )
 
 func TestParse(t *testing.T) {
-	body, err := os.ReadFile("quizz.md")
+	body, err := os.ReadFile("quiz.md")
 	if err != nil {
 		log.Fatalf("unable to test file: %v", err)
 	}
 
 	s := New(nil)
 
-	actual, err := s.Parse("quizz.md", string(body))
+	actual, err := s.Parse("quiz.md", string(body))
 	if err != nil {
 		assert.Failf(t, "Fail to parse : %w", err.Error())
 	}

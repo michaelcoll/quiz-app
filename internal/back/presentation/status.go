@@ -21,7 +21,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/school-by-hiit/quizz-app/internal/back/domain/model"
+	"github.com/school-by-hiit/quiz-app/internal/back/domain/model"
 )
 
 func handleError(ctx *gin.Context, err error) {

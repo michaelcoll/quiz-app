@@ -24,7 +24,7 @@ import (
 	"github.com/gin-contrib/gzip"
 	cachecontrol "github.com/joeig/gin-cachecontrol"
 
-	"github.com/school-by-hiit/quizz-app/internal/web"
+	"github.com/school-by-hiit/quiz-app/internal/web"
 
 	"github.com/gin-gonic/gin"
 )

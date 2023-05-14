@@ -1,10 +1,14 @@
 .github
 .idea
+db
 doc
 internal/web/node_modules
 .editorconfig
 .gitignore
-quizz-app
+quiz-app
 LICENSE
 Makefile
+marvel-universe.quiz.md
 README.md
+sqlc.yaml
+sqlc-addon.yaml

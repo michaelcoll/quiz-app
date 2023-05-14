@@ -1,2 +1,2 @@
-# quizz-app
-The SchoolByHiit Quizz App
+# quiz-app
+The SchoolByHiit Quiz App
