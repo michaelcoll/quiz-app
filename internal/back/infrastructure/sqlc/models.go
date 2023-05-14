@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-type Quizz struct {
+type Quiz struct {
 	Sha1      string    `db:"sha1"`
 	Name      string    `db:"name"`
 	Filename  string    `db:"filename"`
@@ -17,23 +17,23 @@ type Quizz struct {
 	CreatedAt time.Time `db:"created_at"`
 }
 
-type QuizzAnswer struct {
+type QuizAnswer struct {
 	Sha1    string `db:"sha1"`
 	Valid   int64  `db:"valid"`
 	Content string `db:"content"`
 }
 
-type QuizzQuestion struct {
+type QuizQuestion struct {
 	Sha1    string `db:"sha1"`
 	Content string `db:"content"`
 }
 
-type QuizzQuestionAnswer struct {
+type QuizQuestionAnswer struct {
 	QuestionSha1 string `db:"question_sha1"`
 	AnswerSha1   string `db:"answer_sha1"`
 }
 
-type QuizzQuestionQuizz struct {
-	QuizzSha1    string `db:"quizz_sha1"`
+type QuizQuestionQuiz struct {
+	QuizSha1     string `db:"quiz_sha1"`
 	QuestionSha1 string `db:"question_sha1"`
 }

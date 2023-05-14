@@ -32,20 +32,20 @@ func Test_readFileContent(t *testing.T) {
 	fs := memfs.New()
 
 	_, err := git.Clone(storage, fs, &git.CloneOptions{
-		URL: "https://github.com/school-by-hiit/quizz-app.git",
+		URL: "../../../../.",
 	})
 	if err != nil {
 		assert.Fail(t, "Can't connect", "%v", err)
 	}
 
-	actual, err := readFileContent(fs, "marvel-universe.quizz.md")
+	actual, err := readFileContent(fs, "marvel-universe.quiz.md")
 	if err != nil {
-		assert.Fail(t, "Can't read repo file : marvel-universe.quizz.md", "%v", err)
+		assert.Fail(t, "Can't read repo file : marvel-universe.quiz.md", "%v", err)
 	}
 
-	expected, err := os.ReadFile("../../../../marvel-universe.quizz.md")
+	expected, err := os.ReadFile("../../../../marvel-universe.quiz.md")
 	if err != nil {
-		assert.Fail(t, "Can't read local file : marvel-universe.quizz.md", "%v", err)
+		assert.Fail(t, "Can't read local file : marvel-universe.quiz.md", "%v", err)
 	}
 
 	assert.Equal(t, string(expected), actual)
@@ -55,14 +55,14 @@ func TestScanGitRepo(t *testing.T) {
 
 	s := New(nil)
 
-	quizzes, err := s.ScanGitRepo("https://github.com/school-by-hiit/quizz-app.git", "")
+	quizzes, err := s.ScanGitRepo("../../../../.", "")
 	if err != nil {
 		assert.Fail(t, "Can't scan repo", "%v", err)
 	}
 
 	assert.Len(t, quizzes, 1)
 	assert.Equal(t, "Marvel Universe", quizzes[0].Name)
-	assert.Equal(t, "marvel-universe.quizz.md", quizzes[0].Filename)
+	assert.Equal(t, "marvel-universe.quiz.md", quizzes[0].Filename)
 	assert.Equal(t, "fccc28a245ee3e92791ec9395d3a3791d17090da", quizzes[0].Sha1)
 	assert.Len(t, quizzes[0].Questions, 7)
 }

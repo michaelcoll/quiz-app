@@ -21,8 +21,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/school-by-hiit/quizz-app/internal/back"
-	"github.com/school-by-hiit/quizz-app/internal/back/domain/banner"
+	"github.com/school-by-hiit/quiz-app/internal/back"
+	"github.com/school-by-hiit/quiz-app/internal/back/domain/banner"
 
 	"github.com/spf13/cobra"
 )
@@ -50,7 +50,7 @@ var repoUrl string
 var token string
 
 func init() {
-	serveCmd.Flags().StringVarP(&repoUrl, "repository-url", "r", "https://github.com/school-by-hiit/quizz-app.git", "The url of the repository containing the quizzes")
+	serveCmd.Flags().StringVarP(&repoUrl, "repository-url", "r", "https://github.com/school-by-hiit/quiz-app.git", "The url of the repository containing the quizzes")
 	serveCmd.Flags().StringVarP(&token, "token", "t", "", "The P.A.T. used to access the repository")
 
 	rootCmd.AddCommand(serveCmd)

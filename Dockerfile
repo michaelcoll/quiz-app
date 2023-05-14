@@ -9,14 +9,14 @@ WORKDIR /go/src/app
 COPY . .
 
 RUN go mod download
-RUN CGO_ENABLED=0 go build -o /go/bin/quizz-app -ldflags="-s -w -X 'github.com/school-by-hiit/quizz-app/cmd.version=$VERSION'"
+RUN CGO_ENABLED=0 go build -o /go/bin/quiz-app -ldflags="-s -w -X 'github.com/school-by-hiit/quiz-app/cmd.version=$VERSION'"
 
 # Now copy it into our base image.
 FROM gcr.io/distroless/static-debian11:nonroot
 
-COPY --from=build-go /go/bin/quizz-app /bin/quizz-app
+COPY --from=build-go /go/bin/quiz-app /bin/quiz-app
 
 EXPOSE 8080
 EXPOSE 9000
 
-CMD ["quizz-app", "serve"]
+CMD ["quiz-app", "serve"]

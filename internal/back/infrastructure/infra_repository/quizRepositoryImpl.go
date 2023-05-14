@@ -20,43 +20,43 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/school-by-hiit/quizz-app/internal/back/domain/model"
-	"github.com/school-by-hiit/quizz-app/internal/back/domain/repository"
-	"github.com/school-by-hiit/quizz-app/internal/back/infrastructure/db"
-	"github.com/school-by-hiit/quizz-app/internal/back/infrastructure/sqlc"
+	"github.com/school-by-hiit/quiz-app/internal/back/domain/model"
+	"github.com/school-by-hiit/quiz-app/internal/back/domain/repository"
+	"github.com/school-by-hiit/quiz-app/internal/back/infrastructure/db"
+	"github.com/school-by-hiit/quiz-app/internal/back/infrastructure/sqlc"
 )
 
-type QuizzDBRepository struct {
-	repository.QuizzRepository
+type QuizDBRepository struct {
+	repository.QuizRepository
 
 	c *sql.DB
 	q *sqlc.Queries
 }
 
-func New() *QuizzDBRepository {
+func New() *QuizDBRepository {
 	connection := db.Connect(false, "data")
 	db.New(connection).Migrate()
 
-	return &QuizzDBRepository{q: sqlc.New(connection), c: connection}
+	return &QuizDBRepository{q: sqlc.New(connection), c: connection}
 }
 
-func (r *QuizzDBRepository) Close() {
+func (r *QuizDBRepository) Close() {
 	r.c.Close()
 }
 
-func (r *QuizzDBRepository) Create(ctx context.Context, quizz model.Quizz) error {
+func (r *QuizDBRepository) Create(ctx context.Context, quiz model.Quiz) error {
 
-	err := r.q.CreateOrReplaceQuizz(ctx, sqlc.CreateOrReplaceQuizzParams{
-		Sha1:     quizz.Sha1,
-		Name:     quizz.Name,
-		Filename: quizz.Filename,
+	err := r.q.CreateOrReplaceQuiz(ctx, sqlc.CreateOrReplaceQuizParams{
+		Sha1:     quiz.Sha1,
+		Name:     quiz.Name,
+		Filename: quiz.Filename,
 		Version:  1,
 	})
 	if err != nil {
 		return err
 	}
 
-	for _, question := range quizz.Questions {
+	for _, question := range quiz.Questions {
 		err := r.q.CreateOrReplaceQuestion(ctx, sqlc.CreateOrReplaceQuestionParams{
 			Sha1:    question.Sha1,
 			Content: question.Content,
@@ -66,7 +66,7 @@ func (r *QuizzDBRepository) Create(ctx context.Context, quizz model.Quizz) error
 		}
 
 		err = r.q.LinkQuestion(ctx, sqlc.LinkQuestionParams{
-			QuizzSha1:    quizz.Sha1,
+			QuizSha1:     quiz.Sha1,
 			QuestionSha1: question.Sha1,
 		})
 		if err != nil {

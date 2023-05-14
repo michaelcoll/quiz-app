@@ -27,10 +27,10 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/go-git/go-git/v5/storage/memory"
 
-	"github.com/school-by-hiit/quizz-app/internal/back/domain/model"
+	"github.com/school-by-hiit/quiz-app/internal/back/domain/model"
 )
 
-func (s *QuizzService) ScanGitRepo(url string, token string) ([]model.Quizz, error) {
+func (s *QuizService) ScanGitRepo(url string, token string) ([]model.Quiz, error) {
 	storage := memory.NewStorage()
 	fs := memfs.New()
 
@@ -59,9 +59,9 @@ func (s *QuizzService) ScanGitRepo(url string, token string) ([]model.Quizz, err
 		return nil, err
 	}
 
-	var quizzes []model.Quizz
+	var quizzes []model.Quiz
 
-	r := regexp.MustCompile(`.*\.quizz\.md`)
+	r := regexp.MustCompile(`.*\.quiz\.md`)
 	for _, fileInfo := range dir {
 
 		if r.MatchString(fileInfo.Name()) {
@@ -70,12 +70,12 @@ func (s *QuizzService) ScanGitRepo(url string, token string) ([]model.Quizz, err
 				return nil, err
 			}
 
-			quizz, err := s.Parse(fileInfo.Name(), content)
+			quiz, err := s.Parse(fileInfo.Name(), content)
 			if err != nil {
 				return nil, err
 			}
 
-			quizzes = append(quizzes, quizz)
+			quizzes = append(quizzes, quiz)
 		}
 	}
 

@@ -22,19 +22,19 @@ import (
 
 	"github.com/fatih/color"
 
-	"github.com/school-by-hiit/quizz-app/internal/back/domain/model"
-	"github.com/school-by-hiit/quizz-app/internal/back/domain/repository"
+	"github.com/school-by-hiit/quiz-app/internal/back/domain/model"
+	"github.com/school-by-hiit/quiz-app/internal/back/domain/repository"
 )
 
-type QuizzService struct {
-	r repository.QuizzRepository
+type QuizService struct {
+	r repository.QuizRepository
 }
 
-func New(r repository.QuizzRepository) QuizzService {
-	return QuizzService{r: r}
+func New(r repository.QuizRepository) QuizService {
+	return QuizService{r: r}
 }
 
-func (s *QuizzService) Sync(ctx context.Context, repoUrl string, token string) error {
+func (s *QuizService) Sync(ctx context.Context, repoUrl string, token string) error {
 
 	quizzes, err := s.ScanGitRepo(repoUrl, token)
 	if err != nil {
@@ -42,7 +42,7 @@ func (s *QuizzService) Sync(ctx context.Context, repoUrl string, token string) e
 	}
 
 	for _, quiz := range quizzes {
-		err := s.saveQuizz(ctx, quiz)
+		err := s.saveQuiz(ctx, quiz)
 		if err != nil {
 			return err
 		}
@@ -53,9 +53,9 @@ func (s *QuizzService) Sync(ctx context.Context, repoUrl string, token string) e
 	return nil
 }
 
-func (s *QuizzService) saveQuizz(ctx context.Context, quizz model.Quizz) error {
+func (s *QuizService) saveQuiz(ctx context.Context, quiz model.Quiz) error {
 
-	err := s.r.Create(ctx, quizz)
+	err := s.r.Create(ctx, quiz)
 	if err != nil {
 		return err
 	}

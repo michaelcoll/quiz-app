@@ -62,5 +62,5 @@ func Print(version string, mode Mode) {
 		modeStr = "serve mode"
 	}
 
-	fmt.Printf(banner, color.BlueString("quizz app"), color.WhiteString(version), color.CyanString(modeStr))
+	fmt.Printf(banner, color.BlueString("quiz app"), color.WhiteString(version), color.CyanString(modeStr))
 }

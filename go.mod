@@ -1,4 +1,4 @@
-module github.com/school-by-hiit/quizz-app
+module github.com/school-by-hiit/quiz-app
 
 go 1.20
 

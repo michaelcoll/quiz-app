@@ -23,17 +23,17 @@ import (
 	"github.com/fatih/color"
 	"github.com/gin-gonic/gin"
 
-	"github.com/school-by-hiit/quizz-app/internal/back/domain/service"
+	"github.com/school-by-hiit/quiz-app/internal/back/domain/service"
 )
 
 const apiPort = ":8080"
 
 type ApiController struct {
-	quizzService *service.QuizzService
+	quizService *service.QuizService
 }
 
-func NewApiController(s *service.QuizzService) ApiController {
-	return ApiController{quizzService: s}
+func NewApiController(s *service.QuizService) ApiController {
+	return ApiController{quizService: s}
 }
 
 func (c *ApiController) Serve() {
@@ -54,7 +54,7 @@ func (c *ApiController) Serve() {
 	//private.GET("/daemon/:id", c.daemonById)
 	//private.GET("/daemon/:id/media", c.mediaList)
 
-	public.GET("/quizz", c.quizzList)
+	public.GET("/quiz", c.quizList)
 
 	//mediaGroup.GET("/daemon/:id/media/:hash", c.contentByHash)
 	//mediaGroup.GET("/daemon/:id/thumbnail/:hash", c.thumbnailByHash)

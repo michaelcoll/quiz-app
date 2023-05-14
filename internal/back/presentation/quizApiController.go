@@ -24,12 +24,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/school-by-hiit/quizz-app/internal/back/domain/model"
+	"github.com/school-by-hiit/quiz-app/internal/back/domain/model"
 )
 
 var rangeRxp = regexp.MustCompile(`(?P<Unit>.*)=(?P<Start>[0-9]+)-(?P<End>[0-9]*)`)
 
-func (c *ApiController) quizzList(ctx *gin.Context) {
+func (c *ApiController) quizList(ctx *gin.Context) {
 
 	start, _, err := extractRangeHeader(ctx.GetHeader("Range"))
 	if err != nil {
@@ -38,7 +38,7 @@ func (c *ApiController) quizzList(ctx *gin.Context) {
 	}
 
 	total := 0
-	var quizzes []model.Quizz
+	var quizzes []model.Quiz
 
 	ctx.Header("Content-Range", fmt.Sprintf("%s %d-%d/%d", "photo", start, start+len(quizzes), total))
 	ctx.JSON(http.StatusOK, quizzes)
@@ -49,11 +49,11 @@ func extractRangeHeader(rangeHeader string) (int, int, error) {
 	st := http.StatusRequestedRangeNotSatisfiable
 
 	if len(r) < 4 {
-		return 0, 0, model.Errorf(st, "Range is not valid, supported format : quizz=0-25")
+		return 0, 0, model.Errorf(st, "Range is not valid, supported format : quiz=0-25")
 	}
 
-	if r[1] != "quizz" {
-		return 0, 0, model.Errorf(st, "Unit in range is not valid, supported unit : quizz")
+	if r[1] != "quiz" {
+		return 0, 0, model.Errorf(st, "Unit in range is not valid, supported unit : quiz")
 	}
 
 	start, errStart := strconv.Atoi(r[2])

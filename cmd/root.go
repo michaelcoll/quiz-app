@@ -24,10 +24,10 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "quizz-app",
+	Use:   "quiz-app",
 	Short: "",
 	Long: `
-The Quizz wep app.`,
+The quiz wep app.`,
 }
 
 var version = "v0.0.0"
