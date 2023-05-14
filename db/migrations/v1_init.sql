@@ -1,14 +1,11 @@
 CREATE TABLE quizz
 (
-    filename TEXT PRIMARY KEY
-);
-
-CREATE TABLE quizz_version
-(
-    sha1     TEXT PRIMARY KEY,
-    filename TEXT,
-    version  INTEGER NOT NULL,
-    active   INTEGER DEFAULT 1,
+    sha1       TEXT PRIMARY KEY,
+    name       TEXT      NOT NULL,
+    filename   TEXT      NOT NULL,
+    version    INTEGER   NOT NULL DEFAULT 1,
+    active     INTEGER   NOT NULL DEFAULT 1,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT filename_fk FOREIGN KEY (filename) REFERENCES quizz (filename),
     CONSTRAINT quizz_version_unique UNIQUE (filename, version)
@@ -20,27 +17,27 @@ CREATE TABLE quizz_question
     content TEXT NOT NULL
 );
 
-CREATE TABLE quizz_question_version
+CREATE TABLE quizz_question_quizz
 (
-    version_sha1  TEXT,
-    question_sha1 TEXT,
+    quizz_sha1    TEXT NOT NULL,
+    question_sha1 TEXT NOT NULL,
 
-    CONSTRAINT pk PRIMARY KEY (version_sha1, question_sha1),
-    CONSTRAINT version_fk FOREIGN KEY (version_sha1) REFERENCES quizz_version (sha1),
+    CONSTRAINT pk PRIMARY KEY (quizz_sha1, question_sha1),
+    CONSTRAINT quizz_fk FOREIGN KEY (quizz_sha1) REFERENCES quizz (sha1),
     CONSTRAINT question_fk FOREIGN KEY (question_sha1) REFERENCES quizz_question (sha1)
 );
 
 CREATE TABLE quizz_answer
 (
     sha1    TEXT PRIMARY KEY,
-    valid   INTEGER,
-    content TEXT NOT NULL
+    valid   INTEGER NOT NULL,
+    content TEXT    NOT NULL
 );
 
 CREATE TABLE quizz_question_answer
 (
-    question_sha1 TEXT,
-    answer_sha1 TEXT,
+    question_sha1 TEXT NOT NULL,
+    answer_sha1   TEXT NOT NULL,
 
     CONSTRAINT question_fk FOREIGN KEY (question_sha1) REFERENCES quizz_question (sha1),
     CONSTRAINT answer_fk FOREIGN KEY (answer_sha1) REFERENCES quizz_answer (sha1)

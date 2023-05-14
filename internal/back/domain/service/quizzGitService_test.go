@@ -28,8 +28,6 @@ import (
 
 func Test_readFileContent(t *testing.T) {
 
-	t.Skip("Skipping test in CI env")
-
 	storage := memory.NewStorage()
 	fs := memfs.New()
 
@@ -55,7 +53,9 @@ func Test_readFileContent(t *testing.T) {
 
 func TestScanGitRepo(t *testing.T) {
 
-	quizzes, err := ScanGitRepo("https://github.com/school-by-hiit/quizz-app.git", "")
+	s := New(nil)
+
+	quizzes, err := s.ScanGitRepo("https://github.com/school-by-hiit/quizz-app.git", "")
 	if err != nil {
 		assert.Fail(t, "Can't scan repo", "%v", err)
 	}
@@ -63,6 +63,6 @@ func TestScanGitRepo(t *testing.T) {
 	assert.Len(t, quizzes, 1)
 	assert.Equal(t, "Marvel Universe", quizzes[0].Name)
 	assert.Equal(t, "marvel-universe.quizz.md", quizzes[0].Filename)
-	assert.Equal(t, "051324de8879cdfc6bc3c2e49fe508f4e8daf3d6", quizzes[0].Sha1)
+	assert.Equal(t, "fccc28a245ee3e92791ec9395d3a3791d17090da", quizzes[0].Sha1)
 	assert.Len(t, quizzes[0].Questions, 7)
 }

@@ -9,4 +9,4 @@ sql:
         out: "internal/back/infrastructure/sqlc"
         emit_db_tags: true
         emit_empty_slices: true
-        emit_methods_with_db_argument: true
+        emit_methods_with_db_argument: false

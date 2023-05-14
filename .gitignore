@@ -4,6 +4,7 @@ node_modules
 # build
 quizz-app
 internal/web/dist
+/data
 
 # ide
 .idea/*

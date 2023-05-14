@@ -26,15 +26,8 @@ import (
 	"github.com/school-by-hiit/quizz-app/internal/back/domain/model"
 )
 
-type QuizzParseService struct {
-}
-
-func NewQuizzService() QuizzParseService {
-	return QuizzParseService{}
-}
-
 // Parse parse the content of a quizz file
-func Parse(filename string, content string) (model.Quizz, error) {
+func (s *QuizzService) Parse(filename string, content string) (model.Quizz, error) {
 
 	name, err := extractQuizzName(content)
 	if err != nil {
@@ -122,7 +115,7 @@ func extractAnswers(answersStr string) ([]model.QuizzQuestionAnswer, error) {
 		valid := validTestRegex.MatchString(s)
 
 		answers[i] = model.QuizzQuestionAnswer{
-			Sha1:    getSha1(answersStr),
+			Sha1:    getSha1(s),
 			Content: string([]rune(s)[6:]),
 			Valid:   valid,
 		}

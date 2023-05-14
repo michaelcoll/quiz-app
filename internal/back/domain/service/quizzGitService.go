@@ -30,7 +30,7 @@ import (
 	"github.com/school-by-hiit/quizz-app/internal/back/domain/model"
 )
 
-func ScanGitRepo(url string, token string) ([]model.Quizz, error) {
+func (s *QuizzService) ScanGitRepo(url string, token string) ([]model.Quizz, error) {
 	storage := memory.NewStorage()
 	fs := memfs.New()
 
@@ -70,7 +70,7 @@ func ScanGitRepo(url string, token string) ([]model.Quizz, error) {
 				return nil, err
 			}
 
-			quizz, err := Parse(fileInfo.Name(), content)
+			quizz, err := s.Parse(fileInfo.Name(), content)
 			if err != nil {
 				return nil, err
 			}

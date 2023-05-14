@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package model
+package repository
 
-type Quizz struct {
-	Sha1 string `json:"id"`
+import (
+	"context"
 
-	Filename  string          `json:"filename"`
-	Name      string          `json:"name"`
-	Version   int             `json:"version"`
-	Questions []QuizzQuestion `json:"questions"`
-}
+	"github.com/school-by-hiit/quizz-app/internal/back/domain/model"
+)
 
-type QuizzQuestion struct {
-	Sha1 string `json:"id"`
+type QuizzRepository interface {
+	Connect()
+	Close()
 
-	Content string                `json:"content"`
-	Answers []QuizzQuestionAnswer `json:"answers"`
-}
-
-type QuizzQuestionAnswer struct {
-	Sha1 string `json:"id"`
-
-	Content string `json:"content"`
-	Valid   bool   `json:"valid"`
+	FindLatestVersionByFilename(ctx context.Context, filename string) (model.Quizz, error)
+	FindAllActive(ctx context.Context) ([]model.Quizz, error)
+	Create(ctx context.Context, quizz model.Quizz) error
+	Update(ctx context.Context, quizz model.Quizz) error
+	Deactivate(ctx context.Context, sha1 string) error
 }
