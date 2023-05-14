@@ -17,7 +17,6 @@
 package service
 
 import (
-	"log"
 	"os"
 	"testing"
 
@@ -27,14 +26,14 @@ import (
 func TestParse(t *testing.T) {
 	body, err := os.ReadFile("quiz.md")
 	if err != nil {
-		log.Fatalf("unable to test file: %v", err)
+		assert.Failf(t, "Fail to read quiz.md file", "%v", err)
 	}
 
 	s := New(nil)
 
 	actual, err := s.Parse("quiz.md", string(body))
 	if err != nil {
-		assert.Failf(t, "Fail to parse : %w", err.Error())
+		assert.Failf(t, "Fail to parse", "%v", err)
 	}
 
 	assert.Equal(t, "Version Control System", actual.Name)

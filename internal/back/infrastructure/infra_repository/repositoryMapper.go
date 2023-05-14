@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package repository
+package infra_repository
 
 import (
-	"context"
-
 	"github.com/school-by-hiit/quiz-app/internal/back/domain/model"
+	"github.com/school-by-hiit/quiz-app/internal/back/infrastructure/sqlc"
 )
 
-type QuizRepository interface {
-	Connect()
-	Close()
-
-	FindBySha1(ctx context.Context, sha1 string) (model.Quiz, error)
-	FindLatestVersionByFilename(ctx context.Context, filename string) (model.Quiz, error)
-	FindAllActive(ctx context.Context) ([]model.Quiz, error)
-	Create(ctx context.Context, quiz model.Quiz) error
-	Update(ctx context.Context, quiz model.Quiz) error
-	ActivateOnlyVersion(ctx context.Context, filename string, version int) error
+func toDomain(entity sqlc.Quiz) model.Quiz {
+	return model.Quiz{
+		Sha1:      entity.Sha1,
+		Filename:  entity.Filename,
+		Name:      entity.Name,
+		Version:   int(entity.Version),
+		CreatedAt: entity.CreatedAt,
+	}
 }

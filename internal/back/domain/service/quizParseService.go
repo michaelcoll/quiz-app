@@ -43,6 +43,7 @@ func (s *QuizService) Parse(filename string, content string) (model.Quiz, error)
 		Sha1:      getSha1(content),
 		Name:      name,
 		Filename:  filename,
+		Version:   1,
 		Questions: questions,
 	}, nil
 }

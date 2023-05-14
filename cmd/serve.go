@@ -20,6 +20,10 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
+
+	"github.com/fatih/color"
 
 	"github.com/school-by-hiit/quiz-app/internal/back"
 	"github.com/school-by-hiit/quiz-app/internal/back/domain/banner"
@@ -37,9 +41,20 @@ Starts the server`,
 		banner.Print(version, banner.Serve)
 
 		module := back.New()
-		err := module.GetService().Sync(context.Background(), repoUrl, token)
+
+		// Handles the CTRL+C properly
+		c := make(chan os.Signal)
+		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+
+		go func() {
+			<-c
+			module.GetService().Close()
+			os.Exit(0)
+		}()
+
+		err := module.GetService().Sync(context.Background(), repoUrl, token, verbose)
 		if err != nil {
-			fmt.Printf("Can't sync quizzes (%v)\n", err)
+			fmt.Printf("%s Can't sync quizzes (%v)\n", color.RedString("✗"), err)
 			os.Exit(-1)
 		}
 		module.GetPhotoController().Serve()
