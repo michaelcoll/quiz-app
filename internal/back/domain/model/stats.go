@@ -16,29 +16,7 @@
 
 package model
 
-import "time"
-
-type Quiz struct {
-	Sha1 string `json:"id"`
-
-	Filename  string         `json:"filename"`
-	Name      string         `json:"name"`
-	Version   int            `json:"version"`
-	CreatedAt time.Time      `json:"createdAt"`
-	UpdatedAt time.Time      `json:"updatedAt"`
-	Questions []QuizQuestion `json:"questions"`
-}
-
-type QuizQuestion struct {
-	Sha1 string `json:"id"`
-
-	Content string               `json:"content"`
-	Answers []QuizQuestionAnswer `json:"answers"`
-}
-
-type QuizQuestionAnswer struct {
-	Sha1 string `json:"id"`
-
-	Content string `json:"content"`
-	Valid   bool   `json:"valid"`
+type SyncStats struct {
+	Created int
+	Updated int
 }

@@ -32,7 +32,7 @@ The quiz wep app.`,
 
 var version = "v0.0.0"
 
-var Verbose bool
+var verbose bool
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -46,5 +46,5 @@ func Execute() {
 func init() {
 	rootCmd.Version = version
 
-	rootCmd.PersistentFlags().BoolVar(&Verbose, "verbose", false, "Verbose display")
+	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "Verbose display")
 }

@@ -44,13 +44,32 @@ func (r *QuizDBRepository) Close() {
 	r.c.Close()
 }
 
+func (r *QuizDBRepository) FindBySha1(ctx context.Context, sha1 string) (model.Quiz, error) {
+	entity, err := r.q.FindBySha1(ctx, sha1)
+	if err != nil {
+		return model.Quiz{}, err
+	}
+
+	return toDomain(entity), nil
+}
+
+func (r *QuizDBRepository) FindLatestVersionByFilename(ctx context.Context, filename string) (model.Quiz, error) {
+
+	quiz, err := r.q.FindLatestVersionByFilename(ctx, filename)
+	if err != nil {
+		return model.Quiz{}, err
+	}
+
+	return toDomain(quiz), nil
+}
+
 func (r *QuizDBRepository) Create(ctx context.Context, quiz model.Quiz) error {
 
 	err := r.q.CreateOrReplaceQuiz(ctx, sqlc.CreateOrReplaceQuizParams{
 		Sha1:     quiz.Sha1,
 		Name:     quiz.Name,
 		Filename: quiz.Filename,
-		Version:  1,
+		Version:  int64(quiz.Version),
 	})
 	if err != nil {
 		return err
@@ -99,6 +118,18 @@ func (r *QuizDBRepository) Create(ctx context.Context, quiz model.Quiz) error {
 				return err
 			}
 		}
+	}
+
+	return nil
+}
+
+func (r *QuizDBRepository) ActivateOnlyVersion(ctx context.Context, filename string, version int) error {
+	err := r.q.ActivateOnlyVersion(ctx, sqlc.ActivateOnlyVersionParams{
+		Filename: filename,
+		Version:  int64(version),
+	})
+	if err != nil {
+		return err
 	}
 
 	return nil

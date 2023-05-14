@@ -9,6 +9,23 @@ import (
 	"context"
 )
 
+const activateOnlyVersion = `-- name: ActivateOnlyVersion :exec
+UPDATE quiz
+SET active = 0
+WHERE filename = ?
+AND version <> ?
+`
+
+type ActivateOnlyVersionParams struct {
+	Filename string `db:"filename"`
+	Version  int64  `db:"version"`
+}
+
+func (q *Queries) ActivateOnlyVersion(ctx context.Context, arg ActivateOnlyVersionParams) error {
+	_, err := q.db.ExecContext(ctx, activateOnlyVersion, arg.Filename, arg.Version)
+	return err
+}
+
 const createOrReplaceAnswer = `-- name: CreateOrReplaceAnswer :exec
 REPLACE INTO quiz_answer (sha1, content, valid)
 VALUES (?, ?, ?)
@@ -62,17 +79,46 @@ func (q *Queries) CreateOrReplaceQuiz(ctx context.Context, arg CreateOrReplaceQu
 	return err
 }
 
-const findLatestVersionByFilename = `-- name: FindLatestVersionByFilename :one
-SELECT max(version)
+const findBySha1 = `-- name: FindBySha1 :one
+SELECT sha1, name, filename, version, active, created_at
 FROM quiz
-WHERE filename = ?
+WHERE sha1 = ?
 `
 
-func (q *Queries) FindLatestVersionByFilename(ctx context.Context, filename string) (interface{}, error) {
+func (q *Queries) FindBySha1(ctx context.Context, sha1 string) (Quiz, error) {
+	row := q.db.QueryRowContext(ctx, findBySha1, sha1)
+	var i Quiz
+	err := row.Scan(
+		&i.Sha1,
+		&i.Name,
+		&i.Filename,
+		&i.Version,
+		&i.Active,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const findLatestVersionByFilename = `-- name: FindLatestVersionByFilename :one
+SELECT sha1, name, filename, version, active, created_at
+FROM quiz
+WHERE filename = ?
+ORDER BY version DESC
+LIMIT 1
+`
+
+func (q *Queries) FindLatestVersionByFilename(ctx context.Context, filename string) (Quiz, error) {
 	row := q.db.QueryRowContext(ctx, findLatestVersionByFilename, filename)
-	var max interface{}
-	err := row.Scan(&max)
-	return max, err
+	var i Quiz
+	err := row.Scan(
+		&i.Sha1,
+		&i.Name,
+		&i.Filename,
+		&i.Version,
+		&i.Active,
+		&i.CreatedAt,
+	)
+	return i, err
 }
 
 const linkAnswer = `-- name: LinkAnswer :exec
