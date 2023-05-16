@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package service
+package back
 
 import (
 	"os"
@@ -23,8 +23,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 
-	"github.com/school-by-hiit/quiz-app/internal/back/domain/model"
-	"github.com/school-by-hiit/quiz-app/internal/back/infrastructure/infra_repository"
+	"github.com/school-by-hiit/quiz-app/internal/back/domain"
+	"github.com/school-by-hiit/quiz-app/internal/back/infrastructure"
 )
 
 const (
@@ -44,12 +44,12 @@ func TestQuizService_saveQuiz(t *testing.T) {
 		}
 	}
 
-	r := infra_repository.New()
+	r := infrastructure.New()
 	defer r.Close()
-	s := New(r)
+	s := domain.New(r)
 
 	// Test creation of quiz
-	stats, err := s.saveQuiz(context.Background(), model.Quiz{
+	stats, err := s.SaveQuiz(context.Background(), domain.Quiz{
 		Sha1:     Sha1Create,
 		Filename: Filename,
 		Name:     Name,
@@ -73,7 +73,7 @@ func TestQuizService_saveQuiz(t *testing.T) {
 	assert.Equal(t, 1, quiz.Version)
 
 	// Test update of quiz
-	stats, err = s.saveQuiz(context.Background(), model.Quiz{
+	stats, err = s.SaveQuiz(context.Background(), domain.Quiz{
 		Sha1:     Sha1Update,
 		Filename: Filename,
 		Name:     Name,

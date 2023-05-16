@@ -14,33 +14,36 @@
  * limitations under the License.
  */
 
-package model
+package domain
 
-import "fmt"
+import "time"
 
-type HttpStatusError struct {
-	status  int
-	message string
+type Quiz struct {
+	Sha1 string
+
+	Filename  string
+	Name      string
+	Version   int
+	CreatedAt time.Time
+	Active    bool
+	Questions map[string]QuizQuestion
 }
 
-func (e *HttpStatusError) HTTPStatus() int {
-	return e.status
+type QuizQuestion struct {
+	Sha1 string
+
+	Content string
+	Answers map[string]QuizQuestionAnswer
 }
 
-func (e *HttpStatusError) Error() string {
-	return e.message
+type QuizQuestionAnswer struct {
+	Sha1 string
+
+	Content string
+	Valid   bool
 }
 
-func Errorf(status int, format string, a ...interface{}) error {
-	return &HttpStatusError{status, fmt.Sprintf(format, a...)}
-}
-
-func FromError(err error) (int, bool) {
-	if se, ok := err.(interface {
-		HTTPStatus() int
-	}); ok {
-		return se.HTTPStatus(), true
-	}
-
-	return 0, false
+type SyncStats struct {
+	Created int
+	Updated int
 }

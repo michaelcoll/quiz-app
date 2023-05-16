@@ -7,6 +7,7 @@ package sqlc
 
 import (
 	"context"
+	"time"
 )
 
 const activateOnlyVersion = `-- name: ActivateOnlyVersion :exec
@@ -24,6 +25,19 @@ type ActivateOnlyVersionParams struct {
 func (q *Queries) ActivateOnlyVersion(ctx context.Context, arg ActivateOnlyVersionParams) error {
 	_, err := q.db.ExecContext(ctx, activateOnlyVersion, arg.Filename, arg.Version)
 	return err
+}
+
+const countAllActive = `-- name: CountAllActive :one
+SELECT count(1)
+FROM quiz
+WHERE active = 1
+`
+
+func (q *Queries) CountAllActive(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countAllActive)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
 }
 
 const createOrReplaceAnswer = `-- name: CreateOrReplaceAnswer :exec
@@ -79,6 +93,48 @@ func (q *Queries) CreateOrReplaceQuiz(ctx context.Context, arg CreateOrReplaceQu
 	return err
 }
 
+const findAllActive = `-- name: FindAllActive :many
+SELECT sha1, name, filename, version, active, created_at
+FROM quiz
+WHERE active = 1
+LIMIT ? OFFSET ?
+`
+
+type FindAllActiveParams struct {
+	Limit  int64 `db:"limit"`
+	Offset int64 `db:"offset"`
+}
+
+func (q *Queries) FindAllActive(ctx context.Context, arg FindAllActiveParams) ([]Quiz, error) {
+	rows, err := q.db.QueryContext(ctx, findAllActive, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Quiz{}
+	for rows.Next() {
+		var i Quiz
+		if err := rows.Scan(
+			&i.Sha1,
+			&i.Name,
+			&i.Filename,
+			&i.Version,
+			&i.Active,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const findBySha1 = `-- name: FindBySha1 :one
 SELECT sha1, name, filename, version, active, created_at
 FROM quiz
@@ -97,6 +153,76 @@ func (q *Queries) FindBySha1(ctx context.Context, sha1 string) (Quiz, error) {
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const findFullBySha1 = `-- name: FindFullBySha1 :many
+SELECT
+    q.sha1 as quiz_sha1,
+    q.filename as quiz_filename,
+    q.name as quiz_name,
+    q.version as quiz_version,
+    q.created_at as quiz_created_at,
+    q.active as quiz_active,
+    qq.sha1 as question_sha1,
+    qq.content as question_content,
+    qa.sha1 as answer_sha1,
+    qa.content as answer_content,
+    qa.valid as answer_valid
+FROM quiz q
+         JOIN quiz_question_quiz qqq ON q.sha1 = qqq.quiz_sha1
+         JOIN quiz_question qq ON qq.sha1 = qqq.question_sha1
+         JOIN quiz_question_answer qqa ON qq.sha1 = qqa.question_sha1
+         JOIN quiz_answer qa ON qa.sha1 = qqa.answer_sha1
+WHERE q.sha1 = ?
+`
+
+type FindFullBySha1Row struct {
+	QuizSha1        string    `db:"quiz_sha1"`
+	QuizFilename    string    `db:"quiz_filename"`
+	QuizName        string    `db:"quiz_name"`
+	QuizVersion     int64     `db:"quiz_version"`
+	QuizCreatedAt   time.Time `db:"quiz_created_at"`
+	QuizActive      int64     `db:"quiz_active"`
+	QuestionSha1    string    `db:"question_sha1"`
+	QuestionContent string    `db:"question_content"`
+	AnswerSha1      string    `db:"answer_sha1"`
+	AnswerContent   string    `db:"answer_content"`
+	AnswerValid     int64     `db:"answer_valid"`
+}
+
+func (q *Queries) FindFullBySha1(ctx context.Context, sha1 string) ([]FindFullBySha1Row, error) {
+	rows, err := q.db.QueryContext(ctx, findFullBySha1, sha1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []FindFullBySha1Row{}
+	for rows.Next() {
+		var i FindFullBySha1Row
+		if err := rows.Scan(
+			&i.QuizSha1,
+			&i.QuizFilename,
+			&i.QuizName,
+			&i.QuizVersion,
+			&i.QuizCreatedAt,
+			&i.QuizActive,
+			&i.QuestionSha1,
+			&i.QuestionContent,
+			&i.AnswerSha1,
+			&i.AnswerContent,
+			&i.AnswerValid,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const findLatestVersionByFilename = `-- name: FindLatestVersionByFilename :one

@@ -23,37 +23,38 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-
-	"github.com/school-by-hiit/quiz-app/internal/back/domain/model"
 )
 
 var rangeRxp = regexp.MustCompile(`(?P<Unit>.*)=(?P<Start>[0-9]+)-(?P<End>[0-9]*)`)
 
 func (c *ApiController) quizList(ctx *gin.Context) {
 
-	start, _, err := extractRangeHeader(ctx.GetHeader("Range"))
+	start, end, err := extractRangeHeader(ctx.GetHeader("Range"))
 	if err != nil {
 		handleError(ctx, err)
 		return
 	}
 
-	total := 0
-	var quizzes []model.Quiz
+	quizzes, total, err := c.quizService.FindAllActive(ctx.Request.Context(), end-start, start)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
 
-	ctx.Header("Content-Range", fmt.Sprintf("%s %d-%d/%d", "photo", start, start+len(quizzes), total))
-	ctx.JSON(http.StatusOK, quizzes)
+	ctx.Header("Content-Range", fmt.Sprintf("%s %d-%d/%d", "quiz", start, int(start)+len(quizzes), total))
+	ctx.JSON(http.StatusOK, fromDomains(quizzes))
 }
 
-func extractRangeHeader(rangeHeader string) (int, int, error) {
+func extractRangeHeader(rangeHeader string) (uint16, uint16, error) {
 	r := rangeRxp.FindStringSubmatch(rangeHeader)
 	st := http.StatusRequestedRangeNotSatisfiable
 
 	if len(r) < 4 {
-		return 0, 0, model.Errorf(st, "Range is not valid, supported format : quiz=0-25")
+		return 0, 0, Errorf(st, "Range is not valid, supported format : quiz=0-25")
 	}
 
 	if r[1] != "quiz" {
-		return 0, 0, model.Errorf(st, "Unit in range is not valid, supported unit : quiz")
+		return 0, 0, Errorf(st, "Unit in range is not valid, supported unit : quiz")
 	}
 
 	start, errStart := strconv.Atoi(r[2])
@@ -64,16 +65,28 @@ func extractRangeHeader(rangeHeader string) (int, int, error) {
 	}
 
 	if errStart != nil {
-		return 0, 0, model.Errorf(st, "Start range is not valid")
+		return 0, 0, Errorf(st, "Start range is not valid")
 	}
 
 	if len(r[3]) != 0 && errEnd != nil {
-		return 0, 0, model.Errorf(st, "End range is not valid")
+		return 0, 0, Errorf(st, "End range is not valid")
 	}
 
 	if end != 0 && start >= end {
-		return 0, 0, model.Errorf(st, "Range is not valid, start > end")
+		return 0, 0, Errorf(st, "Range is not valid, start > end")
 	}
 
-	return start, end, nil
+	return uint16(start), uint16(end), nil
+}
+
+func (c *ApiController) quizBySha1(ctx *gin.Context) {
+	sha1 := ctx.Param("sha1")
+
+	quiz, err := c.quizService.FindFullBySha1(ctx, sha1)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, fromDomain(quiz))
 }

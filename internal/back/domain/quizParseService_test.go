@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package service
+package domain
 
 import (
 	"os"
@@ -38,10 +38,10 @@ func TestParse(t *testing.T) {
 
 	assert.Equal(t, "Version Control System", actual.Name)
 	assert.Equal(t, 3, len(actual.Questions))
-	assert.Equal(t, 3, len(actual.Questions[0].Answers))
-	assert.Equal(t, "Version Control System", actual.Questions[0].Answers[0].Content)
-	assert.Equal(t, true, actual.Questions[0].Answers[0].Valid)
-	assert.Equal(t, true, actual.Questions[2].Answers[1].Valid)
-	assert.Equal(t, false, actual.Questions[2].Answers[2].Valid)
-	assert.Equal(t, "Question with a `command` ?\n```shell\ncommand \n```", actual.Questions[2].Content)
+	assert.Equal(t, 3, len(actual.Questions["cb4d6d8a2f29f188503607fe26acee8e3786e63f"].Answers))
+	assert.Equal(t, "Version Control System", actual.Questions["cb4d6d8a2f29f188503607fe26acee8e3786e63f"].Answers["eb3352743a553af25829c32b2492c1a41a739f1e"].Content)
+	assert.Equal(t, true, actual.Questions["cb4d6d8a2f29f188503607fe26acee8e3786e63f"].Answers["eb3352743a553af25829c32b2492c1a41a739f1e"].Valid)
+	assert.Equal(t, false, actual.Questions["0340bede2f41b9b2ce12b867cc5bf0cb1bd4eabd"].Answers["332b7ca50a406b2337e339332f66f3676d885fef"].Valid)
+	assert.Equal(t, false, actual.Questions["0340bede2f41b9b2ce12b867cc5bf0cb1bd4eabd"].Answers["22128893c69197141a17149b7de81419aca57e67"].Valid)
+	assert.Equal(t, "Question with a `command` ?\n```shell\ncommand \n```", actual.Questions["0340bede2f41b9b2ce12b867cc5bf0cb1bd4eabd"].Content)
 }

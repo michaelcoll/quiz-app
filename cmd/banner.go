@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package banner
+package cmd
 
 import (
 	"fmt"

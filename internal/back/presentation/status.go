@@ -20,12 +20,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-
-	"github.com/school-by-hiit/quiz-app/internal/back/domain/model"
 )
 
 func handleError(ctx *gin.Context, err error) {
-	if st, ok := model.FromError(err); ok {
+	if st, ok := fromError(err); ok {
 		if st == http.StatusInternalServerError {
 			panic(err)
 		}

@@ -17,13 +17,13 @@
 package back
 
 import (
-	"github.com/school-by-hiit/quiz-app/internal/back/domain/service"
-	"github.com/school-by-hiit/quiz-app/internal/back/infrastructure/infra_repository"
+	"github.com/school-by-hiit/quiz-app/internal/back/domain"
+	"github.com/school-by-hiit/quiz-app/internal/back/infrastructure"
 	"github.com/school-by-hiit/quiz-app/internal/back/presentation"
 )
 
 type Module struct {
-	s        service.QuizService
+	s        domain.QuizService
 	quizCtrl presentation.ApiController
 }
 
@@ -31,13 +31,13 @@ func (m *Module) GetPhotoController() *presentation.ApiController {
 	return &m.quizCtrl
 }
 
-func (m *Module) GetService() *service.QuizService {
+func (m *Module) GetService() *domain.QuizService {
 	return &m.s
 }
 
 func New() Module {
-	repository := infra_repository.New()
-	quizService := service.New(repository)
+	repository := infrastructure.New()
+	quizService := domain.New(repository)
 
 	return Module{
 		s:        quizService,
