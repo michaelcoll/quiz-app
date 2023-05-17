@@ -14,31 +14,33 @@
  * limitations under the License.
  */
 
-package model
+package presentation
 
-import "time"
+import "fmt"
 
-type Quiz struct {
-	Sha1 string `json:"id"`
-
-	Filename  string         `json:"filename"`
-	Name      string         `json:"name"`
-	Version   int            `json:"version"`
-	CreatedAt time.Time      `json:"createdAt"`
-	UpdatedAt time.Time      `json:"updatedAt"`
-	Questions []QuizQuestion `json:"questions"`
+type HttpStatusError struct {
+	status  int
+	message string
 }
 
-type QuizQuestion struct {
-	Sha1 string `json:"id"`
-
-	Content string               `json:"content"`
-	Answers []QuizQuestionAnswer `json:"answers"`
+func (e *HttpStatusError) HTTPStatus() int {
+	return e.status
 }
 
-type QuizQuestionAnswer struct {
-	Sha1 string `json:"id"`
+func (e *HttpStatusError) Error() string {
+	return e.message
+}
 
-	Content string `json:"content"`
-	Valid   bool   `json:"valid"`
+func Errorf(status int, format string, a ...interface{}) error {
+	return &HttpStatusError{status, fmt.Sprintf(format, a...)}
+}
+
+func fromError(err error) (int, bool) {
+	if se, ok := err.(interface {
+		HTTPStatus() int
+	}); ok {
+		return se.HTTPStatus(), true
+	}
+
+	return 0, false
 }

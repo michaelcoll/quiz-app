@@ -18,7 +18,6 @@ package presentation
 
 import (
 	"context"
-	"net/http"
 	"net/url"
 	"time"
 
@@ -29,8 +28,6 @@ import (
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	adapter "github.com/gwatts/gin-adapter"
-
-	"github.com/school-by-hiit/quiz-app/internal/back/domain/model"
 )
 
 const (
@@ -93,10 +90,10 @@ func (c EmailCustomClaims) Validate(_ context.Context) error {
 	return nil
 }
 
-func extractEmailFromToken(ctx *gin.Context) (string, error) {
-	if claims, ok := ctx.Request.Context().Value(jwtmiddleware.ContextKey{}).(*validator.ValidatedClaims); ok {
-		return claims.CustomClaims.(*EmailCustomClaims).Email, nil
-	} else {
-		return "", model.Errorf(http.StatusUnauthorized, "email claim not found")
-	}
-}
+//func extractEmailFromToken(ctx *gin.Context) (string, error) {
+//	if claims, ok := ctx.Request.Context().Value(jwtmiddleware.ContextKey{}).(*validator.ValidatedClaims); ok {
+//		return claims.CustomClaims.(*EmailCustomClaims).Email, nil
+//	} else {
+//		return "", Errorf(http.StatusUnauthorized, "email claim not found")
+//	}
+//}

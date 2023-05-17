@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package service
+package domain
 
 import (
 	"crypto/sha1"
@@ -22,24 +22,22 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-
-	"github.com/school-by-hiit/quiz-app/internal/back/domain/model"
 )
 
 // Parse parse the content of a quiz file
-func (s *QuizService) Parse(filename string, content string) (model.Quiz, error) {
+func (s *QuizService) Parse(filename string, content string) (Quiz, error) {
 
 	name, err := extractQuizName(content)
 	if err != nil {
-		return model.Quiz{}, err
+		return Quiz{}, err
 	}
 
 	questions, err := extractQuestions(content)
 	if err != nil {
-		return model.Quiz{}, err
+		return Quiz{}, err
 	}
 
-	return model.Quiz{
+	return Quiz{
 		Sha1:      getSha1(content),
 		Name:      name,
 		Filename:  filename,
@@ -64,28 +62,28 @@ func extractQuizName(content string) (string, error) {
 	}
 }
 
-func extractQuestions(content string) ([]model.QuizQuestion, error) {
+func extractQuestions(content string) (map[string]QuizQuestion, error) {
 	r := regexp.MustCompile(`^# .*\n`)
 
 	quizName := r.FindString(content)
 	questionsStr := strings.ReplaceAll(content, quizName, "")
 	questionsUnParsed := strings.Split(questionsStr, "---\n")
 
-	questions := make([]model.QuizQuestion, len(questionsUnParsed))
+	questions := map[string]QuizQuestion{}
 
-	for i, s := range questionsUnParsed {
+	for _, s := range questionsUnParsed {
 		question, err := extractQuestion(s)
 		if err != nil {
 			return nil, err
 		}
 
-		questions[i] = question
+		questions[question.Sha1] = question
 	}
 
 	return questions, nil
 }
 
-func extractQuestion(content string) (model.QuizQuestion, error) {
+func extractQuestion(content string) (QuizQuestion, error) {
 
 	r := regexp.MustCompile(`(- \[[ xX]] .*\n)+`)
 	answersStr := r.FindString(content)
@@ -94,29 +92,30 @@ func extractQuestion(content string) (model.QuizQuestion, error) {
 
 	answers, err := extractAnswers(answersStr)
 	if err != nil {
-		return model.QuizQuestion{}, err
+		return QuizQuestion{}, err
 	}
 
-	return model.QuizQuestion{
+	return QuizQuestion{
 		Sha1:    getSha1(content),
 		Content: strings.Trim(questionContent, " \n"),
 		Answers: answers,
 	}, nil
 }
 
-func extractAnswers(answersStr string) ([]model.QuizQuestionAnswer, error) {
+func extractAnswers(answersStr string) (map[string]QuizQuestionAnswer, error) {
 
 	r := regexp.MustCompile(`- \[[ xX]] .*`)
 	validTestRegex := regexp.MustCompile(`- \[[xX]] .*`)
 	answersStrSplit := r.FindAllString(answersStr, 10)
 
-	answers := make([]model.QuizQuestionAnswer, len(answersStrSplit))
+	answers := map[string]QuizQuestionAnswer{}
 
-	for i, s := range answersStrSplit {
+	for _, s := range answersStrSplit {
 		valid := validTestRegex.MatchString(s)
+		sha1Str := getSha1(s)
 
-		answers[i] = model.QuizQuestionAnswer{
-			Sha1:    getSha1(s),
+		answers[sha1Str] = QuizQuestionAnswer{
+			Sha1:    sha1Str,
 			Content: string([]rune(s)[6:]),
 			Valid:   valid,
 		}

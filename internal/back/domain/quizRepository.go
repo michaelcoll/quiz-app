@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package repository
+package domain
 
 import (
 	"context"
-
-	"github.com/school-by-hiit/quiz-app/internal/back/domain/model"
 )
 
 type QuizRepository interface {
 	Connect()
 	Close()
 
-	FindBySha1(ctx context.Context, sha1 string) (model.Quiz, error)
-	FindLatestVersionByFilename(ctx context.Context, filename string) (model.Quiz, error)
-	FindAllActive(ctx context.Context) ([]model.Quiz, error)
-	Create(ctx context.Context, quiz model.Quiz) error
-	Update(ctx context.Context, quiz model.Quiz) error
+	FindBySha1(ctx context.Context, sha1 string) (Quiz, error)
+	FindFullBySha1(ctx context.Context, sha1 string) (Quiz, error)
+	FindLatestVersionByFilename(ctx context.Context, filename string) (Quiz, error)
+	FindAllActive(ctx context.Context, limit uint16, offset uint16) ([]Quiz, error)
+	CountAllActive(ctx context.Context) (uint32, error)
+	Create(ctx context.Context, quiz Quiz) error
+	Update(ctx context.Context, quiz Quiz) error
 	ActivateOnlyVersion(ctx context.Context, filename string, version int) error
 }

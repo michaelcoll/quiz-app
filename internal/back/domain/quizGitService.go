@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package service
+package domain
 
 import (
 	"io"
@@ -26,11 +26,9 @@ import (
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/go-git/go-git/v5/storage/memory"
-
-	"github.com/school-by-hiit/quiz-app/internal/back/domain/model"
 )
 
-func (s *QuizService) ScanGitRepo(url string, token string) ([]model.Quiz, error) {
+func (s *QuizService) ScanGitRepo(url string, token string) ([]Quiz, error) {
 	storage := memory.NewStorage()
 	fs := memfs.New()
 
@@ -59,7 +57,7 @@ func (s *QuizService) ScanGitRepo(url string, token string) ([]model.Quiz, error
 		return nil, err
 	}
 
-	var quizzes []model.Quiz
+	var quizzes []Quiz
 
 	r := regexp.MustCompile(`.*\.quiz\.md`)
 	for _, fileInfo := range dir {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package service
+package domain
 
 import (
 	"os"
@@ -32,7 +32,7 @@ func Test_readFileContent(t *testing.T) {
 	fs := memfs.New()
 
 	_, err := git.Clone(storage, fs, &git.CloneOptions{
-		URL: "../../../../.",
+		URL: "../../../.",
 	})
 	if err != nil {
 		assert.Fail(t, "Can't connect", "%v", err)
@@ -43,7 +43,7 @@ func Test_readFileContent(t *testing.T) {
 		assert.Fail(t, "Can't read repo file : marvel-universe.quiz.md", "%v", err)
 	}
 
-	expected, err := os.ReadFile("../../../../marvel-universe.quiz.md")
+	expected, err := os.ReadFile("../../../marvel-universe.quiz.md")
 	if err != nil {
 		assert.Fail(t, "Can't read local file : marvel-universe.quiz.md", "%v", err)
 	}
@@ -55,12 +55,12 @@ func TestScanGitRepo(t *testing.T) {
 
 	s := New(nil)
 
-	quizzes, err := s.ScanGitRepo("../../../../.", "")
+	quizzes, err := s.ScanGitRepo("../../../.", "")
 	if err != nil {
 		assert.Fail(t, "Can't scan repo", "%v", err)
 	}
 
-	assert.Len(t, quizzes, 1)
+	assert.Len(t, quizzes, 2)
 	assert.Equal(t, "Marvel Universe", quizzes[0].Name)
 	assert.Equal(t, "marvel-universe.quiz.md", quizzes[0].Filename)
 	assert.Equal(t, "fccc28a245ee3e92791ec9395d3a3791d17090da", quizzes[0].Sha1)

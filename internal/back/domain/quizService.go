@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package service
+package domain
 
 import (
 	"context"
@@ -22,21 +22,41 @@ import (
 	"strconv"
 
 	"github.com/fatih/color"
-
-	"github.com/school-by-hiit/quiz-app/internal/back/domain/model"
-	"github.com/school-by-hiit/quiz-app/internal/back/domain/repository"
 )
 
 type QuizService struct {
-	r repository.QuizRepository
+	r QuizRepository
 }
 
-func New(r repository.QuizRepository) QuizService {
+func New(r QuizRepository) QuizService {
 	return QuizService{r: r}
 }
 
 func (s *QuizService) Close() {
 	s.r.Close()
+}
+
+func (s *QuizService) FindFullBySha1(ctx context.Context, sha1 string) (Quiz, error) {
+	quiz, err := s.r.FindFullBySha1(ctx, sha1)
+	if err != nil {
+		return Quiz{}, err
+	}
+
+	return quiz, nil
+}
+
+func (s *QuizService) FindAllActive(ctx context.Context, limit uint16, offset uint16) ([]Quiz, uint32, error) {
+	quizzes, err := s.r.FindAllActive(ctx, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	count, err := s.r.CountAllActive(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return quizzes, count, nil
 }
 
 func (s *QuizService) Sync(ctx context.Context, repoUrl string, token string, verbose bool) error {
@@ -46,9 +66,9 @@ func (s *QuizService) Sync(ctx context.Context, repoUrl string, token string, ve
 		return err
 	}
 
-	var syncStats model.SyncStats
+	var syncStats SyncStats
 	for _, quiz := range quizzes {
-		stats, err := s.saveQuiz(ctx, quiz, verbose)
+		stats, err := s.SaveQuiz(ctx, quiz, verbose)
 		if err != nil {
 			return err
 		}
@@ -72,7 +92,7 @@ func (s *QuizService) Sync(ctx context.Context, repoUrl string, token string, ve
 	return nil
 }
 
-func (s *QuizService) saveQuiz(ctx context.Context, quiz model.Quiz, verbose bool) (model.SyncStats, error) {
+func (s *QuizService) SaveQuiz(ctx context.Context, quiz Quiz, verbose bool) (SyncStats, error) {
 
 	latestQuiz, err := s.r.FindLatestVersionByFilename(ctx, quiz.Filename)
 	if err != nil {
@@ -84,10 +104,10 @@ func (s *QuizService) saveQuiz(ctx context.Context, quiz model.Quiz, verbose boo
 
 		err = s.r.Create(ctx, quiz)
 		if err != nil {
-			return model.SyncStats{}, err
+			return SyncStats{}, err
 		}
 
-		return model.SyncStats{
+		return SyncStats{
 			Updated: 0,
 			Created: 1,
 		}, nil
@@ -102,28 +122,28 @@ func (s *QuizService) saveQuiz(ctx context.Context, quiz model.Quiz, verbose boo
 
 		err = s.r.Create(ctx, quiz)
 		if err != nil {
-			return model.SyncStats{}, err
+			return SyncStats{}, err
 		}
 
 		err := s.r.ActivateOnlyVersion(ctx, quiz.Filename, quiz.Version)
 		if err != nil {
-			return model.SyncStats{}, err
+			return SyncStats{}, err
 		}
 
-		return model.SyncStats{
+		return SyncStats{
 			Updated: 1,
 			Created: 0,
 		}, nil
 	} else {
-		return model.SyncStats{
+		return SyncStats{
 			Updated: 0,
 			Created: 0,
 		}, nil
 	}
 }
 
-func addStats(stat1 model.SyncStats, stat2 model.SyncStats) model.SyncStats {
-	return model.SyncStats{
+func addStats(stat1 SyncStats, stat2 SyncStats) SyncStats {
+	return SyncStats{
 		Created: stat1.Created + stat2.Created,
 		Updated: stat1.Updated + stat2.Updated,
 	}

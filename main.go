@@ -17,7 +17,7 @@
 package main
 
 import (
-	"github.com/school-by-hiit/quiz-app/cmd"
+	"github.com/michaelcoll/quiz-app/cmd"
 )
 
 func main() {

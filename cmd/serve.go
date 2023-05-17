@@ -25,10 +25,9 @@ import (
 
 	"github.com/fatih/color"
 
-	"github.com/school-by-hiit/quiz-app/internal/back"
-	"github.com/school-by-hiit/quiz-app/internal/back/domain/banner"
-
 	"github.com/spf13/cobra"
+
+	"github.com/michaelcoll/quiz-app/internal/back"
 )
 
 // serveCmd represents the serve command
@@ -38,7 +37,7 @@ var serveCmd = &cobra.Command{
 	Long: `
 Starts the server`,
 	Run: func(cmd *cobra.Command, args []string) {
-		banner.Print(version, banner.Serve)
+		Print(version, Serve)
 
 		module := back.New()
 
@@ -65,7 +64,7 @@ var repoUrl string
 var token string
 
 func init() {
-	serveCmd.Flags().StringVarP(&repoUrl, "repository-url", "r", "https://github.com/school-by-hiit/quiz-app.git", "The url of the repository containing the quizzes")
+	serveCmd.Flags().StringVarP(&repoUrl, "repository-url", "r", "https://github.com/michaelcoll/quiz-app.git", "The url of the repository containing the quizzes")
 	serveCmd.Flags().StringVarP(&token, "token", "t", "", "The P.A.T. used to access the repository")
 
 	rootCmd.AddCommand(serveCmd)
