@@ -16,7 +16,7 @@ dep-upgrade-node:
   		&& pnpm update --latest
 
 build-go:
-	go build -v -ldflags="-s -w -X 'github.com/school-by-hiit/quiz-app/cmd.version=v0.0.0'" .
+	go build -v -ldflags="-s -w -X 'github.com/michaelcoll/quiz-app/cmd.version=v0.0.0'" .
 
 build-web:
 	cd internal/web \

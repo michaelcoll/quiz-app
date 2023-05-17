@@ -17,8 +17,8 @@
 package infrastructure
 
 import (
-	"github.com/school-by-hiit/quiz-app/internal/back/domain"
-	"github.com/school-by-hiit/quiz-app/internal/back/infrastructure/sqlc"
+	"github.com/michaelcoll/quiz-app/internal/back/domain"
+	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/sqlc"
 )
 
 func toDomain(entity sqlc.Quiz) domain.Quiz {

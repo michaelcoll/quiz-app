@@ -27,7 +27,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/school-by-hiit/quiz-app/internal/back"
+	"github.com/michaelcoll/quiz-app/internal/back"
 )
 
 // serveCmd represents the serve command
@@ -64,7 +64,7 @@ var repoUrl string
 var token string
 
 func init() {
-	serveCmd.Flags().StringVarP(&repoUrl, "repository-url", "r", "https://github.com/school-by-hiit/quiz-app.git", "The url of the repository containing the quizzes")
+	serveCmd.Flags().StringVarP(&repoUrl, "repository-url", "r", "https://github.com/michaelcoll/quiz-app.git", "The url of the repository containing the quizzes")
 	serveCmd.Flags().StringVarP(&token, "token", "t", "", "The P.A.T. used to access the repository")
 
 	rootCmd.AddCommand(serveCmd)

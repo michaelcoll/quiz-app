@@ -23,8 +23,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 
-	"github.com/school-by-hiit/quiz-app/internal/back/domain"
-	"github.com/school-by-hiit/quiz-app/internal/back/infrastructure"
+	"github.com/michaelcoll/quiz-app/internal/back/domain"
+	"github.com/michaelcoll/quiz-app/internal/back/infrastructure"
 )
 
 const (

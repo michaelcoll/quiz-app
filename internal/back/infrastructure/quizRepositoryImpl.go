@@ -21,10 +21,10 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/school-by-hiit/quiz-app/internal/back/domain"
-	"github.com/school-by-hiit/quiz-app/internal/back/infrastructure/db"
-	"github.com/school-by-hiit/quiz-app/internal/back/infrastructure/sqlc"
-	pm "github.com/school-by-hiit/quiz-app/internal/back/presentation"
+	"github.com/michaelcoll/quiz-app/internal/back/domain"
+	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/db"
+	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/sqlc"
+	pm "github.com/michaelcoll/quiz-app/internal/back/presentation"
 )
 
 type QuizDBRepository struct {

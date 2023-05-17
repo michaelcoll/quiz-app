@@ -41,5 +41,5 @@ jobs:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           binary_name: "quiz-app"
-          ldflags: -X "github.com/school-by-hiit/quiz-app/cmd.version=${{ env.APP_VERSION }}" -s -w
+          ldflags: -X "github.com/michaelcoll/quiz-app/cmd.version=${{ env.APP_VERSION }}" -s -w
           executable_compression: upx

@@ -19,7 +19,7 @@ package presentation
 import (
 	"time"
 
-	"github.com/school-by-hiit/quiz-app/internal/back/domain"
+	"github.com/michaelcoll/quiz-app/internal/back/domain"
 )
 
 type Quiz struct {
