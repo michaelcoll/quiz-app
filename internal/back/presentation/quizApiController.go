@@ -57,8 +57,8 @@ func extractRangeHeader(rangeHeader string) (uint16, uint16, error) {
 		return 0, 0, Errorf(st, "Unit in range is not valid, supported unit : quiz")
 	}
 
-	start, errStart := strconv.Atoi(r[2])
-	end, errEnd := strconv.Atoi(r[3])
+	start, errStart := strconv.ParseUint(r[2], 10, 16)
+	end, errEnd := strconv.ParseUint(r[3], 10, 16)
 
 	if len(r[3]) == 0 {
 		end = 0
