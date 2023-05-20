@@ -50,13 +50,12 @@ jobs:
     needs:
       - build
     runs-on: ubuntu-latest
-    if: >
-      github.event_name == 'pull_request' &&
-      github.event.pull_request.user.login == 'dependabot[bot]'
     permissions:
       pull-requests: write
       contents: write
     steps:
-      - uses: fastify/github-action-merge-dependabot@v3.6.3
+      - uses: fastify/github-action-merge-dependabot@v3
         with:
+          use-github-auto-merge: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          target: minor
