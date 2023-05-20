@@ -19,11 +19,13 @@ package back
 import (
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
 	"github.com/michaelcoll/quiz-app/internal/back/infrastructure"
+	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/db"
 	"github.com/michaelcoll/quiz-app/internal/back/presentation"
 )
 
 type Module struct {
-	s        domain.QuizService
+	quizServ domain.QuizService
+	authServ domain.AuthService
 	quizCtrl presentation.ApiController
 }
 
@@ -32,15 +34,23 @@ func (m *Module) GetPhotoController() *presentation.ApiController {
 }
 
 func (m *Module) GetService() *domain.QuizService {
-	return &m.s
+	return &m.quizServ
 }
 
 func New() Module {
-	repository := infrastructure.New()
-	quizService := domain.New(repository)
+	connection := db.Init("data")
+
+	quizRepository := infrastructure.NewQuizRepository(connection)
+	authRepository := infrastructure.NewAuthRepository(connection)
+
+	googleCaller := infrastructure.NewGoogleAccessTokenCaller()
+
+	quizService := domain.NewQuizService(quizRepository)
+	authService := domain.NewAuthService(authRepository, googleCaller)
 
 	return Module{
-		s:        quizService,
-		quizCtrl: presentation.NewApiController(&quizService),
+		quizServ: quizService,
+		authServ: authService,
+		quizCtrl: presentation.NewApiController(&quizService, &authService),
 	}
 }

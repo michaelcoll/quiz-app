@@ -47,3 +47,36 @@ type SyncStats struct {
 	Created int
 	Updated int
 }
+
+type Role int8
+
+const (
+	Admin   Role = 1
+	Teacher Role = 2
+	Student Role = 3
+)
+
+type User struct {
+	Id        string
+	Email     string
+	Firstname string
+	Lastname  string
+	Active    bool
+	Roles     []Role
+}
+
+type TokenProvenance int8
+
+const (
+	Cache = 1
+	Api   = 2
+)
+
+type AccessToken struct {
+	Aud         string
+	Sub         string
+	Exp         time.Time
+	Email       string
+	Provenance  TokenProvenance
+	OpaqueToken string
+}

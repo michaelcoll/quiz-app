@@ -19,10 +19,10 @@ package infrastructure
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"net/http"
 
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
-	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/db"
 	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/sqlc"
 	pm "github.com/michaelcoll/quiz-app/internal/back/presentation"
 )
@@ -30,38 +30,30 @@ import (
 type QuizDBRepository struct {
 	domain.QuizRepository
 
-	c *sql.DB
 	q *sqlc.Queries
 }
 
-func New() *QuizDBRepository {
-	connection := db.Connect(false, "data")
-	db.New(connection).Migrate()
-
-	return &QuizDBRepository{q: sqlc.New(connection), c: connection}
+func NewQuizRepository(c *sql.DB) *QuizDBRepository {
+	return &QuizDBRepository{q: sqlc.New(c)}
 }
 
-func (r *QuizDBRepository) Close() {
-	r.c.Close()
-}
-
-func (r *QuizDBRepository) FindBySha1(ctx context.Context, sha1 string) (domain.Quiz, error) {
-	entity, err := r.q.FindBySha1(ctx, sha1)
+func (r *QuizDBRepository) FindBySha1(ctx context.Context, sha1 string) (*domain.Quiz, error) {
+	entity, err := r.q.FindQuizBySha1(ctx, sha1)
 	if err != nil {
-		return domain.Quiz{}, err
+		return nil, err
 	}
 
-	return toDomain(entity), nil
+	return r.toQuiz(entity), nil
 }
 
-func (r *QuizDBRepository) FindFullBySha1(ctx context.Context, sha1 string) (domain.Quiz, error) {
-	entities, err := r.q.FindFullBySha1(ctx, sha1)
+func (r *QuizDBRepository) FindFullBySha1(ctx context.Context, sha1 string) (*domain.Quiz, error) {
+	entities, err := r.q.FindQuizFullBySha1(ctx, sha1)
 	if err != nil {
-		return domain.Quiz{}, err
+		return nil, err
 	}
 
 	if len(entities) == 0 {
-		return domain.Quiz{}, pm.Errorf(http.StatusNotFound, "quiz with sha1: %s was not found.", sha1)
+		return nil, pm.Errorf(http.StatusNotFound, "quiz with sha1: %s was not found.", sha1)
 	}
 
 	quiz := domain.Quiz{}
@@ -92,11 +84,11 @@ func (r *QuizDBRepository) FindFullBySha1(ctx context.Context, sha1 string) (dom
 		}
 	}
 
-	return quiz, nil
+	return &quiz, nil
 }
 
-func (r *QuizDBRepository) FindAllActive(ctx context.Context, limit uint16, offset uint16) ([]domain.Quiz, error) {
-	quizzes, err := r.q.FindAllActive(ctx, sqlc.FindAllActiveParams{
+func (r *QuizDBRepository) FindAllActive(ctx context.Context, limit uint16, offset uint16) ([]*domain.Quiz, error) {
+	quizzes, err := r.q.FindAllActiveQuiz(ctx, sqlc.FindAllActiveQuizParams{
 		Limit:  int64(limit),
 		Offset: int64(offset),
 	})
@@ -104,11 +96,11 @@ func (r *QuizDBRepository) FindAllActive(ctx context.Context, limit uint16, offs
 		return nil, err
 	}
 
-	return toDomainArray(quizzes), nil
+	return r.toQuizArray(quizzes), nil
 }
 
 func (r *QuizDBRepository) CountAllActive(ctx context.Context) (uint32, error) {
-	count, err := r.q.CountAllActive(ctx)
+	count, err := r.q.CountAllActiveQuiz(ctx)
 	if err != nil {
 		return 0, err
 	}
@@ -116,17 +108,19 @@ func (r *QuizDBRepository) CountAllActive(ctx context.Context) (uint32, error) {
 	return uint32(count), nil
 }
 
-func (r *QuizDBRepository) FindLatestVersionByFilename(ctx context.Context, filename string) (domain.Quiz, error) {
+func (r *QuizDBRepository) FindLatestVersionByFilename(ctx context.Context, filename string) (*domain.Quiz, error) {
 
-	quiz, err := r.q.FindLatestVersionByFilename(ctx, filename)
-	if err != nil {
-		return domain.Quiz{}, err
+	quiz, err := r.q.FindQuizByFilenameAndLatestVersion(ctx, filename)
+	if err != nil && errors.Is(err, sql.ErrNoRows) {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
 	}
 
-	return toDomain(quiz), nil
+	return r.toQuiz(quiz), nil
 }
 
-func (r *QuizDBRepository) Create(ctx context.Context, quiz domain.Quiz) error {
+func (r *QuizDBRepository) Create(ctx context.Context, quiz *domain.Quiz) error {
 
 	err := r.q.CreateOrReplaceQuiz(ctx, sqlc.CreateOrReplaceQuizParams{
 		Sha1:     quiz.Sha1,
@@ -188,4 +182,25 @@ func (r *QuizDBRepository) ActivateOnlyVersion(ctx context.Context, filename str
 	}
 
 	return nil
+}
+
+func (r *QuizDBRepository) toQuiz(entity sqlc.Quiz) *domain.Quiz {
+	return &domain.Quiz{
+		Sha1:      entity.Sha1,
+		Filename:  entity.Filename,
+		Name:      entity.Name,
+		Version:   int(entity.Version),
+		Active:    intToBool(entity.Active),
+		CreatedAt: entity.CreatedAt,
+	}
+}
+
+func (r *QuizDBRepository) toQuizArray(entities []sqlc.Quiz) []*domain.Quiz {
+	domains := make([]*domain.Quiz, len(entities))
+
+	for i, entity := range entities {
+		domains[i] = r.toQuiz(entity)
+	}
+
+	return domains
 }

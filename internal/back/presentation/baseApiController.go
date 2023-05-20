@@ -30,10 +30,11 @@ const apiPort = ":8080"
 
 type ApiController struct {
 	quizService *domain.QuizService
+	authService *domain.AuthService
 }
 
-func NewApiController(s *domain.QuizService) ApiController {
-	return ApiController{quizService: s}
+func NewApiController(quizService *domain.QuizService, authService *domain.AuthService) ApiController {
+	return ApiController{quizService: quizService, authService: authService}
 }
 
 func (c *ApiController) Serve() {
@@ -41,6 +42,7 @@ func (c *ApiController) Serve() {
 	gin.SetMode(gin.ReleaseMode)
 
 	router := gin.Default()
+	router.Use(injectTokenIfPresent)
 
 	serveStatic(router)
 	addCommonMiddlewares(router)
@@ -48,14 +50,16 @@ func (c *ApiController) Serve() {
 	public := router.Group("/api/v1")
 	private := router.Group("/api/v1")
 
-	addJWTMiddlewares(private)
+	private.Use(validateAuthHeaderAndGetUser(c.authService))
 
 	//private.GET("/daemon", c.daemonList)
 	//private.GET("/daemon/:id", c.daemonById)
 	//private.GET("/daemon/:id/media", c.mediaList)
 
-	public.GET("/quiz", c.quizList)
-	public.GET("/quiz/:sha1", c.quizBySha1)
+	public.POST("/register", c.register)
+
+	private.GET("/quiz", c.quizList)
+	private.GET("/quiz/:sha1", c.quizBySha1)
 
 	//mediaGroup.GET("/daemon/:id/media/:hash", c.contentByHash)
 	//mediaGroup.GET("/daemon/:id/thumbnail/:hash", c.thumbnailByHash)

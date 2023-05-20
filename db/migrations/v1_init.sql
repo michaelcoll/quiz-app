@@ -5,7 +5,7 @@ CREATE TABLE quiz
     filename   TEXT      NOT NULL,
     version    INTEGER   NOT NULL DEFAULT 1,
     active     INTEGER   NOT NULL DEFAULT 1,
-    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT filename_fk FOREIGN KEY (filename) REFERENCES quiz (filename),
     CONSTRAINT quiz_version_unique UNIQUE (filename, version)
@@ -19,7 +19,7 @@ CREATE TABLE quiz_question
 
 CREATE TABLE quiz_question_quiz
 (
-    quiz_sha1    TEXT NOT NULL,
+    quiz_sha1     TEXT NOT NULL,
     question_sha1 TEXT NOT NULL,
 
     CONSTRAINT pk PRIMARY KEY (quiz_sha1, question_sha1),

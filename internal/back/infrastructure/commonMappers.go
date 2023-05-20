@@ -16,32 +16,6 @@
 
 package infrastructure
 
-import (
-	"github.com/michaelcoll/quiz-app/internal/back/domain"
-	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/sqlc"
-)
-
-func toDomain(entity sqlc.Quiz) domain.Quiz {
-	return domain.Quiz{
-		Sha1:      entity.Sha1,
-		Filename:  entity.Filename,
-		Name:      entity.Name,
-		Version:   int(entity.Version),
-		Active:    intToBool(entity.Active),
-		CreatedAt: entity.CreatedAt,
-	}
-}
-
-func toDomainArray(entities []sqlc.Quiz) []domain.Quiz {
-	domains := make([]domain.Quiz, len(entities))
-
-	for i, entity := range entities {
-		domains[i] = toDomain(entity)
-	}
-
-	return domains
-}
-
 func intToBool(value int64) bool {
 	if value == 1 {
 		return true

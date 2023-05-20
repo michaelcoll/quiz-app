@@ -23,6 +23,7 @@ import (
 	"github.com/go-git/go-billy/v5/memfs"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/storage/memory"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -53,9 +54,12 @@ func Test_readFileContent(t *testing.T) {
 
 func TestScanGitRepo(t *testing.T) {
 
-	s := New(nil)
+	s := NewQuizService(nil)
 
-	quizzes, err := s.ScanGitRepo("../../../.", "")
+	viper.Set("repository-url", "../../../.")
+	viper.Set("token", "")
+
+	quizzes, err := s.ScanGitRepo()
 	if err != nil {
 		assert.Fail(t, "Can't scan repo", "%v", err)
 	}

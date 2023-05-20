@@ -29,7 +29,7 @@ func TestParse(t *testing.T) {
 		assert.Failf(t, "Fail to read quiz.md file", "%v", err)
 	}
 
-	s := New(nil)
+	s := NewQuizService(nil)
 
 	actual, err := s.Parse("quiz.md", string(body))
 	if err != nil {

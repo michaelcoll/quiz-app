@@ -14,33 +14,9 @@
  * limitations under the License.
  */
 
-package presentation
+package domain
 
-import "fmt"
-
-type HttpStatusError struct {
-	status  int
-	message string
-}
-
-func (e *HttpStatusError) HTTPStatus() int {
-	return e.status
-}
-
-func (e *HttpStatusError) Error() string {
-	return e.message
-}
-
-func Errorf(status int, format string, a ...interface{}) error {
-	return &HttpStatusError{status, fmt.Sprintf(format, a...)}
-}
-
-func GetCodeFromError(err error) (int, bool) {
-	if se, ok := err.(interface {
-		HTTPStatus() int
-	}); ok {
-		return se.HTTPStatus(), true
-	}
-
-	return 0, false
-}
+const (
+	sub   = "103275817862301231842"
+	email = "cordell.walker@texas-ranger.com"
+)

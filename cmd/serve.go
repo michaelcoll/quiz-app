@@ -20,10 +20,9 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/fatih/color"
+	"github.com/spf13/viper"
 
 	"github.com/spf13/cobra"
 
@@ -36,36 +35,33 @@ var serveCmd = &cobra.Command{
 	Short: "",
 	Long: `
 Starts the server`,
-	Run: func(cmd *cobra.Command, args []string) {
-		Print(version, Serve)
-
-		module := back.New()
-
-		// Handles the CTRL+C properly
-		c := make(chan os.Signal)
-		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-
-		go func() {
-			<-c
-			module.GetService().Close()
-			os.Exit(0)
-		}()
-
-		err := module.GetService().Sync(context.Background(), repoUrl, token, verbose)
-		if err != nil {
-			fmt.Printf("%s Can't sync quizzes (%v)\n", color.RedString("✗"), err)
-			os.Exit(-1)
-		}
-		module.GetPhotoController().Serve()
-	},
+	Run: serve,
 }
 
-var repoUrl string
-var token string
+func serve(_ *cobra.Command, _ []string) {
+	Print(version, Serve)
+
+	module := back.New()
+
+	err := module.GetService().Sync(context.Background())
+	if err != nil {
+		fmt.Printf("%s Can't sync quizzes (%v)\n", color.RedString("✗"), err)
+		os.Exit(-1)
+	}
+	module.GetPhotoController().Serve()
+}
 
 func init() {
-	serveCmd.Flags().StringVarP(&repoUrl, "repository-url", "r", "https://github.com/michaelcoll/quiz-app.git", "The url of the repository containing the quizzes")
-	serveCmd.Flags().StringVarP(&token, "token", "t", "", "The P.A.T. used to access the repository")
+	serveCmd.Flags().StringP("repository-url", "r", "", "The url of the repository containing the quizzes")
+	serveCmd.Flags().StringP("token", "t", "", "The P.A.T. used to access the repository")
+	serveCmd.Flags().String("auth0-audience", "", "The Auth0 audience used in the clientId")
+	serveCmd.Flags().String("restrict-email-domain", "", "New users will have to be in this domain to be created")
+
+	_ = viper.BindPFlag("repository-url", serveCmd.Flags().Lookup("repository-url"))
+	_ = viper.BindPFlag("token", serveCmd.Flags().Lookup("token"))
+	_ = viper.BindPFlag("auth0-audience", serveCmd.Flags().Lookup("auth0-audience"))
+
+	viper.SetDefault("repository-url", "https://github.com/michaelcoll/quiz-app.git")
 
 	rootCmd.AddCommand(serveCmd)
 }

@@ -43,7 +43,7 @@ type QuizQuestionAnswer struct {
 	Content string `json:"content"`
 }
 
-func fromDomain(domain domain.Quiz) Quiz {
+func fromDomain(domain *domain.Quiz) *Quiz {
 	quiz := Quiz{
 		Sha1:      domain.Sha1,
 		Filename:  domain.Filename,
@@ -75,11 +75,11 @@ func fromDomain(domain domain.Quiz) Quiz {
 		i++
 	}
 
-	return quiz
+	return &quiz
 }
 
-func fromDomains(domains []domain.Quiz) []Quiz {
-	dtos := make([]Quiz, len(domains))
+func fromDomains(domains []*domain.Quiz) []*Quiz {
+	dtos := make([]*Quiz, len(domains))
 
 	for i, d := range domains {
 		dtos[i] = fromDomain(d)

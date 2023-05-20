@@ -17,29 +17,22 @@
 package presentation
 
 import (
-	"context"
-	"net/url"
+	"net/http"
+	"strings"
 	"time"
 
-	jwtmiddleware "github.com/auth0/go-jwt-middleware/v2"
-	"github.com/auth0/go-jwt-middleware/v2/jwks"
-	"github.com/auth0/go-jwt-middleware/v2/validator"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
-	adapter "github.com/gwatts/gin-adapter"
-)
 
-const (
-	auth0IssuerUrl = "https://dev-f6i8nn7snfrfpiop.eu.auth0.com/"
-	auth0Audience  = "https://gallery-api/"
+	"github.com/michaelcoll/quiz-app/internal/back/domain"
 )
 
 func addCommonMiddlewares(group *gin.Engine) {
 	// CORS middleware
 	group.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:4040"},
-		AllowMethods:     []string{"GET"},
+		AllowMethods:     []string{"GET", "POST"},
 		AllowHeaders:     []string{"Content-Type", "Content-Length", "Accept-Encoding", "Authorization", "Cache-Control", "Range"},
 		ExposeHeaders:    []string{"Content-Length", "Content-Range"},
 		AllowCredentials: true,
@@ -53,47 +46,41 @@ func addCommonMiddlewares(group *gin.Engine) {
 	group.Use(gin.Recovery())
 }
 
-func addJWTMiddlewares(group *gin.RouterGroup) {
-	issuerURL, _ := url.Parse(auth0IssuerUrl)
+func validateAuthHeaderAndGetUser(s *domain.AuthService) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		token, err := getBearerToken(ctx)
+		if err != nil {
+			handleError(ctx, err)
+			return
+		}
 
-	provider := jwks.NewCachingProvider(issuerURL, 5*time.Minute)
+		user, err := s.ValidateTokenAndGetUser(ctx.Request.Context(), token)
+		if err != nil {
+			handleError(ctx, err)
+			return
+		}
 
-	jwtValidator, _ := validator.New(provider.KeyFunc,
-		validator.RS256,
-		issuerURL.String(),
-		[]string{auth0Audience},
-		validator.WithCustomClaims(
-			func() validator.CustomClaims {
-				return &EmailCustomClaims{}
-			},
-		),
-	)
-
-	jwtMiddleware := jwtmiddleware.New(jwtValidator.ValidateToken,
-		jwtmiddleware.WithTokenExtractor(
-			jwtmiddleware.MultiTokenExtractor(
-				jwtmiddleware.AuthHeaderTokenExtractor,
-				jwtmiddleware.ParameterTokenExtractor("access-token"),
-			)),
-		jwtmiddleware.WithValidateOnOptions(false))
-	group.Use(adapter.Wrap(jwtMiddleware.CheckJWT))
+		ctx.Set("user", user)
+	}
 }
 
-// EmailCustomClaims contains custom data we want from the token.
-type EmailCustomClaims struct {
-	Email string `json:"email"`
+func injectTokenIfPresent(ctx *gin.Context) {
+	if token, err := getBearerToken(ctx); err != nil {
+		ctx.Set("token", token)
+	}
 }
 
-// Validate does nothing for this example, but we need
-// it to satisfy validator.CustomClaims interface.
-func (c EmailCustomClaims) Validate(_ context.Context) error {
-	return nil
-}
+func getBearerToken(ctx *gin.Context) (string, error) {
+	authHeader := ctx.GetHeader("Authorization")
 
-//func extractEmailFromToken(ctx *gin.Context) (string, error) {
-//	if claims, ok := ctx.Request.Context().Value(jwtmiddleware.ContextKey{}).(*validator.ValidatedClaims); ok {
-//		return claims.CustomClaims.(*EmailCustomClaims).Email, nil
-//	} else {
-//		return "", Errorf(http.StatusUnauthorized, "email claim not found")
-//	}
-//}
+	if authHeader == "" {
+		return "", Errorf(http.StatusUnauthorized, "no Authorization header")
+	}
+
+	token := strings.TrimPrefix(authHeader, "Bearer ")
+	if token == authHeader {
+		return "", Errorf(http.StatusUnauthorized, "authorization header is not a Bearer type")
+	}
+
+	return token, nil
+}

@@ -14,32 +14,42 @@
  * limitations under the License.
  */
 
-package presentation
+package domain
 
 import "fmt"
 
-type HttpStatusError struct {
-	status  int
+type ErrorCode int8
+
+const (
+	UnexpectedError = 0
+	UnAuthorized    = 1
+	InvalidArgument = 2
+	NotFound        = 3
+)
+
+type CodeError struct {
+	code    ErrorCode
 	message string
 }
 
-func (e *HttpStatusError) HTTPStatus() int {
-	return e.status
+func (e *CodeError) Code() ErrorCode {
+	return e.code
 }
 
-func (e *HttpStatusError) Error() string {
+func (e *CodeError) Error() string {
 	return e.message
 }
 
-func Errorf(status int, format string, a ...interface{}) error {
-	return &HttpStatusError{status, fmt.Sprintf(format, a...)}
+func Errorf(code ErrorCode, format string, a ...interface{}) error {
+	return &CodeError{code, fmt.Sprintf(format, a...)}
 }
 
-func GetCodeFromError(err error) (int, bool) {
+func GetCodeFromError(err error) (ErrorCode, bool) {
 	if se, ok := err.(interface {
-		HTTPStatus() int
+		Code() ErrorCode
+		Error() string
 	}); ok {
-		return se.HTTPStatus(), true
+		return se.Code(), true
 	}
 
 	return 0, false

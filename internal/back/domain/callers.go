@@ -16,20 +16,9 @@
 
 package domain
 
-import (
-	"context"
-)
+import "context"
 
-type QuizRepository interface {
-	Connect()
-	Close()
-
-	FindBySha1(ctx context.Context, sha1 string) (Quiz, error)
-	FindFullBySha1(ctx context.Context, sha1 string) (Quiz, error)
-	FindLatestVersionByFilename(ctx context.Context, filename string) (Quiz, error)
-	FindAllActive(ctx context.Context, limit uint16, offset uint16) ([]Quiz, error)
-	CountAllActive(ctx context.Context) (uint32, error)
-	Create(ctx context.Context, quiz Quiz) error
-	Update(ctx context.Context, quiz Quiz) error
-	ActivateOnlyVersion(ctx context.Context, filename string, version int) error
+//go:generate mockery --name AccessTokenCaller
+type AccessTokenCaller interface {
+	Get(ctx context.Context, token string) (*AccessToken, error)
 }
