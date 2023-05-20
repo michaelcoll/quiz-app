@@ -16,31 +16,9 @@
 
 package presentation
 
-import "fmt"
-
-type HttpStatusError struct {
-	status  int
-	message string
-}
-
-func (e *HttpStatusError) HTTPStatus() int {
-	return e.status
-}
-
-func (e *HttpStatusError) Error() string {
-	return e.message
-}
-
-func Errorf(status int, format string, a ...interface{}) error {
-	return &HttpStatusError{status, fmt.Sprintf(format, a...)}
-}
-
-func GetCodeFromError(err error) (int, bool) {
-	if se, ok := err.(interface {
-		HTTPStatus() int
-	}); ok {
-		return se.HTTPStatus(), true
-	}
-
-	return 0, false
+type RegisterRequestBody struct {
+	Id        string `json:"id" binding:"required"`
+	Email     string `json:"email" binding:"required"`
+	Firstname string `json:"firstname" binding:"required"`
+	Lastname  string `json:"lastname" binding:"required"`
 }

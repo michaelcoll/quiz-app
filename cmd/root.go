@@ -18,8 +18,10 @@ package cmd
 
 import (
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -32,8 +34,6 @@ The quiz wep app.`,
 
 var version = "v0.0.0"
 
-var verbose bool
-
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
@@ -45,6 +45,16 @@ func Execute() {
 
 func init() {
 	rootCmd.Version = version
+	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "Verbose display")
+	rootCmd.PersistentFlags().Bool("verbose", false, "Verbose display")
+
+	_ = viper.BindPFlag("verbose", serveCmd.Flags().Lookup("verbose"))
+}
+
+func initConfig() {
+	viper.SetEnvPrefix("quiz")
+	viper.AutomaticEnv() // read in environment variables that match
+	replacer := strings.NewReplacer("-", "_")
+	viper.SetEnvKeyReplacer(replacer)
 }

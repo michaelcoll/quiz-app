@@ -27,14 +27,14 @@ func (q *Queries) ActivateOnlyVersion(ctx context.Context, arg ActivateOnlyVersi
 	return err
 }
 
-const countAllActive = `-- name: CountAllActive :one
+const countAllActiveQuiz = `-- name: CountAllActiveQuiz :one
 SELECT count(1)
 FROM quiz
 WHERE active = 1
 `
 
-func (q *Queries) CountAllActive(ctx context.Context) (int64, error) {
-	row := q.db.QueryRowContext(ctx, countAllActive)
+func (q *Queries) CountAllActiveQuiz(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countAllActiveQuiz)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -93,20 +93,20 @@ func (q *Queries) CreateOrReplaceQuiz(ctx context.Context, arg CreateOrReplaceQu
 	return err
 }
 
-const findAllActive = `-- name: FindAllActive :many
+const findAllActiveQuiz = `-- name: FindAllActiveQuiz :many
 SELECT sha1, name, filename, version, active, created_at
 FROM quiz
 WHERE active = 1
 LIMIT ? OFFSET ?
 `
 
-type FindAllActiveParams struct {
+type FindAllActiveQuizParams struct {
 	Limit  int64 `db:"limit"`
 	Offset int64 `db:"offset"`
 }
 
-func (q *Queries) FindAllActive(ctx context.Context, arg FindAllActiveParams) ([]Quiz, error) {
-	rows, err := q.db.QueryContext(ctx, findAllActive, arg.Limit, arg.Offset)
+func (q *Queries) FindAllActiveQuiz(ctx context.Context, arg FindAllActiveQuizParams) ([]Quiz, error) {
+	rows, err := q.db.QueryContext(ctx, findAllActiveQuiz, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -135,14 +135,16 @@ func (q *Queries) FindAllActive(ctx context.Context, arg FindAllActiveParams) ([
 	return items, nil
 }
 
-const findBySha1 = `-- name: FindBySha1 :one
+const findQuizByFilenameAndLatestVersion = `-- name: FindQuizByFilenameAndLatestVersion :one
 SELECT sha1, name, filename, version, active, created_at
 FROM quiz
-WHERE sha1 = ?
+WHERE filename = ?
+ORDER BY version DESC
+LIMIT 1
 `
 
-func (q *Queries) FindBySha1(ctx context.Context, sha1 string) (Quiz, error) {
-	row := q.db.QueryRowContext(ctx, findBySha1, sha1)
+func (q *Queries) FindQuizByFilenameAndLatestVersion(ctx context.Context, filename string) (Quiz, error) {
+	row := q.db.QueryRowContext(ctx, findQuizByFilenameAndLatestVersion, filename)
 	var i Quiz
 	err := row.Scan(
 		&i.Sha1,
@@ -155,7 +157,27 @@ func (q *Queries) FindBySha1(ctx context.Context, sha1 string) (Quiz, error) {
 	return i, err
 }
 
-const findFullBySha1 = `-- name: FindFullBySha1 :many
+const findQuizBySha1 = `-- name: FindQuizBySha1 :one
+SELECT sha1, name, filename, version, active, created_at
+FROM quiz
+WHERE sha1 = ?
+`
+
+func (q *Queries) FindQuizBySha1(ctx context.Context, sha1 string) (Quiz, error) {
+	row := q.db.QueryRowContext(ctx, findQuizBySha1, sha1)
+	var i Quiz
+	err := row.Scan(
+		&i.Sha1,
+		&i.Name,
+		&i.Filename,
+		&i.Version,
+		&i.Active,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const findQuizFullBySha1 = `-- name: FindQuizFullBySha1 :many
 SELECT
     q.sha1 as quiz_sha1,
     q.filename as quiz_filename,
@@ -176,7 +198,7 @@ FROM quiz q
 WHERE q.sha1 = ?
 `
 
-type FindFullBySha1Row struct {
+type FindQuizFullBySha1Row struct {
 	QuizSha1        string    `db:"quiz_sha1"`
 	QuizFilename    string    `db:"quiz_filename"`
 	QuizName        string    `db:"quiz_name"`
@@ -190,15 +212,15 @@ type FindFullBySha1Row struct {
 	AnswerValid     int64     `db:"answer_valid"`
 }
 
-func (q *Queries) FindFullBySha1(ctx context.Context, sha1 string) ([]FindFullBySha1Row, error) {
-	rows, err := q.db.QueryContext(ctx, findFullBySha1, sha1)
+func (q *Queries) FindQuizFullBySha1(ctx context.Context, sha1 string) ([]FindQuizFullBySha1Row, error) {
+	rows, err := q.db.QueryContext(ctx, findQuizFullBySha1, sha1)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []FindFullBySha1Row{}
+	items := []FindQuizFullBySha1Row{}
 	for rows.Next() {
-		var i FindFullBySha1Row
+		var i FindQuizFullBySha1Row
 		if err := rows.Scan(
 			&i.QuizSha1,
 			&i.QuizFilename,
@@ -223,28 +245,6 @@ func (q *Queries) FindFullBySha1(ctx context.Context, sha1 string) ([]FindFullBy
 		return nil, err
 	}
 	return items, nil
-}
-
-const findLatestVersionByFilename = `-- name: FindLatestVersionByFilename :one
-SELECT sha1, name, filename, version, active, created_at
-FROM quiz
-WHERE filename = ?
-ORDER BY version DESC
-LIMIT 1
-`
-
-func (q *Queries) FindLatestVersionByFilename(ctx context.Context, filename string) (Quiz, error) {
-	row := q.db.QueryRowContext(ctx, findLatestVersionByFilename, filename)
-	var i Quiz
-	err := row.Scan(
-		&i.Sha1,
-		&i.Name,
-		&i.Filename,
-		&i.Version,
-		&i.Active,
-		&i.CreatedAt,
-	)
-	return i, err
 }
 
 const linkAnswer = `-- name: LinkAnswer :exec

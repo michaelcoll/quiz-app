@@ -25,19 +25,19 @@ import (
 )
 
 // Parse parse the content of a quiz file
-func (s *QuizService) Parse(filename string, content string) (Quiz, error) {
+func (s *QuizService) Parse(filename string, content string) (*Quiz, error) {
 
 	name, err := extractQuizName(content)
 	if err != nil {
-		return Quiz{}, err
+		return nil, err
 	}
 
 	questions, err := extractQuestions(content)
 	if err != nil {
-		return Quiz{}, err
+		return nil, err
 	}
 
-	return Quiz{
+	return &Quiz{
 		Sha1:      getSha1(content),
 		Name:      name,
 		Filename:  filename,

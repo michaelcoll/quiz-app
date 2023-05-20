@@ -12,18 +12,15 @@ jobs:
 
       - uses: actions/checkout@v3
 
-      - name: Set up Go
-        uses: actions/setup-go@v4
+      - uses: actions/setup-go@v4
         with:
           go-version: 'stable'
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 18.x
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      - uses: docker/setup-buildx-action@v2
 
       - name: Prepare Vue App
         run: |
@@ -48,3 +45,18 @@ jobs:
 
       - name: Build docker image
         run: make build-docker
+
+  auto_merge:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.user.login == 'dependabot[bot]'
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - uses: fastify/github-action-merge-dependabot@v3.6.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

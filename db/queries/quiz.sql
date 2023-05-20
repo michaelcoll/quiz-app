@@ -1,15 +1,3 @@
--- name: FindBySha1 :one
-SELECT *
-FROM quiz
-WHERE sha1 = ?;
-
--- name: FindLatestVersionByFilename :one
-SELECT *
-FROM quiz
-WHERE filename = ?
-ORDER BY version DESC
-LIMIT 1;
-
 -- name: CreateOrReplaceQuiz :exec
 REPLACE INTO quiz (sha1, name, filename, version)
 VALUES (?, ?, ?, ?);
@@ -36,7 +24,12 @@ SET active = 0
 WHERE filename = ?
 AND version <> ?;
 
--- name: FindFullBySha1 :many
+-- name: FindQuizBySha1 :one
+SELECT *
+FROM quiz
+WHERE sha1 = ?;
+
+-- name: FindQuizFullBySha1 :many
 SELECT
     q.sha1 as quiz_sha1,
     q.filename as quiz_filename,
@@ -56,13 +49,20 @@ FROM quiz q
          JOIN quiz_answer qa ON qa.sha1 = qqa.answer_sha1
 WHERE q.sha1 = ?;
 
--- name: FindAllActive :many
+-- name: FindQuizByFilenameAndLatestVersion :one
+SELECT *
+FROM quiz
+WHERE filename = ?
+ORDER BY version DESC
+LIMIT 1;
+
+-- name: FindAllActiveQuiz :many
 SELECT *
 FROM quiz
 WHERE active = 1
 LIMIT ? OFFSET ?;
 
--- name: CountAllActive :one
+-- name: CountAllActiveQuiz :one
 SELECT count(1)
 FROM quiz
 WHERE active = 1;

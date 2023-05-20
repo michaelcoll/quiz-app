@@ -5,6 +5,7 @@
 package sqlc
 
 import (
+	"database/sql"
 	"time"
 )
 
@@ -36,4 +37,29 @@ type QuizQuestionAnswer struct {
 type QuizQuestionQuiz struct {
 	QuizSha1     string `db:"quiz_sha1"`
 	QuestionSha1 string `db:"question_sha1"`
+}
+
+type Role struct {
+	ID   int64  `db:"id"`
+	Name string `db:"name"`
+}
+
+type Token struct {
+	OpaqueToken string    `db:"opaque_token"`
+	UserID      string    `db:"user_id"`
+	Expires     time.Time `db:"expires"`
+	Aud         string    `db:"aud"`
+}
+
+type User struct {
+	ID        string `db:"id"`
+	Email     string `db:"email"`
+	Firstname string `db:"firstname"`
+	Lastname  string `db:"lastname"`
+	Active    int64  `db:"active"`
+}
+
+type UserRole struct {
+	UserID sql.NullString `db:"user_id"`
+	RoleID sql.NullInt64  `db:"role_id"`
 }

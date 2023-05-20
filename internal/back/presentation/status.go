@@ -20,16 +20,32 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/michaelcoll/quiz-app/internal/back/domain"
 )
 
-func handleError(ctx *gin.Context, err error) {
-	if st, ok := fromError(err); ok {
-		if st == http.StatusInternalServerError {
-			panic(err)
-		}
+var statusMapping = map[domain.ErrorCode]int{
+	domain.NotFound:        http.StatusNotFound,
+	domain.InvalidArgument: http.StatusBadRequest,
+	domain.UnAuthorized:    http.StatusUnauthorized,
+	domain.UnexpectedError: http.StatusInternalServerError,
+}
 
-		ctx.JSON(st, gin.H{"message": err.Error()})
-	} else {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+func handleError(ctx *gin.Context, err error) {
+	status := http.StatusInternalServerError
+	if code, match := domain.GetCodeFromError(err); match {
+		if st, match := statusMapping[code]; match {
+			status = st
+		}
 	}
+
+	if st, match := GetCodeFromError(err); match {
+		status = st
+	}
+
+	handleHttpError(ctx, status, err.Error())
+}
+
+func handleHttpError(ctx *gin.Context, st int, message string) {
+	ctx.AbortWithStatusJSON(st, gin.H{"message": message})
 }

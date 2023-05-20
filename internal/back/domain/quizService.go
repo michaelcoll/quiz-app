@@ -22,30 +22,27 @@ import (
 	"strconv"
 
 	"github.com/fatih/color"
+	"github.com/spf13/viper"
 )
 
 type QuizService struct {
 	r QuizRepository
 }
 
-func New(r QuizRepository) QuizService {
+func NewQuizService(r QuizRepository) QuizService {
 	return QuizService{r: r}
 }
 
-func (s *QuizService) Close() {
-	s.r.Close()
-}
-
-func (s *QuizService) FindFullBySha1(ctx context.Context, sha1 string) (Quiz, error) {
+func (s *QuizService) FindFullBySha1(ctx context.Context, sha1 string) (*Quiz, error) {
 	quiz, err := s.r.FindFullBySha1(ctx, sha1)
 	if err != nil {
-		return Quiz{}, err
+		return nil, err
 	}
 
 	return quiz, nil
 }
 
-func (s *QuizService) FindAllActive(ctx context.Context, limit uint16, offset uint16) ([]Quiz, uint32, error) {
+func (s *QuizService) FindAllActive(ctx context.Context, limit uint16, offset uint16) ([]*Quiz, uint32, error) {
 	quizzes, err := s.r.FindAllActive(ctx, limit, offset)
 	if err != nil {
 		return nil, 0, err
@@ -59,16 +56,18 @@ func (s *QuizService) FindAllActive(ctx context.Context, limit uint16, offset ui
 	return quizzes, count, nil
 }
 
-func (s *QuizService) Sync(ctx context.Context, repoUrl string, token string, verbose bool) error {
+func (s *QuizService) Sync(ctx context.Context) error {
 
-	quizzes, err := s.ScanGitRepo(repoUrl, token)
+	verbose := viper.GetBool("verbose")
+
+	quizzes, err := s.ScanGitRepo()
 	if err != nil {
 		return err
 	}
 
 	var syncStats SyncStats
 	for _, quiz := range quizzes {
-		stats, err := s.SaveQuiz(ctx, quiz, verbose)
+		stats, err := s.SaveQuiz(ctx, quiz)
 		if err != nil {
 			return err
 		}
@@ -92,10 +91,15 @@ func (s *QuizService) Sync(ctx context.Context, repoUrl string, token string, ve
 	return nil
 }
 
-func (s *QuizService) SaveQuiz(ctx context.Context, quiz Quiz, verbose bool) (SyncStats, error) {
+func (s *QuizService) SaveQuiz(ctx context.Context, quiz *Quiz) (*SyncStats, error) {
+
+	verbose := viper.GetBool("verbose")
 
 	latestQuiz, err := s.r.FindLatestVersionByFilename(ctx, quiz.Filename)
 	if err != nil {
+		return nil, err
+	}
+	if latestQuiz == nil {
 		if verbose {
 			fmt.Printf("%s Creating quiz %s\n",
 				color.GreenString("✓"),
@@ -104,10 +108,10 @@ func (s *QuizService) SaveQuiz(ctx context.Context, quiz Quiz, verbose bool) (Sy
 
 		err = s.r.Create(ctx, quiz)
 		if err != nil {
-			return SyncStats{}, err
+			return nil, err
 		}
 
-		return SyncStats{
+		return &SyncStats{
 			Updated: 0,
 			Created: 1,
 		}, nil
@@ -122,27 +126,27 @@ func (s *QuizService) SaveQuiz(ctx context.Context, quiz Quiz, verbose bool) (Sy
 
 		err = s.r.Create(ctx, quiz)
 		if err != nil {
-			return SyncStats{}, err
+			return nil, err
 		}
 
 		err := s.r.ActivateOnlyVersion(ctx, quiz.Filename, quiz.Version)
 		if err != nil {
-			return SyncStats{}, err
+			return nil, err
 		}
 
-		return SyncStats{
+		return &SyncStats{
 			Updated: 1,
 			Created: 0,
 		}, nil
 	} else {
-		return SyncStats{
+		return &SyncStats{
 			Updated: 0,
 			Created: 0,
 		}, nil
 	}
 }
 
-func addStats(stat1 SyncStats, stat2 SyncStats) SyncStats {
+func addStats(stat1 SyncStats, stat2 *SyncStats) SyncStats {
 	return SyncStats{
 		Created: stat1.Created + stat2.Created,
 		Updated: stat1.Updated + stat2.Updated,

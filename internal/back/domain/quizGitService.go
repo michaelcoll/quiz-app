@@ -26,11 +26,15 @@ import (
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/go-git/go-git/v5/storage/memory"
+	"github.com/spf13/viper"
 )
 
-func (s *QuizService) ScanGitRepo(url string, token string) ([]Quiz, error) {
+func (s *QuizService) ScanGitRepo() ([]*Quiz, error) {
 	storage := memory.NewStorage()
 	fs := memfs.New()
+
+	url := viper.GetString("repository-url")
+	token := viper.GetString("token")
 
 	var option git.CloneOptions
 	if len(token) == 0 {
@@ -57,7 +61,7 @@ func (s *QuizService) ScanGitRepo(url string, token string) ([]Quiz, error) {
 		return nil, err
 	}
 
-	var quizzes []Quiz
+	var quizzes []*Quiz
 
 	r := regexp.MustCompile(`.*\.quiz\.md`)
 	for _, fileInfo := range dir {
