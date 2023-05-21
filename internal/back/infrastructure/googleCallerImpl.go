@@ -106,7 +106,7 @@ func (c *GoogleAccessTokenCaller) toAccessToken(res *successResponse, token stri
 		return nil, domain.Errorf(domain.UnexpectedError, "can't parse token exp %s (%v)", res.Exp, err)
 	}
 
-	expIn, err := strconv.ParseInt(res.ExpiresIn, 10, 64)
+	expIn, err := strconv.ParseInt(res.ExpiresIn, 10, 16)
 	if err != nil {
 		return nil, domain.Errorf(domain.UnexpectedError, "can't parse token expires_in %s (%v)", res.Exp, err)
 	}
