@@ -23,7 +23,7 @@ build-web:
 	&& pnpm run build
 
 build-docker:
-	docker build . -t web --pull --build-arg VERSION=v0.0.1
+	docker build . -t michaelcoll/quiz-app:latest --pull --build-arg VERSION=v0.0.1
 
 .PHONY: test
 test:
@@ -43,7 +43,9 @@ vue-lint:
 run-docker:
 	docker run -ti --rm -p 8080:8080 web:latest
 
-.PHONY: sqlc
-sqlc:
-	sqlc generate \
+.PHONY: generate
+generate:
+	go generate internal/back/domain/repositories.go \
+		&& go generate internal/back/domain/callers.go \
+		&& sqlc generate \
 		&& sqlc-addon generate --quiet

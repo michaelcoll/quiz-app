@@ -24,7 +24,7 @@ type Quiz struct {
 	Filename  string
 	Name      string
 	Version   int
-	CreatedAt time.Time
+	CreatedAt string
 	Active    bool
 	Questions map[string]QuizQuestion
 }
@@ -62,7 +62,7 @@ type User struct {
 	Firstname string
 	Lastname  string
 	Active    bool
-	Roles     []Role
+	Role      Role
 }
 
 type TokenProvenance int8
@@ -76,6 +76,7 @@ type AccessToken struct {
 	Aud         string
 	Sub         string
 	Exp         time.Time
+	ExpiresIn   int
 	Email       string
 	Provenance  TokenProvenance
 	OpaqueToken string

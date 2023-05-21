@@ -58,6 +58,7 @@ func TestAuthDBRepository_FindUserById(t *testing.T) {
 		Email:     email,
 		Firstname: firstName,
 		Lastname:  lastName,
+		Role:      domain.Admin,
 	})
 	if err != nil {
 		assert.Failf(t, "Fail to create user", "%v", err)
@@ -73,12 +74,6 @@ func TestAuthDBRepository_FindUserById(t *testing.T) {
 	assert.Equal(t, firstName, user.Firstname)
 	assert.Equal(t, lastName, user.Lastname)
 	assert.True(t, user.Active)
-	assert.Len(t, user.Roles, 0)
-
-	err = r.AddRoleToUser(context.Background(), sub, domain.Admin)
-	if err != nil {
-		assert.Failf(t, "Fail to add role", "%v", err)
-	}
 
 	user, err = r.FindUserById(context.Background(), sub)
 	if err != nil {
@@ -90,6 +85,5 @@ func TestAuthDBRepository_FindUserById(t *testing.T) {
 	assert.Equal(t, firstName, user.Firstname)
 	assert.Equal(t, lastName, user.Lastname)
 	assert.True(t, user.Active)
-	assert.Len(t, user.Roles, 1)
-	assert.Equal(t, user.Roles[0], domain.Admin)
+	assert.Equal(t, user.Role, domain.Admin)
 }

@@ -39,6 +39,7 @@ type successResponse struct {
 	Aud           string `json:"aud"`
 	Sub           string `json:"sub"`
 	Exp           string `json:"exp"`
+	ExpiresIn     string `json:"expires_in"`
 	Email         string `json:"email"`
 	EmailVerified string `json:"email_verified"`
 }
@@ -102,13 +103,19 @@ func (c *GoogleAccessTokenCaller) toAccessToken(res *successResponse, token stri
 
 	expUnix, err := strconv.ParseInt(res.Exp, 10, 64)
 	if err != nil {
-		return nil, domain.Errorf(domain.UnexpectedError, "can't parse expStr %s (%v)", res.Exp, err)
+		return nil, domain.Errorf(domain.UnexpectedError, "can't parse token exp %s (%v)", res.Exp, err)
+	}
+
+	expIn, err := strconv.ParseInt(res.ExpiresIn, 10, 64)
+	if err != nil {
+		return nil, domain.Errorf(domain.UnexpectedError, "can't parse token expires_in %s (%v)", res.Exp, err)
 	}
 
 	return &domain.AccessToken{
 		Aud:         res.Aud,
 		Sub:         res.Sub,
 		Exp:         time.Unix(expUnix, 0),
+		ExpiresIn:   int(expIn),
 		Email:       res.Email,
 		Provenance:  domain.Api,
 		OpaqueToken: token,

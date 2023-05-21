@@ -7,50 +7,11 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
-	"time"
 )
 
-const addRoleToUser = `-- name: AddRoleToUser :exec
-REPLACE INTO user_role (user_id, role_id)
-VALUES (?, ?)
-`
-
-type AddRoleToUserParams struct {
-	UserID sql.NullString `db:"user_id"`
-	RoleID sql.NullInt64  `db:"role_id"`
-}
-
-func (q *Queries) AddRoleToUser(ctx context.Context, arg AddRoleToUserParams) error {
-	_, err := q.db.ExecContext(ctx, addRoleToUser, arg.UserID, arg.RoleID)
-	return err
-}
-
-const createOrReplaceToken = `-- name: CreateOrReplaceToken :exec
-REPLACE INTO token (opaque_token, user_id, expires, aud)
-VALUES (?, ?, ?, ?)
-`
-
-type CreateOrReplaceTokenParams struct {
-	OpaqueToken string    `db:"opaque_token"`
-	UserID      string    `db:"user_id"`
-	Expires     time.Time `db:"expires"`
-	Aud         string    `db:"aud"`
-}
-
-func (q *Queries) CreateOrReplaceToken(ctx context.Context, arg CreateOrReplaceTokenParams) error {
-	_, err := q.db.ExecContext(ctx, createOrReplaceToken,
-		arg.OpaqueToken,
-		arg.UserID,
-		arg.Expires,
-		arg.Aud,
-	)
-	return err
-}
-
 const createOrReplaceUser = `-- name: CreateOrReplaceUser :exec
-REPLACE INTO user (id, email, firstname, lastname)
-VALUES (?, ?, ?, ?)
+REPLACE INTO user (id, email, firstname, lastname, role_id)
+VALUES (?, ?, ?, ?, ?)
 `
 
 type CreateOrReplaceUserParams struct {
@@ -58,6 +19,7 @@ type CreateOrReplaceUserParams struct {
 	Email     string `db:"email"`
 	Firstname string `db:"firstname"`
 	Lastname  string `db:"lastname"`
+	RoleID    int64  `db:"role_id"`
 }
 
 func (q *Queries) CreateOrReplaceUser(ctx context.Context, arg CreateOrReplaceUserParams) error {
@@ -66,61 +28,25 @@ func (q *Queries) CreateOrReplaceUser(ctx context.Context, arg CreateOrReplaceUs
 		arg.Email,
 		arg.Firstname,
 		arg.Lastname,
+		arg.RoleID,
 	)
 	return err
 }
 
-const findTokenByTokenStr = `-- name: FindTokenByTokenStr :one
-SELECT t.opaque_token, t.user_id, t.expires, t.aud, u.email
-FROM token t JOIN user u ON u.id = t.user_id
-WHERE opaque_token = ?
+const findAllUser = `-- name: FindAllUser :many
+SELECT id, email, firstname, lastname, active, role_id
+FROM user
 `
 
-type FindTokenByTokenStrRow struct {
-	OpaqueToken string    `db:"opaque_token"`
-	UserID      string    `db:"user_id"`
-	Expires     time.Time `db:"expires"`
-	Aud         string    `db:"aud"`
-	Email       string    `db:"email"`
-}
-
-func (q *Queries) FindTokenByTokenStr(ctx context.Context, opaqueToken string) (FindTokenByTokenStrRow, error) {
-	row := q.db.QueryRowContext(ctx, findTokenByTokenStr, opaqueToken)
-	var i FindTokenByTokenStrRow
-	err := row.Scan(
-		&i.OpaqueToken,
-		&i.UserID,
-		&i.Expires,
-		&i.Aud,
-		&i.Email,
-	)
-	return i, err
-}
-
-const findUserById = `-- name: FindUserById :many
-SELECT u.id, u.email, u.firstname, u.lastname, u.active, ur.role_id
-FROM user u LEFT JOIN user_role ur ON u.id = ur.user_id
-WHERE id = ?
-`
-
-type FindUserByIdRow struct {
-	ID        string        `db:"id"`
-	Email     string        `db:"email"`
-	Firstname string        `db:"firstname"`
-	Lastname  string        `db:"lastname"`
-	Active    int64         `db:"active"`
-	RoleID    sql.NullInt64 `db:"role_id"`
-}
-
-func (q *Queries) FindUserById(ctx context.Context, id string) ([]FindUserByIdRow, error) {
-	rows, err := q.db.QueryContext(ctx, findUserById, id)
+func (q *Queries) FindAllUser(ctx context.Context) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, findAllUser)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []FindUserByIdRow{}
+	items := []User{}
 	for rows.Next() {
-		var i FindUserByIdRow
+		var i User
 		if err := rows.Scan(
 			&i.ID,
 			&i.Email,
@@ -142,12 +68,54 @@ func (q *Queries) FindUserById(ctx context.Context, id string) ([]FindUserByIdRo
 	return items, nil
 }
 
-const removeAllRoleFromUser = `-- name: RemoveAllRoleFromUser :exec
-DELETE FROM user_role
-WHERE user_id = ?
+const findUserById = `-- name: FindUserById :one
+SELECT id, email, firstname, lastname, active, role_id
+FROM user
+WHERE id = ?
 `
 
-func (q *Queries) RemoveAllRoleFromUser(ctx context.Context, userID sql.NullString) error {
-	_, err := q.db.ExecContext(ctx, removeAllRoleFromUser, userID)
+func (q *Queries) FindUserById(ctx context.Context, id string) (User, error) {
+	row := q.db.QueryRowContext(ctx, findUserById, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Firstname,
+		&i.Lastname,
+		&i.Active,
+		&i.RoleID,
+	)
+	return i, err
+}
+
+const updateUserActive = `-- name: UpdateUserActive :exec
+UPDATE user
+SET active = ?
+WHERE id = ?
+`
+
+type UpdateUserActiveParams struct {
+	Active int64  `db:"active"`
+	ID     string `db:"id"`
+}
+
+func (q *Queries) UpdateUserActive(ctx context.Context, arg UpdateUserActiveParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserActive, arg.Active, arg.ID)
+	return err
+}
+
+const updateUserRole = `-- name: UpdateUserRole :exec
+UPDATE user
+SET role_id = ?
+WHERE id = ?
+`
+
+type UpdateUserRoleParams struct {
+	RoleID int64  `db:"role_id"`
+	ID     string `db:"id"`
+}
+
+func (q *Queries) UpdateUserRole(ctx context.Context, arg UpdateUserRoleParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserRole, arg.RoleID, arg.ID)
 	return err
 }

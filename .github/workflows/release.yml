@@ -22,10 +22,16 @@ jobs:
       - name: Set APP_VERSION env
         run: echo APP_VERSION=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev ) >> ${GITHUB_ENV}
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - uses: actions/setup-node@v3
         with:
           node-version: 18.x
+          cache: 'pnpm'
+          cache-dependency-path: |
+            internal/web/pnpm-lock.yaml
 
       - name: Prepare Vue App
         run: |

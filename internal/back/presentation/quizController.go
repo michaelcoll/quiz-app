@@ -42,7 +42,7 @@ func (c *ApiController) quizList(ctx *gin.Context) {
 	}
 
 	ctx.Header("Content-Range", fmt.Sprintf("%s %d-%d/%d", "quiz", start, int(start)+len(quizzes), total))
-	ctx.JSON(http.StatusOK, fromDomains(quizzes))
+	ctx.JSON(http.StatusOK, toQuizDtos(quizzes))
 }
 
 func extractRangeHeader(rangeHeader string) (uint16, uint16, error) {
@@ -88,5 +88,6 @@ func (c *ApiController) quizBySha1(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, fromDomain(quiz))
+	dto := Quiz{}
+	ctx.JSON(http.StatusOK, dto.fromDomain(quiz))
 }

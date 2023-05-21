@@ -7,7 +7,6 @@ package sqlc
 
 import (
 	"context"
-	"time"
 )
 
 const activateOnlyVersion = `-- name: ActivateOnlyVersion :exec
@@ -72,15 +71,16 @@ func (q *Queries) CreateOrReplaceQuestion(ctx context.Context, arg CreateOrRepla
 }
 
 const createOrReplaceQuiz = `-- name: CreateOrReplaceQuiz :exec
-REPLACE INTO quiz (sha1, name, filename, version)
-VALUES (?, ?, ?, ?)
+REPLACE INTO quiz (sha1, name, filename, version, created_at)
+VALUES (?, ?, ?, ?, ?)
 `
 
 type CreateOrReplaceQuizParams struct {
-	Sha1     string `db:"sha1"`
-	Name     string `db:"name"`
-	Filename string `db:"filename"`
-	Version  int64  `db:"version"`
+	Sha1      string `db:"sha1"`
+	Name      string `db:"name"`
+	Filename  string `db:"filename"`
+	Version   int64  `db:"version"`
+	CreatedAt string `db:"created_at"`
 }
 
 func (q *Queries) CreateOrReplaceQuiz(ctx context.Context, arg CreateOrReplaceQuizParams) error {
@@ -89,6 +89,7 @@ func (q *Queries) CreateOrReplaceQuiz(ctx context.Context, arg CreateOrReplaceQu
 		arg.Name,
 		arg.Filename,
 		arg.Version,
+		arg.CreatedAt,
 	)
 	return err
 }
@@ -199,17 +200,17 @@ WHERE q.sha1 = ?
 `
 
 type FindQuizFullBySha1Row struct {
-	QuizSha1        string    `db:"quiz_sha1"`
-	QuizFilename    string    `db:"quiz_filename"`
-	QuizName        string    `db:"quiz_name"`
-	QuizVersion     int64     `db:"quiz_version"`
-	QuizCreatedAt   time.Time `db:"quiz_created_at"`
-	QuizActive      int64     `db:"quiz_active"`
-	QuestionSha1    string    `db:"question_sha1"`
-	QuestionContent string    `db:"question_content"`
-	AnswerSha1      string    `db:"answer_sha1"`
-	AnswerContent   string    `db:"answer_content"`
-	AnswerValid     int64     `db:"answer_valid"`
+	QuizSha1        string `db:"quiz_sha1"`
+	QuizFilename    string `db:"quiz_filename"`
+	QuizName        string `db:"quiz_name"`
+	QuizVersion     int64  `db:"quiz_version"`
+	QuizCreatedAt   string `db:"quiz_created_at"`
+	QuizActive      int64  `db:"quiz_active"`
+	QuestionSha1    string `db:"question_sha1"`
+	QuestionContent string `db:"question_content"`
+	AnswerSha1      string `db:"answer_sha1"`
+	AnswerContent   string `db:"answer_content"`
+	AnswerValid     int64  `db:"answer_valid"`
 }
 
 func (q *Queries) FindQuizFullBySha1(ctx context.Context, sha1 string) ([]FindQuizFullBySha1Row, error) {

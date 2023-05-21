@@ -35,9 +35,10 @@ func (c *ApiController) register(ctx *gin.Context) {
 	token, exists := ctx.Get("token")
 	if !exists {
 		handleHttpError(ctx, http.StatusUnauthorized, "no token found in headers")
+		return
 	}
 
-	err := c.authService.Register(ctx, &domain.User{
+	user, err := c.authService.Register(ctx, &domain.User{
 		Id:        request.Id,
 		Email:     request.Email,
 		Firstname: request.Firstname,
@@ -45,5 +46,50 @@ func (c *ApiController) register(ctx *gin.Context) {
 	}, token.(string))
 	if err != nil {
 		handleError(ctx, err)
+		return
 	}
+
+	dto := User{}
+	ctx.JSON(http.StatusCreated, dto.fromDomain(user))
+}
+
+func (c *ApiController) userList(ctx *gin.Context) {
+	users, err := c.authService.FindAllUser(ctx)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	dtos := make([]*User, len(users))
+
+	for i, user := range users {
+		dto := User{}
+		dtos[i] = dto.fromDomain(user)
+	}
+
+	ctx.JSON(http.StatusOK, dtos)
+}
+
+func (c *ApiController) deactivateUser(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	err := c.authService.DeactivateUser(ctx, id)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{"message": "user deactivated"})
+}
+
+func (c *ApiController) activateUser(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	err := c.authService.ActivateUser(ctx, id)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusNoContent, gin.H{"message": "user activated"})
 }

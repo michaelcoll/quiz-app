@@ -54,7 +54,7 @@ const (
 	Serve Mode = 0
 )
 
-func Print(version string, mode Mode) {
+func printBanner(version string, mode Mode) {
 	var modeStr string
 
 	switch mode {

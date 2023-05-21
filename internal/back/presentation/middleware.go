@@ -17,6 +17,7 @@
 package presentation
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -61,11 +62,12 @@ func validateAuthHeaderAndGetUser(s *domain.AuthService) gin.HandlerFunc {
 		}
 
 		ctx.Set("user", user)
+		ctx.Set("role", user.Role)
 	}
 }
 
 func injectTokenIfPresent(ctx *gin.Context) {
-	if token, err := getBearerToken(ctx); err != nil {
+	if token, err := getBearerToken(ctx); err == nil {
 		ctx.Set("token", token)
 	}
 }
@@ -83,4 +85,37 @@ func getBearerToken(ctx *gin.Context) (string, error) {
 	}
 
 	return token, nil
+}
+
+func enforceRoles(ctx *gin.Context) {
+
+	role := findRoleMatchingEndpointDef(ctx)
+	if role == 0 {
+		handleHttpError(ctx, http.StatusForbidden, "forbidden access (path undefined)")
+		return
+	}
+
+	if r, found := ctx.Get("role"); found {
+		userRole := r.(domain.Role)
+		if !userRole.CanAccess(role) {
+			handleHttpError(ctx,
+				http.StatusForbidden,
+				fmt.Sprintf("forbidden access (userRole %d, required role %d)", userRole, role))
+			return
+		}
+
+		return
+	}
+
+	handleHttpError(ctx, http.StatusForbidden, "forbidden access (no role in context)")
+}
+
+func findRoleMatchingEndpointDef(ctx *gin.Context) domain.Role {
+	for def, role := range pathRoleMapping {
+		if def.match(ctx.Request) {
+			return role
+		}
+	}
+
+	return 0
 }

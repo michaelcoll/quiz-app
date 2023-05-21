@@ -18,9 +18,11 @@ package domain
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"time"
 
+	"github.com/fatih/color"
 	"github.com/spf13/viper"
 )
 
@@ -30,44 +32,52 @@ type AuthService struct {
 }
 
 func NewAuthService(r AuthRepository, c AccessTokenCaller) AuthService {
+	adminEmail := viper.GetString("default-admin-email")
+
+	if len(adminEmail) > 0 {
+		fmt.Printf("%s Default admin email set to %s\n", color.GreenString("✓"), color.BlueString(adminEmail))
+	}
+
 	return AuthService{r: r, c: c}
 }
 
-func (s *AuthService) Register(ctx context.Context, user *User, accessToken string) error {
+func (s *AuthService) Register(ctx context.Context, user *User, accessToken string) (*User, error) {
 	token, err := s.validateToken(ctx, accessToken)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if token.Email != user.Email {
-		return Errorf(UnAuthorized, "token email and user email mismatch (%s != %s)", token.Email, user.Email)
+		return nil, Errorf(UnAuthorized, "token email and user email mismatch (%s != %s)", token.Email, user.Email)
 	}
 
 	if token.Email != user.Email {
-		return Errorf(UnAuthorized, "token email and user email mismatch (%s != %s)", token.Email, user.Email)
+		return nil, Errorf(UnAuthorized, "token email and user email mismatch (%s != %s)", token.Email, user.Email)
 	}
 
 	if token.Sub != user.Id {
-		return Errorf(UnAuthorized, "token sub and user id mismatch (%s != %s)", token.Sub, user.Id)
+		return nil, Errorf(UnAuthorized, "token sub and user id mismatch (%s != %s)", token.Sub, user.Id)
 	}
 
 	emailDomain := strings.Split(user.Email, "@")[1]
 	restrictedDomainName := viper.GetString("restrict-email-domain")
 	if len(restrictedDomainName) > 0 && emailDomain != restrictedDomainName {
-		return Errorf(UnAuthorized, "user is not in a valid domain (%s not in domain %s)", user.Email, restrictedDomainName)
+		return nil, Errorf(UnAuthorized, "user is not in a valid domain (%s not in domain %s)", user.Email, restrictedDomainName)
+	}
+
+	adminEmail := viper.GetString("default-admin-email")
+	if user.Email == adminEmail {
+		user.Role = Admin
+	} else {
+		user.Role = Student
 	}
 
 	err = s.r.CreateUser(ctx, user)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	err = s.r.AddRoleToUser(ctx, user.Id, Student)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return user, nil
 }
 
 func (s *AuthService) validateToken(ctx context.Context, tokenStr string) (token *AccessToken, err error) {
@@ -114,7 +124,7 @@ func (s *AuthService) ValidateTokenAndGetUser(ctx context.Context, accessToken s
 	}
 
 	if token.Provenance == Api {
-		err := s.r.CreateToken(ctx, token)
+		err := s.r.CacheToken(ctx, token)
 		if err != nil {
 			return nil, err
 		}
@@ -134,4 +144,33 @@ func (s *AuthService) FindUserById(ctx context.Context, id string) (*User, error
 	}
 
 	return user, nil
+}
+
+func (role Role) CanAccess(other Role) bool {
+
+	if role == other {
+		return true
+	}
+
+	if role == Admin && (other == Teacher || other == Student) {
+		return true
+	}
+
+	if role == Teacher && other == Student {
+		return true
+	}
+
+	return false
+}
+
+func (s *AuthService) FindAllUser(ctx context.Context) ([]*User, error) {
+	return s.r.FindAllUser(ctx)
+}
+
+func (s *AuthService) DeactivateUser(ctx context.Context, id string) error {
+	return s.r.UpdateUserActive(ctx, id, false)
+}
+
+func (s *AuthService) ActivateUser(ctx context.Context, id string) error {
+	return s.r.UpdateUserActive(ctx, id, true)
 }
