@@ -19,6 +19,7 @@ package presentation
 import (
 	"fmt"
 	"log"
+	"regexp"
 
 	"github.com/fatih/color"
 	"github.com/gin-gonic/gin"
@@ -37,6 +38,29 @@ func NewApiController(quizService *domain.QuizService, authService *domain.AuthS
 	return ApiController{quizService: quizService, authService: authService}
 }
 
+var pathRoleMapping = map[*endPointDef]domain.Role{
+	&endPointDef{
+		regex:  regexp.MustCompile(`^/api/v1/quiz`),
+		method: "GET",
+	}: domain.Student,
+	&endPointDef{
+		regex:  regexp.MustCompile(`^/api/v1/quiz/[^/]+`),
+		method: "GET",
+	}: domain.Student,
+	&endPointDef{
+		regex:  regexp.MustCompile(`^/api/v1/user`),
+		method: "GET",
+	}: domain.Admin,
+	&endPointDef{
+		regex:  regexp.MustCompile(`^/api/v1/user/[^/]+`),
+		method: "DELETE",
+	}: domain.Admin,
+	&endPointDef{
+		regex:  regexp.MustCompile(`^/api/v1/user/[^/]+/activate`),
+		method: "POST",
+	}: domain.Admin,
+}
+
 func (c *ApiController) Serve() {
 
 	gin.SetMode(gin.ReleaseMode)
@@ -51,18 +75,16 @@ func (c *ApiController) Serve() {
 	private := router.Group("/api/v1")
 
 	private.Use(validateAuthHeaderAndGetUser(c.authService))
-
-	//private.GET("/daemon", c.daemonList)
-	//private.GET("/daemon/:id", c.daemonById)
-	//private.GET("/daemon/:id/media", c.mediaList)
+	private.Use(enforceRoles)
 
 	public.POST("/register", c.register)
 
 	private.GET("/quiz", c.quizList)
 	private.GET("/quiz/:sha1", c.quizBySha1)
 
-	//mediaGroup.GET("/daemon/:id/media/:hash", c.contentByHash)
-	//mediaGroup.GET("/daemon/:id/thumbnail/:hash", c.thumbnailByHash)
+	private.GET("/user", c.userList)
+	private.DELETE("/user/:id", c.deactivateUser)
+	private.POST("/user/:id/activate", c.activateUser)
 
 	// Listen and serve on 0.0.0.0:8080
 	fmt.Printf("%s Listening API on http://0.0.0.0%s\n", color.GreenString("✓"), color.GreenString(apiPort))

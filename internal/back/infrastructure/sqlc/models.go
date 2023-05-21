@@ -4,18 +4,15 @@
 
 package sqlc
 
-import (
-	"database/sql"
-	"time"
-)
+import ()
 
 type Quiz struct {
-	Sha1      string    `db:"sha1"`
-	Name      string    `db:"name"`
-	Filename  string    `db:"filename"`
-	Version   int64     `db:"version"`
-	Active    int64     `db:"active"`
-	CreatedAt time.Time `db:"created_at"`
+	Sha1      string `db:"sha1"`
+	Name      string `db:"name"`
+	Filename  string `db:"filename"`
+	Version   int64  `db:"version"`
+	Active    int64  `db:"active"`
+	CreatedAt string `db:"created_at"`
 }
 
 type QuizAnswer struct {
@@ -44,22 +41,11 @@ type Role struct {
 	Name string `db:"name"`
 }
 
-type Token struct {
-	OpaqueToken string    `db:"opaque_token"`
-	UserID      string    `db:"user_id"`
-	Expires     time.Time `db:"expires"`
-	Aud         string    `db:"aud"`
-}
-
 type User struct {
 	ID        string `db:"id"`
 	Email     string `db:"email"`
 	Firstname string `db:"firstname"`
 	Lastname  string `db:"lastname"`
 	Active    int64  `db:"active"`
-}
-
-type UserRole struct {
-	UserID sql.NullString `db:"user_id"`
-	RoleID sql.NullInt64  `db:"role_id"`
+	RoleID    int64  `db:"role_id"`
 }

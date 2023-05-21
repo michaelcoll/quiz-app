@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
 )
 
 // Parse parse the content of a quiz file
@@ -41,6 +42,7 @@ func (s *QuizService) Parse(filename string, content string) (*Quiz, error) {
 		Sha1:      getSha1(content),
 		Name:      name,
 		Filename:  filename,
+		CreatedAt: time.Now().Format(time.RFC3339),
 		Version:   1,
 		Questions: questions,
 	}, nil

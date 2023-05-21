@@ -39,6 +39,7 @@ func TestGoogleAccessTokenCaller_Get(t *testing.T) {
 		Aud:           aud,
 		Sub:           sub,
 		Exp:           expStr,
+		ExpiresIn:     expInStr,
 		Email:         email,
 		EmailVerified: emailVerified,
 	}
@@ -64,6 +65,7 @@ func TestGoogleAccessTokenCaller_Get(t *testing.T) {
 		Aud:         aud,
 		Sub:         sub,
 		Exp:         time.Unix(exp, 0),
+		ExpiresIn:   expIn,
 		Email:       email,
 		OpaqueToken: accessToken,
 		Provenance:  domain.Api,

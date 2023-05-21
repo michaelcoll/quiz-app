@@ -16,7 +16,21 @@
 
 package presentation
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+
+	"github.com/michaelcoll/quiz-app/internal/back/domain"
+)
+
+var statusMapping = map[domain.ErrorCode]int{
+	domain.NotFound:        http.StatusNotFound,
+	domain.InvalidArgument: http.StatusBadRequest,
+	domain.UnAuthorized:    http.StatusUnauthorized,
+	domain.UnexpectedError: http.StatusInternalServerError,
+}
 
 type HttpStatusError struct {
 	status  int
@@ -43,4 +57,23 @@ func GetCodeFromError(err error) (int, bool) {
 	}
 
 	return 0, false
+}
+
+func handleError(ctx *gin.Context, err error) {
+	status := http.StatusInternalServerError
+	if code, match := domain.GetCodeFromError(err); match {
+		if st, match := statusMapping[code]; match {
+			status = st
+		}
+	}
+
+	if st, match := GetCodeFromError(err); match {
+		status = st
+	}
+
+	handleHttpError(ctx, status, err.Error())
+}
+
+func handleHttpError(ctx *gin.Context, st int, message string) {
+	ctx.AbortWithStatusJSON(st, gin.H{"message": message})
 }

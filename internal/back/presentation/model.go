@@ -17,7 +17,8 @@
 package presentation
 
 import (
-	"time"
+	"net/http"
+	"regexp"
 
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
 )
@@ -27,7 +28,7 @@ type Quiz struct {
 	Filename  string         `json:"filename"`
 	Name      string         `json:"name"`
 	Version   int            `json:"version"`
-	CreatedAt time.Time      `json:"createdAt"`
+	CreatedAt string         `json:"createdAt"`
 	Active    bool           `json:"active"`
 	Questions []QuizQuestion `json:"questions,omitempty"`
 }
@@ -43,7 +44,7 @@ type QuizQuestionAnswer struct {
 	Content string `json:"content"`
 }
 
-func fromDomain(domain *domain.Quiz) *Quiz {
+func (q *Quiz) fromDomain(domain *domain.Quiz) *Quiz {
 	quiz := Quiz{
 		Sha1:      domain.Sha1,
 		Filename:  domain.Filename,
@@ -75,15 +76,62 @@ func fromDomain(domain *domain.Quiz) *Quiz {
 		i++
 	}
 
-	return &quiz
+	return q
 }
 
-func fromDomains(domains []*domain.Quiz) []*Quiz {
+func toQuizDtos(domains []*domain.Quiz) []*Quiz {
 	dtos := make([]*Quiz, len(domains))
 
 	for i, d := range domains {
-		dtos[i] = fromDomain(d)
+		dto := Quiz{}
+		dtos[i] = dto.fromDomain(d)
 	}
 
 	return dtos
+}
+
+type endPointDef struct {
+	regex  *regexp.Regexp
+	method string
+}
+
+func (e *endPointDef) match(request *http.Request) bool {
+	path := request.URL.Path
+	method := request.Method
+
+	return e.regex.MatchString(path) && e.method == method
+}
+
+type RegisterRequestBody struct {
+	Id        string `json:"id" binding:"required"`
+	Email     string `json:"email" binding:"required"`
+	Firstname string `json:"firstname" binding:"required"`
+	Lastname  string `json:"lastname" binding:"required"`
+}
+
+type User struct {
+	Id        string `json:"id"`
+	Email     string `json:"email"`
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Active    bool   `json:"active"`
+	Role      string `json:"role,omitempty"`
+}
+
+func (u *User) fromDomain(d *domain.User) *User {
+	u.Id = d.Id
+	u.Email = d.Email
+	u.Firstname = d.Firstname
+	u.Lastname = d.Lastname
+	u.Active = d.Active
+	switch d.Role {
+	case domain.Admin:
+		u.Role = "ADMIN"
+	case domain.Teacher:
+		u.Role = "TEACHER"
+	case domain.Student:
+		u.Role = "STUDENT"
+	}
+
+	return u
 }

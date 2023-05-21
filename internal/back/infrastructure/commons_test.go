@@ -30,6 +30,8 @@ const (
 	aud           = "aud"
 	sub           = "103275817862301231842"
 	expStr        = "1684494062"
+	expInStr      = "3591"
+	expIn         = 3591
 	exp           = 1684494062
 	firstName     = "Cordell"
 	lastName      = "Walker"

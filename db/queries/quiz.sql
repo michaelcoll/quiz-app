@@ -1,6 +1,6 @@
 -- name: CreateOrReplaceQuiz :exec
-REPLACE INTO quiz (sha1, name, filename, version)
-VALUES (?, ?, ?, ?);
+REPLACE INTO quiz (sha1, name, filename, version, created_at)
+VALUES (?, ?, ?, ?, ?);
 
 -- name: CreateOrReplaceQuestion :exec
 REPLACE INTO quiz_question (sha1, content)

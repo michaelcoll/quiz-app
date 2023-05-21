@@ -39,3 +39,13 @@ func TestAuthService_FindUserById(t *testing.T) {
 		}
 	}
 }
+
+func TestRole_canAccess(t *testing.T) {
+
+	assert.True(t, Admin.CanAccess(Teacher))
+	assert.True(t, Admin.CanAccess(Student))
+	assert.True(t, Teacher.CanAccess(Student))
+	assert.False(t, Teacher.CanAccess(Admin))
+	assert.False(t, Student.CanAccess(Admin))
+
+}

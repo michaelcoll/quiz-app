@@ -1,26 +1,22 @@
--- name: FindUserById :many
-SELECT u.*, ur.role_id
-FROM user u LEFT JOIN user_role ur ON u.id = ur.user_id
+-- name: FindUserById :one
+SELECT *
+FROM user
 WHERE id = ?;
 
+-- name: FindAllUser :many
+SELECT *
+FROM user;
+
 -- name: CreateOrReplaceUser :exec
-REPLACE INTO user (id, email, firstname, lastname)
-VALUES (?, ?, ?, ?);
+REPLACE INTO user (id, email, firstname, lastname, role_id)
+VALUES (?, ?, ?, ?, ?);
 
--- name: FindTokenByTokenStr :one
-SELECT t.*, u.email
-FROM token t JOIN user u ON u.id = t.user_id
-WHERE opaque_token = ?;
+-- name: UpdateUserRole :exec
+UPDATE user
+SET role_id = ?
+WHERE id = ?;
 
--- name: CreateOrReplaceToken :exec
-REPLACE INTO token (opaque_token, user_id, expires, aud)
-VALUES (?, ?, ?, ?);
-
--- name: AddRoleToUser :exec
-REPLACE INTO user_role (user_id, role_id)
-VALUES (?, ?);
-
--- name: RemoveAllRoleFromUser :exec
-DELETE FROM user_role
-WHERE user_id = ?
-
+-- name: UpdateUserActive :exec
+UPDATE user
+SET active = ?
+WHERE id = ?;

@@ -21,52 +21,8 @@ func (_m *MockAuthRepository) EXPECT() *MockAuthRepository_Expecter {
 	return &MockAuthRepository_Expecter{mock: &_m.Mock}
 }
 
-// AddRoleToUser provides a mock function with given fields: ctx, userId, role
-func (_m *MockAuthRepository) AddRoleToUser(ctx context.Context, userId string, role Role) error {
-	ret := _m.Called(ctx, userId, role)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, Role) error); ok {
-		r0 = rf(ctx, userId, role)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// MockAuthRepository_AddRoleToUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AddRoleToUser'
-type MockAuthRepository_AddRoleToUser_Call struct {
-	*mock.Call
-}
-
-// AddRoleToUser is a helper method to define mock.On call
-//   - ctx context.Context
-//   - userId string
-//   - role Role
-func (_e *MockAuthRepository_Expecter) AddRoleToUser(ctx interface{}, userId interface{}, role interface{}) *MockAuthRepository_AddRoleToUser_Call {
-	return &MockAuthRepository_AddRoleToUser_Call{Call: _e.mock.On("AddRoleToUser", ctx, userId, role)}
-}
-
-func (_c *MockAuthRepository_AddRoleToUser_Call) Run(run func(ctx context.Context, userId string, role Role)) *MockAuthRepository_AddRoleToUser_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(Role))
-	})
-	return _c
-}
-
-func (_c *MockAuthRepository_AddRoleToUser_Call) Return(_a0 error) *MockAuthRepository_AddRoleToUser_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockAuthRepository_AddRoleToUser_Call) RunAndReturn(run func(context.Context, string, Role) error) *MockAuthRepository_AddRoleToUser_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// CreateToken provides a mock function with given fields: ctx, token
-func (_m *MockAuthRepository) CreateToken(ctx context.Context, token *AccessToken) error {
+// CacheToken provides a mock function with given fields: ctx, token
+func (_m *MockAuthRepository) CacheToken(ctx context.Context, token *AccessToken) error {
 	ret := _m.Called(ctx, token)
 
 	var r0 error
@@ -79,31 +35,31 @@ func (_m *MockAuthRepository) CreateToken(ctx context.Context, token *AccessToke
 	return r0
 }
 
-// MockAuthRepository_CreateToken_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateToken'
-type MockAuthRepository_CreateToken_Call struct {
+// MockAuthRepository_CacheToken_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CacheToken'
+type MockAuthRepository_CacheToken_Call struct {
 	*mock.Call
 }
 
-// CreateToken is a helper method to define mock.On call
+// CacheToken is a helper method to define mock.On call
 //   - ctx context.Context
 //   - token *AccessToken
-func (_e *MockAuthRepository_Expecter) CreateToken(ctx interface{}, token interface{}) *MockAuthRepository_CreateToken_Call {
-	return &MockAuthRepository_CreateToken_Call{Call: _e.mock.On("CreateToken", ctx, token)}
+func (_e *MockAuthRepository_Expecter) CacheToken(ctx interface{}, token interface{}) *MockAuthRepository_CacheToken_Call {
+	return &MockAuthRepository_CacheToken_Call{Call: _e.mock.On("CacheToken", ctx, token)}
 }
 
-func (_c *MockAuthRepository_CreateToken_Call) Run(run func(ctx context.Context, token *AccessToken)) *MockAuthRepository_CreateToken_Call {
+func (_c *MockAuthRepository_CacheToken_Call) Run(run func(ctx context.Context, token *AccessToken)) *MockAuthRepository_CacheToken_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(*AccessToken))
 	})
 	return _c
 }
 
-func (_c *MockAuthRepository_CreateToken_Call) Return(_a0 error) *MockAuthRepository_CreateToken_Call {
+func (_c *MockAuthRepository_CacheToken_Call) Return(_a0 error) *MockAuthRepository_CacheToken_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockAuthRepository_CreateToken_Call) RunAndReturn(run func(context.Context, *AccessToken) error) *MockAuthRepository_CreateToken_Call {
+func (_c *MockAuthRepository_CacheToken_Call) RunAndReturn(run func(context.Context, *AccessToken) error) *MockAuthRepository_CacheToken_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -147,6 +103,60 @@ func (_c *MockAuthRepository_CreateUser_Call) Return(_a0 error) *MockAuthReposit
 }
 
 func (_c *MockAuthRepository_CreateUser_Call) RunAndReturn(run func(context.Context, *User) error) *MockAuthRepository_CreateUser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// FindAllUser provides a mock function with given fields: ctx
+func (_m *MockAuthRepository) FindAllUser(ctx context.Context) ([]*User, error) {
+	ret := _m.Called(ctx)
+
+	var r0 []*User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context) ([]*User, error)); ok {
+		return rf(ctx)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context) []*User); ok {
+		r0 = rf(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*User)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAuthRepository_FindAllUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FindAllUser'
+type MockAuthRepository_FindAllUser_Call struct {
+	*mock.Call
+}
+
+// FindAllUser is a helper method to define mock.On call
+//   - ctx context.Context
+func (_e *MockAuthRepository_Expecter) FindAllUser(ctx interface{}) *MockAuthRepository_FindAllUser_Call {
+	return &MockAuthRepository_FindAllUser_Call{Call: _e.mock.On("FindAllUser", ctx)}
+}
+
+func (_c *MockAuthRepository_FindAllUser_Call) Run(run func(ctx context.Context)) *MockAuthRepository_FindAllUser_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *MockAuthRepository_FindAllUser_Call) Return(_a0 []*User, _a1 error) *MockAuthRepository_FindAllUser_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAuthRepository_FindAllUser_Call) RunAndReturn(run func(context.Context) ([]*User, error)) *MockAuthRepository_FindAllUser_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -261,13 +271,13 @@ func (_c *MockAuthRepository_FindUserById_Call) RunAndReturn(run func(context.Co
 	return _c
 }
 
-// RemoveAllRoleFromUser provides a mock function with given fields: ctx, userId
-func (_m *MockAuthRepository) RemoveAllRoleFromUser(ctx context.Context, userId string) error {
-	ret := _m.Called(ctx, userId)
+// UpdateUserActive provides a mock function with given fields: ctx, id, active
+func (_m *MockAuthRepository) UpdateUserActive(ctx context.Context, id string, active bool) error {
+	ret := _m.Called(ctx, id, active)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
-		r0 = rf(ctx, userId)
+	if rf, ok := ret.Get(0).(func(context.Context, string, bool) error); ok {
+		r0 = rf(ctx, id, active)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -275,31 +285,76 @@ func (_m *MockAuthRepository) RemoveAllRoleFromUser(ctx context.Context, userId 
 	return r0
 }
 
-// MockAuthRepository_RemoveAllRoleFromUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RemoveAllRoleFromUser'
-type MockAuthRepository_RemoveAllRoleFromUser_Call struct {
+// MockAuthRepository_UpdateUserActive_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateUserActive'
+type MockAuthRepository_UpdateUserActive_Call struct {
 	*mock.Call
 }
 
-// RemoveAllRoleFromUser is a helper method to define mock.On call
+// UpdateUserActive is a helper method to define mock.On call
 //   - ctx context.Context
-//   - userId string
-func (_e *MockAuthRepository_Expecter) RemoveAllRoleFromUser(ctx interface{}, userId interface{}) *MockAuthRepository_RemoveAllRoleFromUser_Call {
-	return &MockAuthRepository_RemoveAllRoleFromUser_Call{Call: _e.mock.On("RemoveAllRoleFromUser", ctx, userId)}
+//   - id string
+//   - active bool
+func (_e *MockAuthRepository_Expecter) UpdateUserActive(ctx interface{}, id interface{}, active interface{}) *MockAuthRepository_UpdateUserActive_Call {
+	return &MockAuthRepository_UpdateUserActive_Call{Call: _e.mock.On("UpdateUserActive", ctx, id, active)}
 }
 
-func (_c *MockAuthRepository_RemoveAllRoleFromUser_Call) Run(run func(ctx context.Context, userId string)) *MockAuthRepository_RemoveAllRoleFromUser_Call {
+func (_c *MockAuthRepository_UpdateUserActive_Call) Run(run func(ctx context.Context, id string, active bool)) *MockAuthRepository_UpdateUserActive_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
+		run(args[0].(context.Context), args[1].(string), args[2].(bool))
 	})
 	return _c
 }
 
-func (_c *MockAuthRepository_RemoveAllRoleFromUser_Call) Return(_a0 error) *MockAuthRepository_RemoveAllRoleFromUser_Call {
+func (_c *MockAuthRepository_UpdateUserActive_Call) Return(_a0 error) *MockAuthRepository_UpdateUserActive_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockAuthRepository_RemoveAllRoleFromUser_Call) RunAndReturn(run func(context.Context, string) error) *MockAuthRepository_RemoveAllRoleFromUser_Call {
+func (_c *MockAuthRepository_UpdateUserActive_Call) RunAndReturn(run func(context.Context, string, bool) error) *MockAuthRepository_UpdateUserActive_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateUserRole provides a mock function with given fields: ctx, userId, role
+func (_m *MockAuthRepository) UpdateUserRole(ctx context.Context, userId string, role Role) error {
+	ret := _m.Called(ctx, userId, role)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, Role) error); ok {
+		r0 = rf(ctx, userId, role)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAuthRepository_UpdateUserRole_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateUserRole'
+type MockAuthRepository_UpdateUserRole_Call struct {
+	*mock.Call
+}
+
+// UpdateUserRole is a helper method to define mock.On call
+//   - ctx context.Context
+//   - userId string
+//   - role Role
+func (_e *MockAuthRepository_Expecter) UpdateUserRole(ctx interface{}, userId interface{}, role interface{}) *MockAuthRepository_UpdateUserRole_Call {
+	return &MockAuthRepository_UpdateUserRole_Call{Call: _e.mock.On("UpdateUserRole", ctx, userId, role)}
+}
+
+func (_c *MockAuthRepository_UpdateUserRole_Call) Run(run func(ctx context.Context, userId string, role Role)) *MockAuthRepository_UpdateUserRole_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(Role))
+	})
+	return _c
+}
+
+func (_c *MockAuthRepository_UpdateUserRole_Call) Return(_a0 error) *MockAuthRepository_UpdateUserRole_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAuthRepository_UpdateUserRole_Call) RunAndReturn(run func(context.Context, string, Role) error) *MockAuthRepository_UpdateUserRole_Call {
 	_c.Call.Return(run)
 	return _c
 }

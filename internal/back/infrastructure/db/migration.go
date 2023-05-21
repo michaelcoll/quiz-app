@@ -39,7 +39,7 @@ CREATE TABLE quiz
     filename   TEXT      NOT NULL,
     version    INTEGER   NOT NULL DEFAULT 1,
     active     INTEGER   NOT NULL DEFAULT 1,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TEXT NOT NULL,
 
     CONSTRAINT filename_fk FOREIGN KEY (filename) REFERENCES quiz (filename),
     CONSTRAINT quiz_version_unique UNIQUE (filename, version)
@@ -98,27 +98,10 @@ CREATE TABLE user
     email     TEXT    NOT NULL,
     firstname TEXT    NOT NULL,
     lastname  TEXT    NOT NULL,
-    active    INTEGER NOT NULL DEFAULT 1
-);
+    active    INTEGER NOT NULL DEFAULT 1,
+    role_id   INTEGER NOT NULL,
 
-CREATE TABLE user_role
-(
-    user_id TEXT,
-    role_id INTEGER,
-
-    CONSTRAINT pk PRIMARY KEY (user_id, role_id),
-    CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES user (id),
     CONSTRAINT role_fk FOREIGN KEY (role_id) REFERENCES role (id)
-);
-
-CREATE TABLE token
-(
-    opaque_token TEXT PRIMARY KEY,
-    user_id      TEXT      NOT NULL,
-    expires      TIMESTAMP NOT NULL,
-    aud          TEXT      NOT NULL,
-
-    CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES user (id)
 );
 `
 
