@@ -58,8 +58,6 @@ func (s *QuizService) FindAllActive(ctx context.Context, limit uint16, offset ui
 
 func (s *QuizService) Sync(ctx context.Context) error {
 
-	verbose := viper.GetBool("verbose")
-
 	quizzes, err := s.ScanGitRepo()
 	if err != nil {
 		return err
@@ -75,17 +73,15 @@ func (s *QuizService) Sync(ctx context.Context) error {
 		syncStats = addStats(syncStats, stats)
 	}
 
-	if verbose {
-		if syncStats.Created > 0 || syncStats.Updated > 0 {
-			fmt.Printf("%s Repo synced (%s quiz(zes) created, %s quiz(zes) updated)\n",
-				color.GreenString("✓"),
-				color.BlueString(strconv.Itoa(syncStats.Created)),
-				color.BlueString(strconv.Itoa(syncStats.Updated)))
-		} else {
-			fmt.Printf("%s Repo synced %s\n",
-				color.GreenString("✓"),
-				color.BlueString(color.New(color.FgHiBlack).Sprintf(" — no changes")))
-		}
+	if syncStats.Created > 0 || syncStats.Updated > 0 {
+		fmt.Printf("%s Repo synced (%s quiz(zes) created, %s quiz(zes) updated)\n",
+			color.GreenString("✓"),
+			color.BlueString(strconv.Itoa(syncStats.Created)),
+			color.BlueString(strconv.Itoa(syncStats.Updated)))
+	} else {
+		fmt.Printf("%s Repo synced %s\n",
+			color.GreenString("✓"),
+			color.BlueString(color.New(color.FgHiBlack).Sprintf(" — no changes")))
 	}
 
 	return nil
