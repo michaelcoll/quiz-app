@@ -1,0 +1,5 @@
+image:
+  name: ghcr.io/michaelcoll/quiz-app:latest
+ingress:
+  enabled: true
+  host: quiz-app.com

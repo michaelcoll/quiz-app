@@ -1,0 +1,27 @@
+{{- if .Values.ingress.enabled }}
+---
+
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
+apiVersion: extensions/v1beta1
+{{ end -}}
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    draft: {{ default "draft-app" .Values.draft }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    dev.okteto.com/generate-host: "true"
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: {{ .Release.Name }}
+          servicePort: 80
+    host: {{ .Values.ingress.host }}
+{{- end}}
+
