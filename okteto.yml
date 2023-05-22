@@ -1,0 +1,6 @@
+build:
+  quiz-app:
+    image: okteto.dev/quiz-app:0.0.1
+    context: .
+deploy:
+  - helm upgrade --install quiz-app helm --set image.name=${OKTETO_BUILD_QUIZ_APP_IMAGE} --set ingress.enabled=false
