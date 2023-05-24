@@ -15,20 +15,31 @@ jobs:
       contents: read
       security-events: write
 
+    if: ${{ github.actor != 'dependabot[bot]' }}
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Get changed files in the internal/back folder
+      id: changed-files-specific
+      uses: tj-actions/changed-files@v35
+      with:
+        files: internal/**/*.go
+
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
+      if: steps.changed-files-specific.outputs.any_changed == 'true'
       uses: github/codeql-action/init@v2
       with:
         languages: go
 
     - name: Autobuild
+      if: steps.changed-files-specific.outputs.any_changed == 'true'
       uses: github/codeql-action/autobuild@v2
 
     - name: Perform CodeQL Analysis
+      if: steps.changed-files-specific.outputs.any_changed == 'true'
       uses: github/codeql-action/analyze@v2
       with:
         category: "/language:go"
