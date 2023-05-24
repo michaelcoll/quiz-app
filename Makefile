@@ -47,9 +47,14 @@ vue-lint:
 run-docker:
 	docker run -ti --rm -p 8080:8080 web:latest
 
+gen: sqlc generate
+
 .PHONY: generate
 generate:
 	@go generate internal/back/domain/repositories.go
 	@go generate internal/back/domain/callers.go
+
+.PHONY: sqlc
+sqlc:
 	@sqlc generate
 	@sqlc-addon generate --quiet

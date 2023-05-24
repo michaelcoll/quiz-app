@@ -95,7 +95,7 @@ func (q *Queries) CreateOrReplaceQuiz(ctx context.Context, arg CreateOrReplaceQu
 }
 
 const findAllActiveQuiz = `-- name: FindAllActiveQuiz :many
-SELECT sha1, name, filename, version, active, created_at
+SELECT sha1, name, filename, version, active, created_at, duration
 FROM quiz
 WHERE active = 1
 LIMIT ? OFFSET ?
@@ -122,6 +122,7 @@ func (q *Queries) FindAllActiveQuiz(ctx context.Context, arg FindAllActiveQuizPa
 			&i.Version,
 			&i.Active,
 			&i.CreatedAt,
+			&i.Duration,
 		); err != nil {
 			return nil, err
 		}
@@ -137,7 +138,7 @@ func (q *Queries) FindAllActiveQuiz(ctx context.Context, arg FindAllActiveQuizPa
 }
 
 const findQuizByFilenameAndLatestVersion = `-- name: FindQuizByFilenameAndLatestVersion :one
-SELECT sha1, name, filename, version, active, created_at
+SELECT sha1, name, filename, version, active, created_at, duration
 FROM quiz
 WHERE filename = ?
 ORDER BY version DESC
@@ -154,12 +155,13 @@ func (q *Queries) FindQuizByFilenameAndLatestVersion(ctx context.Context, filena
 		&i.Version,
 		&i.Active,
 		&i.CreatedAt,
+		&i.Duration,
 	)
 	return i, err
 }
 
 const findQuizBySha1 = `-- name: FindQuizBySha1 :one
-SELECT sha1, name, filename, version, active, created_at
+SELECT sha1, name, filename, version, active, created_at, duration
 FROM quiz
 WHERE sha1 = ?
 `
@@ -174,6 +176,7 @@ func (q *Queries) FindQuizBySha1(ctx context.Context, sha1 string) (Quiz, error)
 		&i.Version,
 		&i.Active,
 		&i.CreatedAt,
+		&i.Duration,
 	)
 	return i, err
 }

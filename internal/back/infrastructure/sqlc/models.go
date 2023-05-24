@@ -4,21 +4,32 @@
 
 package sqlc
 
-import ()
+import (
+	"database/sql"
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Quiz struct {
-	Sha1      string `db:"sha1"`
-	Name      string `db:"name"`
-	Filename  string `db:"filename"`
-	Version   int64  `db:"version"`
-	Active    int64  `db:"active"`
-	CreatedAt string `db:"created_at"`
+	Sha1      string        `db:"sha1"`
+	Name      string        `db:"name"`
+	Filename  string        `db:"filename"`
+	Version   int64         `db:"version"`
+	Active    int64         `db:"active"`
+	CreatedAt string        `db:"created_at"`
+	Duration  sql.NullInt64 `db:"duration"`
 }
 
 type QuizAnswer struct {
 	Sha1    string `db:"sha1"`
 	Valid   int64  `db:"valid"`
 	Content string `db:"content"`
+}
+
+type QuizAnswerCountView struct {
+	QuizSha1       string `db:"quiz_sha1"`
+	CheckedAnswers int64  `db:"checked_answers"`
 }
 
 type QuizQuestion struct {
@@ -39,6 +50,40 @@ type QuizQuestionQuiz struct {
 type Role struct {
 	ID   int64  `db:"id"`
 	Name string `db:"name"`
+}
+
+type Session struct {
+	Uuid      uuid.UUID `db:"uuid"`
+	QuizSha1  string    `db:"quiz_sha1"`
+	UserID    string    `db:"user_id"`
+	CreatedAt time.Time `db:"created_at"`
+}
+
+type SessionAnswer struct {
+	SessionUuid  string `db:"session_uuid"`
+	QuestionSha1 string `db:"question_sha1"`
+	AnswerSha1   string `db:"answer_sha1"`
+	Checked      int64  `db:"checked"`
+}
+
+type SessionResponseView struct {
+	QuizSha1     string      `db:"quiz_sha1"`
+	QuestionSha1 string      `db:"question_sha1"`
+	AnswerSha1   string      `db:"answer_sha1"`
+	SessionUuid  uuid.UUID   `db:"session_uuid"`
+	UserID       string      `db:"user_id"`
+	Checked      int64       `db:"checked"`
+	Result       interface{} `db:"result"`
+}
+
+type SessionView struct {
+	Uuid         uuid.UUID    `db:"uuid"`
+	QuizSha1     string       `db:"quiz_sha1"`
+	QuizName     string       `db:"quiz_name"`
+	QuizActive   int64        `db:"quiz_active"`
+	UserID       string       `db:"user_id"`
+	UserName     sql.NullBool `db:"user_name"`
+	RemainingSec interface{}  `db:"remaining_sec"`
 }
 
 type User struct {
