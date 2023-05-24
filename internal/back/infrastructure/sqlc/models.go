@@ -12,13 +12,13 @@ import (
 )
 
 type Quiz struct {
-	Sha1      string        `db:"sha1"`
-	Name      string        `db:"name"`
-	Filename  string        `db:"filename"`
-	Version   int64         `db:"version"`
-	Active    int64         `db:"active"`
-	CreatedAt string        `db:"created_at"`
-	Duration  sql.NullInt64 `db:"duration"`
+	Sha1      string `db:"sha1"`
+	Name      string `db:"name"`
+	Filename  string `db:"filename"`
+	Version   int64  `db:"version"`
+	Active    int64  `db:"active"`
+	CreatedAt string `db:"created_at"`
+	Duration  int64  `db:"duration"`
 }
 
 type QuizAnswer struct {

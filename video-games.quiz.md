@@ -1,4 +1,4 @@
-# Video games
+# Video games (duration: 20min)
 
 Which of the following game genres typically involve puzzle-solving?
 - [ ] First-person shooters

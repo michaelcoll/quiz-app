@@ -26,6 +26,7 @@ type Quiz struct {
 	Version   int
 	CreatedAt string
 	Active    bool
+	Duration  int
 	Questions map[string]QuizQuestion
 }
 

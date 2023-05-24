@@ -67,6 +67,6 @@ func TestScanGitRepo(t *testing.T) {
 	assert.Len(t, quizzes, 2)
 	assert.Equal(t, "Marvel Universe", quizzes[0].Name)
 	assert.Equal(t, "marvel-universe.quiz.md", quizzes[0].Filename)
-	assert.Equal(t, "fccc28a245ee3e92791ec9395d3a3791d17090da", quizzes[0].Sha1)
+	assert.Equal(t, "c152b2d0a2509a82ea5e8a6ae22fea55c7221002", quizzes[0].Sha1)
 	assert.Len(t, quizzes[0].Questions, 7)
 }

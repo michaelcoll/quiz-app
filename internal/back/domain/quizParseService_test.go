@@ -37,6 +37,7 @@ func TestParse(t *testing.T) {
 	}
 
 	assert.Equal(t, "Version Control System", actual.Name)
+	assert.Equal(t, 15*60, actual.Duration)
 	assert.Equal(t, 3, len(actual.Questions))
 	assert.Equal(t, 3, len(actual.Questions["cb4d6d8a2f29f188503607fe26acee8e3786e63f"].Answers))
 	assert.Equal(t, "Version Control System", actual.Questions["cb4d6d8a2f29f188503607fe26acee8e3786e63f"].Answers["eb3352743a553af25829c32b2492c1a41a739f1e"].Content)
@@ -44,4 +45,21 @@ func TestParse(t *testing.T) {
 	assert.Equal(t, false, actual.Questions["0340bede2f41b9b2ce12b867cc5bf0cb1bd4eabd"].Answers["332b7ca50a406b2337e339332f66f3676d885fef"].Valid)
 	assert.Equal(t, false, actual.Questions["0340bede2f41b9b2ce12b867cc5bf0cb1bd4eabd"].Answers["22128893c69197141a17149b7de81419aca57e67"].Valid)
 	assert.Equal(t, "Question with a `command` ?\n```shell\ncommand \n```", actual.Questions["0340bede2f41b9b2ce12b867cc5bf0cb1bd4eabd"].Content)
+}
+
+func Test_extractQuizNameAndDuration(t *testing.T) {
+	content := "# Marvel Universe (duration: 14min)"
+	name, duration, err := extractQuizNameAndDuration(content)
+	if err != nil {
+		assert.Failf(t, "Fail to extract quiz name", "%v", err)
+	}
+
+	assert.Equal(t, "Marvel Universe", name)
+	assert.Equal(t, 14*60, duration)
+
+	content = "# Marvel Universe"
+	_, _, err = extractQuizNameAndDuration(content)
+	if err == nil {
+		assert.Failf(t, "extract quiz name should have failed", "")
+	}
 }
