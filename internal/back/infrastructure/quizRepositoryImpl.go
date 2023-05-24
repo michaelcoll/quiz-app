@@ -65,6 +65,7 @@ func (r *QuizDBRepository) FindFullBySha1(ctx context.Context, sha1 string) (*do
 			quiz.Name = entity.QuizName
 			quiz.Active = intToBool(entity.QuizActive)
 			quiz.Version = int(entity.QuizVersion)
+			quiz.Duration = int(entity.QuizDuration)
 			quiz.CreatedAt = entity.QuizCreatedAt
 			quiz.Questions = map[string]domain.QuizQuestion{}
 		}
@@ -128,6 +129,7 @@ func (r *QuizDBRepository) Create(ctx context.Context, quiz *domain.Quiz) error 
 		Name:      quiz.Name,
 		Filename:  quiz.Filename,
 		Version:   int64(quiz.Version),
+		Duration:  int64(quiz.Duration),
 		CreatedAt: quiz.CreatedAt,
 	})
 	if err != nil {
@@ -192,6 +194,7 @@ func (r *QuizDBRepository) toQuiz(entity sqlc.Quiz) *domain.Quiz {
 		Filename:  entity.Filename,
 		Name:      entity.Name,
 		Version:   int(entity.Version),
+		Duration:  int(entity.Duration),
 		Active:    intToBool(entity.Active),
 		CreatedAt: entity.CreatedAt,
 	}

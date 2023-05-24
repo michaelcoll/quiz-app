@@ -21,6 +21,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -28,7 +29,7 @@ import (
 // Parse parse the content of a quiz file
 func (s *QuizService) Parse(filename string, content string) (*Quiz, error) {
 
-	name, err := extractQuizName(content)
+	name, duration, err := extractQuizNameAndDuration(content)
 	if err != nil {
 		return nil, err
 	}
@@ -44,6 +45,7 @@ func (s *QuizService) Parse(filename string, content string) (*Quiz, error) {
 		Filename:  filename,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		Version:   1,
+		Duration:  duration,
 		Questions: questions,
 	}, nil
 }
@@ -54,14 +56,22 @@ func getSha1(content string) string {
 	return hex.EncodeToString(algorithm.Sum(nil))
 }
 
-func extractQuizName(content string) (string, error) {
-	r := regexp.MustCompile(`^# .*`)
+func extractQuizNameAndDuration(content string) (string, int, error) {
+	r := regexp.MustCompile(`^# (?P<quizName>.*) \(duration: (?P<duration>[0-9]+)min\)`)
 
-	if r.MatchString(content) {
-		return string([]rune(r.FindString(content))[2:]), nil
-	} else {
-		return "", fmt.Errorf("no quiz name found")
+	subMatch := r.FindStringSubmatch(content)
+
+	if len(subMatch) < 3 {
+		return "", 0, fmt.Errorf("quiz name or quiz duration not found. The first line must be '# <Name> (duration: <duration>min)")
 	}
+
+	name := subMatch[1]
+	durationMin, err := strconv.ParseInt(subMatch[2], 10, 32)
+	if err != nil {
+		return "", 0, err
+	}
+
+	return name, int(durationMin) * 60, nil
 }
 
 func extractQuestions(content string) (map[string]QuizQuestion, error) {

@@ -13,7 +13,7 @@ const activateOnlyVersion = `-- name: ActivateOnlyVersion :exec
 UPDATE quiz
 SET active = 0
 WHERE filename = ?
-AND version <> ?
+  AND version <> ?
 `
 
 type ActivateOnlyVersionParams struct {
@@ -27,7 +27,7 @@ func (q *Queries) ActivateOnlyVersion(ctx context.Context, arg ActivateOnlyVersi
 }
 
 const countAllActiveQuiz = `-- name: CountAllActiveQuiz :one
-SELECT count(1)
+SELECT COUNT(1)
 FROM quiz
 WHERE active = 1
 `
@@ -71,8 +71,8 @@ func (q *Queries) CreateOrReplaceQuestion(ctx context.Context, arg CreateOrRepla
 }
 
 const createOrReplaceQuiz = `-- name: CreateOrReplaceQuiz :exec
-REPLACE INTO quiz (sha1, name, filename, version, created_at)
-VALUES (?, ?, ?, ?, ?)
+REPLACE INTO quiz (sha1, name, filename, version, duration, created_at)
+VALUES (?, ?, ?, ?, ?, ?)
 `
 
 type CreateOrReplaceQuizParams struct {
@@ -80,6 +80,7 @@ type CreateOrReplaceQuizParams struct {
 	Name      string `db:"name"`
 	Filename  string `db:"filename"`
 	Version   int64  `db:"version"`
+	Duration  int64  `db:"duration"`
 	CreatedAt string `db:"created_at"`
 }
 
@@ -89,6 +90,7 @@ func (q *Queries) CreateOrReplaceQuiz(ctx context.Context, arg CreateOrReplaceQu
 		arg.Name,
 		arg.Filename,
 		arg.Version,
+		arg.Duration,
 		arg.CreatedAt,
 	)
 	return err
@@ -182,18 +184,18 @@ func (q *Queries) FindQuizBySha1(ctx context.Context, sha1 string) (Quiz, error)
 }
 
 const findQuizFullBySha1 = `-- name: FindQuizFullBySha1 :many
-SELECT
-    q.sha1 as quiz_sha1,
-    q.filename as quiz_filename,
-    q.name as quiz_name,
-    q.version as quiz_version,
-    q.created_at as quiz_created_at,
-    q.active as quiz_active,
-    qq.sha1 as question_sha1,
-    qq.content as question_content,
-    qa.sha1 as answer_sha1,
-    qa.content as answer_content,
-    qa.valid as answer_valid
+SELECT q.sha1       AS quiz_sha1,
+       q.filename   AS quiz_filename,
+       q.name       AS quiz_name,
+       q.version    AS quiz_version,
+       q.created_at AS quiz_created_at,
+       q.duration   AS quiz_duration,
+       q.active     AS quiz_active,
+       qq.sha1      AS question_sha1,
+       qq.content   AS question_content,
+       qa.sha1      AS answer_sha1,
+       qa.content   AS answer_content,
+       qa.valid     AS answer_valid
 FROM quiz q
          JOIN quiz_question_quiz qqq ON q.sha1 = qqq.quiz_sha1
          JOIN quiz_question qq ON qq.sha1 = qqq.question_sha1
@@ -208,6 +210,7 @@ type FindQuizFullBySha1Row struct {
 	QuizName        string `db:"quiz_name"`
 	QuizVersion     int64  `db:"quiz_version"`
 	QuizCreatedAt   string `db:"quiz_created_at"`
+	QuizDuration    int64  `db:"quiz_duration"`
 	QuizActive      int64  `db:"quiz_active"`
 	QuestionSha1    string `db:"question_sha1"`
 	QuestionContent string `db:"question_content"`
@@ -231,6 +234,7 @@ func (q *Queries) FindQuizFullBySha1(ctx context.Context, sha1 string) ([]FindQu
 			&i.QuizName,
 			&i.QuizVersion,
 			&i.QuizCreatedAt,
+			&i.QuizDuration,
 			&i.QuizActive,
 			&i.QuestionSha1,
 			&i.QuestionContent,

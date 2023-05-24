@@ -29,6 +29,7 @@ type Quiz struct {
 	Name      string         `json:"name"`
 	Version   int            `json:"version"`
 	CreatedAt string         `json:"createdAt"`
+	Duration  int            `json:"duration"`
 	Active    bool           `json:"active"`
 	Questions []QuizQuestion `json:"questions,omitempty"`
 }
@@ -50,6 +51,7 @@ func (q *Quiz) fromDomain(domain *domain.Quiz) *Quiz {
 		Filename:  domain.Filename,
 		Name:      domain.Name,
 		Version:   domain.Version,
+		Duration:  domain.Duration,
 		CreatedAt: domain.CreatedAt,
 		Active:    domain.Active,
 		Questions: make([]QuizQuestion, len(domain.Questions)),

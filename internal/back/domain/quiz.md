@@ -1,4 +1,4 @@
-# Version Control System
+# Version Control System (duration: 15min)
 Que veut dire VCS ?
 - [x] Version Control System
 - [ ] Verified Control Software

@@ -6,7 +6,7 @@ CREATE TABLE quiz
     version    INTEGER NOT NULL DEFAULT 1,
     active     INTEGER NOT NULL DEFAULT 1,
     created_at TEXT    NOT NULL,
-    duration   INTEGER,
+    duration   INTEGER NOT NULL,
 
     CONSTRAINT filename_fk FOREIGN KEY (filename) REFERENCES quiz (filename),
     CONSTRAINT quiz_version_unique UNIQUE (filename, version)
