@@ -1,11 +1,12 @@
 CREATE TABLE quiz
 (
     sha1       TEXT PRIMARY KEY,
-    name       TEXT      NOT NULL,
-    filename   TEXT      NOT NULL,
-    version    INTEGER   NOT NULL DEFAULT 1,
-    active     INTEGER   NOT NULL DEFAULT 1,
-    created_at TEXT NOT NULL,
+    name       TEXT    NOT NULL,
+    filename   TEXT    NOT NULL,
+    version    INTEGER NOT NULL DEFAULT 1,
+    active     INTEGER NOT NULL DEFAULT 1,
+    created_at TEXT    NOT NULL,
+    duration   INTEGER,
 
     CONSTRAINT filename_fk FOREIGN KEY (filename) REFERENCES quiz (filename),
     CONSTRAINT quiz_version_unique UNIQUE (filename, version)
