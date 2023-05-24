@@ -1,5 +1,5 @@
 'use strict'
 
 module.exports = {
-  '*.go': ['make test', 'make vet'],
+  '*.go': ['make test'],
 }

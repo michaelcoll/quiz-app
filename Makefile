@@ -27,11 +27,11 @@ build-docker:
 
 .PHONY: test
 test:
-	@go test -v ./...
+	@go test -vet=all ./...
 
-.PHONY: vet
-vet: ## check go code
-	@go vet ./...
+.PHONY: coverage
+coverage:
+	@go test -vet=all -covermode atomic -coverprofile=coverage.out ./...
 
 run:
 	@go run . serve
