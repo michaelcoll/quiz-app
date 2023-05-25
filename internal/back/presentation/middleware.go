@@ -29,6 +29,12 @@ import (
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
 )
 
+const (
+	userCtxKey   = "user"
+	userIdCtxKey = "userId"
+	roleCtxKey   = "role"
+)
+
 func addCommonMiddlewares(group *gin.Engine) {
 	// CORS middleware
 	group.Use(cors.New(cors.Config{
@@ -61,8 +67,9 @@ func validateAuthHeaderAndGetUser(s *domain.AuthService) gin.HandlerFunc {
 			return
 		}
 
-		ctx.Set("user", user)
-		ctx.Set("role", user.Role)
+		ctx.Set(userCtxKey, user)
+		ctx.Set(userIdCtxKey, user.Id)
+		ctx.Set(roleCtxKey, user.Role)
 	}
 }
 
@@ -95,8 +102,7 @@ func enforceRoles(ctx *gin.Context) {
 		return
 	}
 
-	if r, found := ctx.Get("role"); found {
-		userRole := r.(domain.Role)
+	if userRole, found := getRoleFromContext(ctx); found {
 		if !userRole.CanAccess(role) {
 			handleHttpError(ctx,
 				http.StatusForbidden,

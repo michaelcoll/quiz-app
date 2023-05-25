@@ -63,7 +63,7 @@ func (r *QuizDBRepository) FindFullBySha1(ctx context.Context, sha1 string) (*do
 			quiz.Sha1 = entity.QuizSha1
 			quiz.Filename = entity.QuizFilename
 			quiz.Name = entity.QuizName
-			quiz.Active = intToBool(entity.QuizActive)
+			quiz.Active = entity.QuizActive
 			quiz.Version = int(entity.QuizVersion)
 			quiz.Duration = int(entity.QuizDuration)
 			quiz.CreatedAt = entity.QuizCreatedAt
@@ -81,7 +81,7 @@ func (r *QuizDBRepository) FindFullBySha1(ctx context.Context, sha1 string) (*do
 			quiz.Questions[entity.QuestionSha1].Answers[entity.AnswerSha1] = domain.QuizQuestionAnswer{
 				Sha1:    entity.AnswerSha1,
 				Content: entity.AnswerContent,
-				Valid:   intToBool(entity.AnswerValid),
+				Valid:   entity.AnswerValid,
 			}
 		}
 	}
@@ -157,7 +157,7 @@ func (r *QuizDBRepository) Create(ctx context.Context, quiz *domain.Quiz) error 
 			err := r.q.CreateOrReplaceAnswer(ctx, sqlc.CreateOrReplaceAnswerParams{
 				Sha1:    answer.Sha1,
 				Content: answer.Content,
-				Valid:   boolToInt(answer.Valid),
+				Valid:   answer.Valid,
 			})
 			if err != nil {
 				return err
@@ -195,7 +195,7 @@ func (r *QuizDBRepository) toQuiz(entity sqlc.Quiz) *domain.Quiz {
 		Name:      entity.Name,
 		Version:   int(entity.Version),
 		Duration:  int(entity.Duration),
-		Active:    intToBool(entity.Active),
+		Active:    entity.Active,
 		CreatedAt: entity.CreatedAt,
 	}
 }
@@ -205,6 +205,76 @@ func (r *QuizDBRepository) toQuizArray(entities []sqlc.Quiz) []*domain.Quiz {
 
 	for i, entity := range entities {
 		domains[i] = r.toQuiz(entity)
+	}
+
+	return domains
+}
+
+func (r *QuizDBRepository) FindAllSessions(ctx context.Context, quizActive bool, userId string, limit uint16, offset uint16) ([]*domain.Session, error) {
+	if len(userId) > 0 {
+		sessions, err := r.q.FindAllSessionsForUser(ctx, sqlc.FindAllSessionsForUserParams{
+			QuizActive: quizActive,
+			UserID:     userId,
+			Limit:      int64(limit),
+			Offset:     int64(offset),
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		return r.toSessionArray(sessions), nil
+	}
+
+	sessions, err := r.q.FindAllSessions(ctx, sqlc.FindAllSessionsParams{
+		QuizActive: quizActive,
+		Limit:      int64(limit),
+		Offset:     int64(offset),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return r.toSessionArray(sessions), nil
+}
+
+func (r *QuizDBRepository) CountAllSessions(ctx context.Context, quizActive bool, userId string) (uint32, error) {
+	if len(userId) > 0 {
+		count, err := r.q.CountAllSessionsForUser(ctx, sqlc.CountAllSessionsForUserParams{
+			QuizActive: quizActive,
+			UserID:     userId,
+		})
+		if err != nil {
+			return 0, err
+		}
+
+		return uint32(count), nil
+	}
+
+	count, err := r.q.CountAllSessions(ctx, quizActive)
+	if err != nil {
+		return 0, err
+	}
+
+	return uint32(count), nil
+}
+
+func (r *QuizDBRepository) toSession(entity sqlc.SessionView) *domain.Session {
+	return &domain.Session{
+		Id:           entity.Uuid,
+		QuizSha1:     entity.QuizSha1,
+		QuizName:     entity.QuizName,
+		QuizActive:   entity.QuizActive,
+		UserId:       entity.UserID,
+		UserName:     entity.UserName,
+		RemainingSec: entity.RemainingSec,
+	}
+}
+
+func (r *QuizDBRepository) toSessionArray(entities []sqlc.SessionView) []*domain.Session {
+	domains := make([]*domain.Session, len(entities))
+
+	for i, entity := range entities {
+		domains[i] = r.toSession(entity)
 	}
 
 	return domains

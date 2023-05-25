@@ -9,10 +9,23 @@ VALUES (?, ?, ?, ?);
 -- name: FindAllSessions :many
 SELECT *
 FROM session_view
-WHERE quiz_active = ?;
+WHERE quiz_active = ?
+LIMIT ? OFFSET ?;
 
 -- name: FindAllSessionsForUser :many
 SELECT *
+FROM session_view
+WHERE quiz_active = ?
+  AND user_id = ?
+LIMIT ? OFFSET ?;
+
+-- name: CountAllSessions :one
+SELECT COUNT(*)
+FROM session_view
+WHERE quiz_active = ?;
+
+-- name: CountAllSessionsForUser :one
+SELECT COUNT(*)
 FROM session_view
 WHERE quiz_active = ?
   AND user_id = ?;

@@ -95,7 +95,7 @@ WHERE id = ?
 `
 
 type UpdateUserActiveParams struct {
-	Active int64  `db:"active"`
+	Active bool   `db:"active"`
 	ID     string `db:"id"`
 }
 

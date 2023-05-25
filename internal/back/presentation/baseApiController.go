@@ -59,6 +59,10 @@ var pathRoleMapping = map[*endPointDef]domain.Role{
 		regex:  regexp.MustCompile(`^/api/v1/user/[^/]+/activate`),
 		method: "POST",
 	}: domain.Admin,
+	&endPointDef{
+		regex:  regexp.MustCompile(`^/api/v1/session`),
+		method: "GET",
+	}: domain.Student,
 }
 
 func (c *ApiController) Serve() {
@@ -85,6 +89,8 @@ func (c *ApiController) Serve() {
 	private.GET("/user", c.userList)
 	private.DELETE("/user/:id", c.deactivateUser)
 	private.POST("/user/:id/activate", c.activateUser)
+
+	private.GET("/session", c.sessionList)
 
 	// Listen and serve on 0.0.0.0:8080
 	fmt.Printf("%s Listening API on http://0.0.0.0%s\n", color.GreenString("✓"), color.GreenString(apiPort))

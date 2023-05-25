@@ -29,6 +29,9 @@ type QuizRepository interface {
 	CountAllActive(ctx context.Context) (uint32, error)
 	Create(ctx context.Context, quiz *Quiz) error
 	ActivateOnlyVersion(ctx context.Context, filename string, version int) error
+
+	FindAllSessions(ctx context.Context, quizActive bool, userId string, limit uint16, offset uint16) ([]*Session, error)
+	CountAllSessions(ctx context.Context, quizActive bool, userId string) (uint32, error)
 }
 
 //go:generate mockery --name AuthRepository

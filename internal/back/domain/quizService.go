@@ -148,3 +148,17 @@ func addStats(stat1 SyncStats, stat2 *SyncStats) SyncStats {
 		Updated: stat1.Updated + stat2.Updated,
 	}
 }
+
+func (s *QuizService) FindAllSessions(ctx context.Context, quizActive bool, userId string, limit uint16, offset uint16) ([]*Session, uint32, error) {
+	sessions, err := s.r.FindAllSessions(ctx, quizActive, userId, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	count, err := s.r.CountAllSessions(ctx, quizActive, userId)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return sessions, count, nil
+}

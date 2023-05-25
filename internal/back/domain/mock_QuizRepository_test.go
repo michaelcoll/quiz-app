@@ -117,6 +117,60 @@ func (_c *MockQuizRepository_CountAllActive_Call) RunAndReturn(run func(context.
 	return _c
 }
 
+// CountAllSessions provides a mock function with given fields: ctx, quizActive, userId
+func (_m *MockQuizRepository) CountAllSessions(ctx context.Context, quizActive bool, userId string) (uint32, error) {
+	ret := _m.Called(ctx, quizActive, userId)
+
+	var r0 uint32
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, bool, string) (uint32, error)); ok {
+		return rf(ctx, quizActive, userId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, bool, string) uint32); ok {
+		r0 = rf(ctx, quizActive, userId)
+	} else {
+		r0 = ret.Get(0).(uint32)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, bool, string) error); ok {
+		r1 = rf(ctx, quizActive, userId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockQuizRepository_CountAllSessions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CountAllSessions'
+type MockQuizRepository_CountAllSessions_Call struct {
+	*mock.Call
+}
+
+// CountAllSessions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - quizActive bool
+//   - userId string
+func (_e *MockQuizRepository_Expecter) CountAllSessions(ctx interface{}, quizActive interface{}, userId interface{}) *MockQuizRepository_CountAllSessions_Call {
+	return &MockQuizRepository_CountAllSessions_Call{Call: _e.mock.On("CountAllSessions", ctx, quizActive, userId)}
+}
+
+func (_c *MockQuizRepository_CountAllSessions_Call) Run(run func(ctx context.Context, quizActive bool, userId string)) *MockQuizRepository_CountAllSessions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(bool), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockQuizRepository_CountAllSessions_Call) Return(_a0 uint32, _a1 error) *MockQuizRepository_CountAllSessions_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockQuizRepository_CountAllSessions_Call) RunAndReturn(run func(context.Context, bool, string) (uint32, error)) *MockQuizRepository_CountAllSessions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Create provides a mock function with given fields: ctx, quiz
 func (_m *MockQuizRepository) Create(ctx context.Context, quiz *Quiz) error {
 	ret := _m.Called(ctx, quiz)
@@ -212,6 +266,64 @@ func (_c *MockQuizRepository_FindAllActive_Call) Return(_a0 []*Quiz, _a1 error) 
 }
 
 func (_c *MockQuizRepository_FindAllActive_Call) RunAndReturn(run func(context.Context, uint16, uint16) ([]*Quiz, error)) *MockQuizRepository_FindAllActive_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// FindAllSessions provides a mock function with given fields: ctx, quizActive, userId, limit, offset
+func (_m *MockQuizRepository) FindAllSessions(ctx context.Context, quizActive bool, userId string, limit uint16, offset uint16) ([]*Session, error) {
+	ret := _m.Called(ctx, quizActive, userId, limit, offset)
+
+	var r0 []*Session
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, bool, string, uint16, uint16) ([]*Session, error)); ok {
+		return rf(ctx, quizActive, userId, limit, offset)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, bool, string, uint16, uint16) []*Session); ok {
+		r0 = rf(ctx, quizActive, userId, limit, offset)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*Session)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, bool, string, uint16, uint16) error); ok {
+		r1 = rf(ctx, quizActive, userId, limit, offset)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockQuizRepository_FindAllSessions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FindAllSessions'
+type MockQuizRepository_FindAllSessions_Call struct {
+	*mock.Call
+}
+
+// FindAllSessions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - quizActive bool
+//   - userId string
+//   - limit uint16
+//   - offset uint16
+func (_e *MockQuizRepository_Expecter) FindAllSessions(ctx interface{}, quizActive interface{}, userId interface{}, limit interface{}, offset interface{}) *MockQuizRepository_FindAllSessions_Call {
+	return &MockQuizRepository_FindAllSessions_Call{Call: _e.mock.On("FindAllSessions", ctx, quizActive, userId, limit, offset)}
+}
+
+func (_c *MockQuizRepository_FindAllSessions_Call) Run(run func(ctx context.Context, quizActive bool, userId string, limit uint16, offset uint16)) *MockQuizRepository_FindAllSessions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(bool), args[2].(string), args[3].(uint16), args[4].(uint16))
+	})
+	return _c
+}
+
+func (_c *MockQuizRepository_FindAllSessions_Call) Return(_a0 []*Session, _a1 error) *MockQuizRepository_FindAllSessions_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockQuizRepository_FindAllSessions_Call) RunAndReturn(run func(context.Context, bool, string, uint16, uint16) ([]*Session, error)) *MockQuizRepository_FindAllSessions_Call {
 	_c.Call.Return(run)
 	return _c
 }

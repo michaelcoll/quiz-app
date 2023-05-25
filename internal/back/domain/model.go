@@ -16,7 +16,11 @@
 
 package domain
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Quiz struct {
 	Sha1 string
@@ -81,4 +85,15 @@ type AccessToken struct {
 	Email       string
 	Provenance  TokenProvenance
 	OpaqueToken string
+}
+
+type Session struct {
+	Id            uuid.UUID
+	QuizSha1      string
+	QuizName      string
+	QuizActive    bool
+	UserId        string
+	UserName      string
+	RemainingSec  int
+	ResponseRatio float32
 }

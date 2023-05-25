@@ -47,7 +47,7 @@ VALUES (?, ?, ?)
 type CreateOrReplaceAnswerParams struct {
 	Sha1    string `db:"sha1"`
 	Content string `db:"content"`
-	Valid   int64  `db:"valid"`
+	Valid   bool   `db:"valid"`
 }
 
 func (q *Queries) CreateOrReplaceAnswer(ctx context.Context, arg CreateOrReplaceAnswerParams) error {
@@ -211,12 +211,12 @@ type FindQuizFullBySha1Row struct {
 	QuizVersion     int64  `db:"quiz_version"`
 	QuizCreatedAt   string `db:"quiz_created_at"`
 	QuizDuration    int64  `db:"quiz_duration"`
-	QuizActive      int64  `db:"quiz_active"`
+	QuizActive      bool   `db:"quiz_active"`
 	QuestionSha1    string `db:"question_sha1"`
 	QuestionContent string `db:"question_content"`
 	AnswerSha1      string `db:"answer_sha1"`
 	AnswerContent   string `db:"answer_content"`
-	AnswerValid     int64  `db:"answer_valid"`
+	AnswerValid     bool   `db:"answer_valid"`
 }
 
 func (q *Queries) FindQuizFullBySha1(ctx context.Context, sha1 string) ([]FindQuizFullBySha1Row, error) {
