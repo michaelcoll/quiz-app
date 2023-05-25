@@ -29,7 +29,7 @@ var rangeRxp = regexp.MustCompile(`(?P<Unit>.*)=(?P<Start>[0-9]+)-(?P<End>[0-9]*
 
 func (c *ApiController) quizList(ctx *gin.Context) {
 
-	start, end, err := extractRangeHeader(ctx.GetHeader("Range"))
+	start, end, err := extractRangeHeader(ctx.GetHeader("Range"), "quiz")
 	if err != nil {
 		handleError(ctx, err)
 		return
@@ -45,16 +45,16 @@ func (c *ApiController) quizList(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, toQuizDtos(quizzes))
 }
 
-func extractRangeHeader(rangeHeader string) (uint16, uint16, error) {
+func extractRangeHeader(rangeHeader string, unit string) (uint16, uint16, error) {
 	r := rangeRxp.FindStringSubmatch(rangeHeader)
 	st := http.StatusRequestedRangeNotSatisfiable
 
 	if len(r) < 4 {
-		return 0, 0, Errorf(st, "Range is not valid, supported format : quiz=0-25")
+		return 0, 0, Errorf(st, "Range is not valid, supported format : %s=0-25", unit)
 	}
 
-	if r[1] != "quiz" {
-		return 0, 0, Errorf(st, "Unit in range is not valid, supported unit : quiz")
+	if r[1] != unit {
+		return 0, 0, Errorf(st, "Unit in range is not valid, supported unit : %s", unit)
 	}
 
 	start, errStart := strconv.ParseUint(r[2], 10, 16)
@@ -90,4 +90,40 @@ func (c *ApiController) quizBySha1(ctx *gin.Context) {
 
 	dto := Quiz{}
 	ctx.JSON(http.StatusOK, dto.fromDomain(quiz))
+}
+
+func (c *ApiController) sessionList(ctx *gin.Context) {
+
+	start, end, err := extractRangeHeader(ctx.GetHeader("Range"), "session")
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	quizActive := true
+	if query, present := ctx.GetQuery("quizActive"); present && query == "false" {
+		quizActive = false
+	}
+
+	userId := ""
+	if isAdmin(ctx) {
+		if query, present := ctx.GetQuery("userId"); present {
+			userId = query
+		}
+	} else {
+		if id, found := getUserIdFromContext(ctx); found {
+			userId = id
+		} else {
+			handleHttpError(ctx, http.StatusUnauthorized, "userId not present in context")
+		}
+	}
+
+	sessions, total, err := c.quizService.FindAllSessions(ctx.Request.Context(), quizActive, userId, end-start, start)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	ctx.Header("Content-Range", fmt.Sprintf("%s %d-%d/%d", "session", start, int(start)+len(sessions), total))
+	ctx.JSON(http.StatusOK, toSessionDtos(sessions))
 }

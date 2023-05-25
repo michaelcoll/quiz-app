@@ -127,7 +127,7 @@ func (r *AuthDBRepository) FindAllUser(ctx context.Context) ([]*domain.User, err
 
 func (r *AuthDBRepository) UpdateUserActive(ctx context.Context, id string, active bool) error {
 	return r.q.UpdateUserActive(ctx, sqlc.UpdateUserActiveParams{
-		Active: boolToInt(active),
+		Active: active,
 		ID:     id,
 	})
 }
@@ -138,7 +138,7 @@ func (r *AuthDBRepository) toUser(entity sqlc.User) *domain.User {
 		Email:     entity.Email,
 		Firstname: entity.Firstname,
 		Lastname:  entity.Lastname,
-		Active:    intToBool(entity.Active),
+		Active:    entity.Active,
 		Role:      r.toRole(entity.RoleID),
 	}
 }

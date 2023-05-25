@@ -134,13 +134,13 @@ CREATE TABLE session_answer
 
 CREATE VIEW session_view
 AS
-SELECT s.uuid                                                      AS uuid,
-       q.sha1                                                      AS quiz_sha1,
-       q.name                                                      AS quiz_name,
-       q.active                                                    AS quiz_active,
-       u.id                                                        AS user_id,
-       u.firstname || ' ' || u.lastname                            AS user_name,
-       MAX(q.duration - (STRFTIME('%s', 'now') - s.created_at), 0) AS remaining_sec
+SELECT s.uuid                                                                       AS uuid,
+       q.sha1                                                                       AS quiz_sha1,
+       q.name                                                                       AS quiz_name,
+       q.active                                                                     AS quiz_active,
+       u.id                                                                         AS user_id,
+       CAST(u.firstname || ' ' || u.lastname AS TEXT)                               AS user_name,
+       CAST(MAX(q.duration - (STRFTIME('%s', 'now') - s.created_at), 0) AS INTEGER) AS remaining_sec
 FROM session s
          JOIN quiz q ON q.sha1 = s.quiz_sha1
          JOIN user u ON u.id = s.user_id;

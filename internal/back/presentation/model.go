@@ -20,6 +20,8 @@ import (
 	"net/http"
 	"regexp"
 
+	"github.com/google/uuid"
+
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
 )
 
@@ -46,23 +48,21 @@ type QuizQuestionAnswer struct {
 }
 
 func (q *Quiz) fromDomain(domain *domain.Quiz) *Quiz {
-	quiz := Quiz{
-		Sha1:      domain.Sha1,
-		Filename:  domain.Filename,
-		Name:      domain.Name,
-		Version:   domain.Version,
-		Duration:  domain.Duration,
-		CreatedAt: domain.CreatedAt,
-		Active:    domain.Active,
-		Questions: make([]QuizQuestion, len(domain.Questions)),
-	}
+	q.Sha1 = domain.Sha1
+	q.Filename = domain.Filename
+	q.Name = domain.Name
+	q.Version = domain.Version
+	q.Duration = domain.Duration
+	q.CreatedAt = domain.CreatedAt
+	q.Active = domain.Active
+	q.Questions = make([]QuizQuestion, len(domain.Questions))
 
 	i := 0
-	for _, q := range domain.Questions {
+	for _, question := range domain.Questions {
 
 		j := 0
-		answers := make([]QuizQuestionAnswer, len(q.Answers))
-		for _, a := range q.Answers {
+		answers := make([]QuizQuestionAnswer, len(question.Answers))
+		for _, a := range question.Answers {
 			answers[j] = QuizQuestionAnswer{
 				Sha1:    a.Sha1,
 				Content: a.Content,
@@ -70,9 +70,9 @@ func (q *Quiz) fromDomain(domain *domain.Quiz) *Quiz {
 			j++
 		}
 
-		quiz.Questions[i] = QuizQuestion{
-			Sha1:    q.Sha1,
-			Content: q.Content,
+		q.Questions[i] = QuizQuestion{
+			Sha1:    question.Sha1,
+			Content: question.Content,
 			Answers: answers,
 		}
 		i++
@@ -85,7 +85,7 @@ func toQuizDtos(domains []*domain.Quiz) []*Quiz {
 	dtos := make([]*Quiz, len(domains))
 
 	for i, d := range domains {
-		dto := Quiz{}
+		dto := &Quiz{}
 		dtos[i] = dto.fromDomain(d)
 	}
 
@@ -136,4 +136,39 @@ func (u *User) fromDomain(d *domain.User) *User {
 	}
 
 	return u
+}
+
+type Session struct {
+	Id            uuid.UUID `json:"id"`
+	QuizSha1      string    `json:"quizSha1"`
+	QuizName      string    `json:"quizName"`
+	QuizActive    bool      `json:"quizActive"`
+	UserId        string    `json:"userId"`
+	UserName      string    `json:"userName"`
+	RemainingSec  int       `json:"remainingSec"`
+	ResponseRatio float32   `json:"responseRatio"`
+}
+
+func (s *Session) fromDomain(d *domain.Session) *Session {
+	s.Id = d.Id
+	s.QuizSha1 = d.QuizSha1
+	s.UserName = d.UserName
+	s.QuizActive = d.QuizActive
+	s.UserId = d.UserId
+	s.UserName = d.UserName
+	s.RemainingSec = d.RemainingSec
+	s.ResponseRatio = d.ResponseRatio
+
+	return s
+}
+
+func toSessionDtos(domains []*domain.Session) []*Session {
+	dtos := make([]*Session, len(domains))
+
+	for i, d := range domains {
+		dto := &Session{}
+		dtos[i] = dto.fromDomain(d)
+	}
+
+	return dtos
 }

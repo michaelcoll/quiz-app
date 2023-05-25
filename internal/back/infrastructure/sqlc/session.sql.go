@@ -12,6 +12,38 @@ import (
 	"github.com/google/uuid"
 )
 
+const countAllSessions = `-- name: CountAllSessions :one
+SELECT COUNT(*)
+FROM session_view
+WHERE quiz_active = ?
+`
+
+func (q *Queries) CountAllSessions(ctx context.Context, quizActive bool) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countAllSessions, quizActive)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countAllSessionsForUser = `-- name: CountAllSessionsForUser :one
+SELECT COUNT(*)
+FROM session_view
+WHERE quiz_active = ?
+  AND user_id = ?
+`
+
+type CountAllSessionsForUserParams struct {
+	QuizActive bool   `db:"quiz_active"`
+	UserID     string `db:"user_id"`
+}
+
+func (q *Queries) CountAllSessionsForUser(ctx context.Context, arg CountAllSessionsForUserParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countAllSessionsForUser, arg.QuizActive, arg.UserID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createOrReplaceSession = `-- name: CreateOrReplaceSession :exec
 REPLACE INTO session (uuid, quiz_sha1, user_id, created_at)
 VALUES (?, ?, ?, ?)
@@ -60,10 +92,17 @@ const findAllSessions = `-- name: FindAllSessions :many
 SELECT uuid, quiz_sha1, quiz_name, quiz_active, user_id, user_name, remaining_sec
 FROM session_view
 WHERE quiz_active = ?
+LIMIT ? OFFSET ?
 `
 
-func (q *Queries) FindAllSessions(ctx context.Context, quizActive int64) ([]SessionView, error) {
-	rows, err := q.db.QueryContext(ctx, findAllSessions, quizActive)
+type FindAllSessionsParams struct {
+	QuizActive bool  `db:"quiz_active"`
+	Limit      int64 `db:"limit"`
+	Offset     int64 `db:"offset"`
+}
+
+func (q *Queries) FindAllSessions(ctx context.Context, arg FindAllSessionsParams) ([]SessionView, error) {
+	rows, err := q.db.QueryContext(ctx, findAllSessions, arg.QuizActive, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -161,15 +200,23 @@ SELECT uuid, quiz_sha1, quiz_name, quiz_active, user_id, user_name, remaining_se
 FROM session_view
 WHERE quiz_active = ?
   AND user_id = ?
+LIMIT ? OFFSET ?
 `
 
 type FindAllSessionsForUserParams struct {
-	QuizActive int64  `db:"quiz_active"`
+	QuizActive bool   `db:"quiz_active"`
 	UserID     string `db:"user_id"`
+	Limit      int64  `db:"limit"`
+	Offset     int64  `db:"offset"`
 }
 
 func (q *Queries) FindAllSessionsForUser(ctx context.Context, arg FindAllSessionsForUserParams) ([]SessionView, error) {
-	rows, err := q.db.QueryContext(ctx, findAllSessionsForUser, arg.QuizActive, arg.UserID)
+	rows, err := q.db.QueryContext(ctx, findAllSessionsForUser,
+		arg.QuizActive,
+		arg.UserID,
+		arg.Limit,
+		arg.Offset,
+	)
 	if err != nil {
 		return nil, err
 	}

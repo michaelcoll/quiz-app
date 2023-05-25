@@ -5,7 +5,6 @@
 package sqlc
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,14 +15,14 @@ type Quiz struct {
 	Name      string `db:"name"`
 	Filename  string `db:"filename"`
 	Version   int64  `db:"version"`
-	Active    int64  `db:"active"`
+	Active    bool   `db:"active"`
 	CreatedAt string `db:"created_at"`
 	Duration  int64  `db:"duration"`
 }
 
 type QuizAnswer struct {
 	Sha1    string `db:"sha1"`
-	Valid   int64  `db:"valid"`
+	Valid   bool   `db:"valid"`
 	Content string `db:"content"`
 }
 
@@ -77,13 +76,13 @@ type SessionResponseView struct {
 }
 
 type SessionView struct {
-	Uuid         uuid.UUID    `db:"uuid"`
-	QuizSha1     string       `db:"quiz_sha1"`
-	QuizName     string       `db:"quiz_name"`
-	QuizActive   int64        `db:"quiz_active"`
-	UserID       string       `db:"user_id"`
-	UserName     sql.NullBool `db:"user_name"`
-	RemainingSec interface{}  `db:"remaining_sec"`
+	Uuid         uuid.UUID `db:"uuid"`
+	QuizSha1     string    `db:"quiz_sha1"`
+	QuizName     string    `db:"quiz_name"`
+	QuizActive   bool      `db:"quiz_active"`
+	UserID       string    `db:"user_id"`
+	UserName     string    `db:"user_name"`
+	RemainingSec int       `db:"remaining_sec"`
 }
 
 type User struct {
@@ -91,6 +90,6 @@ type User struct {
 	Email     string `db:"email"`
 	Firstname string `db:"firstname"`
 	Lastname  string `db:"lastname"`
-	Active    int64  `db:"active"`
+	Active    bool   `db:"active"`
 	RoleID    int64  `db:"role_id"`
 }
