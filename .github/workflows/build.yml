@@ -48,8 +48,10 @@ jobs:
         run: make coverage
 
       - name: Install goveralls
+        if: ${{ github.actor != 'dependabot[bot]' }}
         run: go install github.com/mattn/goveralls@latest
       - name: Send coverage
+        if: ${{ github.actor != 'dependabot[bot]' }}
         env:
           COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
         run: goveralls -coverprofile=coverage.out -service=github
