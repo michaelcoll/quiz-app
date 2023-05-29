@@ -11,7 +11,9 @@ sql:
         emit_empty_slices: true
         emit_methods_with_db_argument: false
         overrides:
-          - db_type: "uuid"
+          - column: "main.*.uuid"
+            go_type: "github.com/google/uuid.UUID"
+          - column: "main.*.session_uuid"
             go_type: "github.com/google/uuid.UUID"
           - column: "main.session_view.user_name"
             go_type: "string"
@@ -24,4 +26,6 @@ sql:
           - column: "main.*.valid"
             go_type: "bool"
           - column: "main.*.answer_valid"
+            go_type: "bool"
+          - column: "main.*.checked"
             go_type: "bool"

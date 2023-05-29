@@ -105,19 +105,45 @@ func TestQuiz_fromDomain(t *testing.T) {
 
 	assert.Len(t, dto.Questions, 2)
 
-	assert.Equal(t, question1Sha1, dto.Questions[0].Sha1)
-	assert.Equal(t, question1Content, dto.Questions[0].Content)
-	assert.Len(t, dto.Questions[0].Answers, 2)
-	assert.Equal(t, answer1Sha1, dto.Questions[0].Answers[0].Sha1)
-	assert.Equal(t, answer1Content, dto.Questions[0].Answers[0].Content)
-	assert.Equal(t, answer2Sha1, dto.Questions[0].Answers[1].Sha1)
-	assert.Equal(t, answer2Content, dto.Questions[0].Answers[1].Content)
+	question, b := getQuestion(dto.Questions, question1Sha1)
+	assert.True(t, b)
+	assert.Equal(t, question1Content, question.Content)
+	assert.Len(t, question.Answers, 2)
+	answer, b := getAnswer(question.Answers, answer1Sha1)
+	assert.True(t, b)
+	assert.Equal(t, answer1Content, answer.Content)
+	answer, b = getAnswer(question.Answers, answer2Sha1)
+	assert.True(t, b)
+	assert.Equal(t, answer2Content, answer.Content)
 
-	assert.Equal(t, question2Sha1, dto.Questions[1].Sha1)
-	assert.Equal(t, question2Content, dto.Questions[1].Content)
-	assert.Len(t, dto.Questions[1].Answers, 2)
-	assert.Equal(t, answer3Sha1, dto.Questions[1].Answers[0].Sha1)
-	assert.Equal(t, answer3Content, dto.Questions[1].Answers[0].Content)
-	assert.Equal(t, answer4Sha1, dto.Questions[1].Answers[1].Sha1)
-	assert.Equal(t, answer4Content, dto.Questions[1].Answers[1].Content)
+	question, b = getQuestion(dto.Questions, question2Sha1)
+	assert.True(t, b)
+	assert.Equal(t, question2Content, question.Content)
+	assert.Len(t, question.Answers, 2)
+	answer, b = getAnswer(question.Answers, answer3Sha1)
+	assert.True(t, b)
+	assert.Equal(t, answer3Content, answer.Content)
+	answer, b = getAnswer(question.Answers, answer4Sha1)
+	assert.True(t, b)
+	assert.Equal(t, answer4Content, answer.Content)
+}
+
+func getQuestion(questions []QuizQuestion, sha1 string) (QuizQuestion, bool) {
+	for _, question := range questions {
+		if question.Sha1 == sha1 {
+			return question, true
+		}
+	}
+
+	return QuizQuestion{}, false
+}
+
+func getAnswer(answers []QuizQuestionAnswer, sha1 string) (QuizQuestionAnswer, bool) {
+	for _, answer := range answers {
+		if answer.Sha1 == sha1 {
+			return answer, true
+		}
+	}
+
+	return QuizQuestionAnswer{}, false
 }

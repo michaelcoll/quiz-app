@@ -18,6 +18,8 @@ package domain
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 //go:generate mockery --name QuizRepository
@@ -32,6 +34,8 @@ type QuizRepository interface {
 
 	FindAllSessions(ctx context.Context, quizActive bool, userId string, limit uint16, offset uint16) ([]*Session, error)
 	CountAllSessions(ctx context.Context, quizActive bool, userId string) (uint32, error)
+	StartSession(ctx context.Context, userId string, quizSha1 string) (uuid.UUID, error)
+	AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUID, userId string, questionSha1 string, answerSha1 string, checked bool) error
 }
 
 //go:generate mockery --name AuthRepository

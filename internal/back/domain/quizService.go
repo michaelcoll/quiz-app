@@ -22,6 +22,7 @@ import (
 	"strconv"
 
 	"github.com/fatih/color"
+	"github.com/google/uuid"
 	"github.com/spf13/viper"
 )
 
@@ -161,4 +162,12 @@ func (s *QuizService) FindAllSessions(ctx context.Context, quizActive bool, user
 	}
 
 	return sessions, count, nil
+}
+
+func (s *QuizService) StartSession(ctx context.Context, userId string, quizSha1 string) (uuid.UUID, error) {
+	return s.r.StartSession(ctx, userId, quizSha1)
+}
+
+func (s *QuizService) AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUID, userId string, questionSha1 string, answerSha1 string, checked bool) error {
+	return s.r.AddSessionAnswer(ctx, sessionUuid, userId, questionSha1, answerSha1, checked)
 }

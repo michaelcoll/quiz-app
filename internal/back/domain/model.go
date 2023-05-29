@@ -56,6 +56,7 @@ type SyncStats struct {
 type Role int8
 
 const (
+	NoRole  Role = 0
 	Admin   Role = 1
 	Teacher Role = 2
 	Student Role = 3
@@ -87,13 +88,18 @@ type AccessToken struct {
 	OpaqueToken string
 }
 
+type SessionResult struct {
+	GoodAnswer  int
+	TotalAnswer int
+}
+
 type Session struct {
-	Id            uuid.UUID
-	QuizSha1      string
-	QuizName      string
-	QuizActive    bool
-	UserId        string
-	UserName      string
-	RemainingSec  int
-	ResponseRatio float32
+	Id           uuid.UUID
+	QuizSha1     string
+	QuizName     string
+	QuizActive   bool
+	UserId       string
+	UserName     string
+	RemainingSec int
+	Result       *SessionResult
 }

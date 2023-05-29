@@ -23,6 +23,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 var rangeRxp = regexp.MustCompile(`(?P<Unit>.*)=(?P<Start>[0-9]+)-(?P<End>[0-9]*)`)
@@ -115,6 +116,7 @@ func (c *ApiController) sessionList(ctx *gin.Context) {
 			userId = id
 		} else {
 			handleHttpError(ctx, http.StatusUnauthorized, "userId not present in context")
+			return
 		}
 	}
 
@@ -126,4 +128,56 @@ func (c *ApiController) sessionList(ctx *gin.Context) {
 
 	ctx.Header("Content-Range", fmt.Sprintf("%s %d-%d/%d", "session", start, int(start)+len(sessions), total))
 	ctx.JSON(http.StatusOK, toSessionDtos(sessions))
+}
+
+func (c *ApiController) startSession(ctx *gin.Context) {
+	quizSha1, present := ctx.GetQuery("quizSha1")
+	if !present {
+		handleHttpError(ctx, http.StatusBadRequest, "quizSha1 is required")
+		return
+	}
+
+	userId, present := getUserIdFromContext(ctx)
+	if !present {
+		handleHttpError(ctx, http.StatusUnauthorized, "userId not present in context")
+		return
+	}
+
+	sessionId, err := c.quizService.StartSession(ctx, userId, quizSha1)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, Session{Id: sessionId})
+}
+
+func (c *ApiController) addSessionAnswer(ctx *gin.Context) {
+	sessionIdStr := ctx.Param("sessionId")
+
+	sessionId, err := uuid.Parse(sessionIdStr)
+	if err != nil {
+		handleHttpError(ctx, http.StatusBadRequest, "invalid sessionId")
+		return
+	}
+
+	var r SessionAnswerRequestBody
+	if err := ctx.BindJSON(&r); err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	userId, present := getUserIdFromContext(ctx)
+	if !present {
+		handleHttpError(ctx, http.StatusUnauthorized, "userId not present in context")
+		return
+	}
+
+	err = c.quizService.AddSessionAnswer(ctx, sessionId, userId, r.QuestionSha1, r.AnswerSha1, r.Checked)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, gin.H{"message": "answer saved"})
 }

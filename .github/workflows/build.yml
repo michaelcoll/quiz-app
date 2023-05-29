@@ -29,8 +29,6 @@ jobs:
           cache-dependency-path: |
             internal/web/pnpm-lock.yaml
 
-      - uses: docker/setup-buildx-action@v2
-
       - name: Prepare Vue App
         run: |
           make prepare
@@ -58,12 +56,6 @@ jobs:
 
       - name: Web ESLint
         run: make vue-lint
-
-      - uses: docker/build-push-action@v4
-        with:
-          context: .
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Save Golang cache
         if: always()
