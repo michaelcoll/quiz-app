@@ -22,6 +22,8 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/google/uuid"
+
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
 	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/sqlc"
 	pm "github.com/michaelcoll/quiz-app/internal/back/presentation"
@@ -259,7 +261,8 @@ func (r *QuizDBRepository) CountAllSessions(ctx context.Context, quizActive bool
 }
 
 func (r *QuizDBRepository) toSession(entity sqlc.SessionView) *domain.Session {
-	return &domain.Session{
+
+	d := domain.Session{
 		Id:           entity.Uuid,
 		QuizSha1:     entity.QuizSha1,
 		QuizName:     entity.QuizName,
@@ -268,6 +271,19 @@ func (r *QuizDBRepository) toSession(entity sqlc.SessionView) *domain.Session {
 		UserName:     entity.UserName,
 		RemainingSec: entity.RemainingSec,
 	}
+
+	if entity.RemainingSec == 0 {
+		var goodAnswer int
+		if entity.Results.Valid {
+			goodAnswer = int(entity.Results.Float64)
+		}
+		d.Result = &domain.SessionResult{
+			GoodAnswer:  goodAnswer,
+			TotalAnswer: int(entity.CheckedAnswers),
+		}
+	}
+
+	return &d
 }
 
 func (r *QuizDBRepository) toSessionArray(entities []sqlc.SessionView) []*domain.Session {
@@ -278,4 +294,41 @@ func (r *QuizDBRepository) toSessionArray(entities []sqlc.SessionView) []*domain
 	}
 
 	return domains
+}
+
+func (r *QuizDBRepository) StartSession(ctx context.Context, userId string, quizSha1 string) (uuid.UUID, error) {
+	sessionUuid, err := uuid.NewRandom()
+	if err != nil {
+		return uuid.UUID{}, err
+	}
+
+	err = r.q.CreateOrReplaceSession(ctx, sqlc.CreateOrReplaceSessionParams{
+		Uuid:     sessionUuid,
+		QuizSha1: quizSha1,
+		UserID:   userId,
+	})
+	if err != nil {
+		return uuid.UUID{}, err
+	}
+
+	return sessionUuid, nil
+}
+
+func (r *QuizDBRepository) AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUID, userId string, questionSha1 string, answerSha1 string, checked bool) error {
+
+	err := r.q.CreateOrReplaceSessionAnswer(ctx, sqlc.CreateOrReplaceSessionAnswerParams{
+		SessionUuid:  sessionUuid,
+		UserID:       userId,
+		QuestionSha1: questionSha1,
+		AnswerSha1:   answerSha1,
+		Checked:      checked,
+	})
+	if err != nil {
+		if err.Error() == "FOREIGN KEY constraint failed" || err.Error() == "session is over" {
+			return domain.Errorf(domain.InvalidArgument, err.Error())
+		}
+		return err
+	}
+
+	return nil
 }

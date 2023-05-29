@@ -5,6 +5,7 @@
 package sqlc
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -59,10 +60,11 @@ type Session struct {
 }
 
 type SessionAnswer struct {
-	SessionUuid  string `db:"session_uuid"`
-	QuestionSha1 string `db:"question_sha1"`
-	AnswerSha1   string `db:"answer_sha1"`
-	Checked      int64  `db:"checked"`
+	SessionUuid  uuid.UUID `db:"session_uuid"`
+	UserID       string    `db:"user_id"`
+	QuestionSha1 string    `db:"question_sha1"`
+	AnswerSha1   string    `db:"answer_sha1"`
+	Checked      bool      `db:"checked"`
 }
 
 type SessionResponseView struct {
@@ -71,18 +73,20 @@ type SessionResponseView struct {
 	AnswerSha1   string      `db:"answer_sha1"`
 	SessionUuid  uuid.UUID   `db:"session_uuid"`
 	UserID       string      `db:"user_id"`
-	Checked      int64       `db:"checked"`
+	Checked      bool        `db:"checked"`
 	Result       interface{} `db:"result"`
 }
 
 type SessionView struct {
-	Uuid         uuid.UUID `db:"uuid"`
-	QuizSha1     string    `db:"quiz_sha1"`
-	QuizName     string    `db:"quiz_name"`
-	QuizActive   bool      `db:"quiz_active"`
-	UserID       string    `db:"user_id"`
-	UserName     string    `db:"user_name"`
-	RemainingSec int       `db:"remaining_sec"`
+	Uuid           uuid.UUID       `db:"uuid"`
+	QuizSha1       string          `db:"quiz_sha1"`
+	QuizName       string          `db:"quiz_name"`
+	QuizActive     bool            `db:"quiz_active"`
+	UserID         string          `db:"user_id"`
+	UserName       string          `db:"user_name"`
+	RemainingSec   int             `db:"remaining_sec"`
+	CheckedAnswers int64           `db:"checked_answers"`
+	Results        sql.NullFloat64 `db:"results"`
 }
 
 type User struct {

@@ -7,7 +7,6 @@ package sqlc
 
 import (
 	"context"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -45,42 +44,38 @@ func (q *Queries) CountAllSessionsForUser(ctx context.Context, arg CountAllSessi
 }
 
 const createOrReplaceSession = `-- name: CreateOrReplaceSession :exec
-REPLACE INTO session (uuid, quiz_sha1, user_id, created_at)
-VALUES (?, ?, ?, ?)
+REPLACE INTO session (uuid, quiz_sha1, user_id)
+VALUES (?, ?, ?)
 `
 
 type CreateOrReplaceSessionParams struct {
-	Uuid      uuid.UUID `db:"uuid"`
-	QuizSha1  string    `db:"quiz_sha1"`
-	UserID    string    `db:"user_id"`
-	CreatedAt time.Time `db:"created_at"`
+	Uuid     uuid.UUID `db:"uuid"`
+	QuizSha1 string    `db:"quiz_sha1"`
+	UserID   string    `db:"user_id"`
 }
 
 func (q *Queries) CreateOrReplaceSession(ctx context.Context, arg CreateOrReplaceSessionParams) error {
-	_, err := q.db.ExecContext(ctx, createOrReplaceSession,
-		arg.Uuid,
-		arg.QuizSha1,
-		arg.UserID,
-		arg.CreatedAt,
-	)
+	_, err := q.db.ExecContext(ctx, createOrReplaceSession, arg.Uuid, arg.QuizSha1, arg.UserID)
 	return err
 }
 
 const createOrReplaceSessionAnswer = `-- name: CreateOrReplaceSessionAnswer :exec
-REPLACE INTO session_answer (session_uuid, question_sha1, answer_sha1, checked)
-VALUES (?, ?, ?, ?)
+REPLACE INTO session_answer (session_uuid, user_id, question_sha1, answer_sha1, checked)
+VALUES (?, ?, ?, ?, ?)
 `
 
 type CreateOrReplaceSessionAnswerParams struct {
-	SessionUuid  string `db:"session_uuid"`
-	QuestionSha1 string `db:"question_sha1"`
-	AnswerSha1   string `db:"answer_sha1"`
-	Checked      int64  `db:"checked"`
+	SessionUuid  uuid.UUID `db:"session_uuid"`
+	UserID       string    `db:"user_id"`
+	QuestionSha1 string    `db:"question_sha1"`
+	AnswerSha1   string    `db:"answer_sha1"`
+	Checked      bool      `db:"checked"`
 }
 
 func (q *Queries) CreateOrReplaceSessionAnswer(ctx context.Context, arg CreateOrReplaceSessionAnswerParams) error {
 	_, err := q.db.ExecContext(ctx, createOrReplaceSessionAnswer,
 		arg.SessionUuid,
+		arg.UserID,
 		arg.QuestionSha1,
 		arg.AnswerSha1,
 		arg.Checked,
@@ -89,7 +84,7 @@ func (q *Queries) CreateOrReplaceSessionAnswer(ctx context.Context, arg CreateOr
 }
 
 const findAllSessions = `-- name: FindAllSessions :many
-SELECT uuid, quiz_sha1, quiz_name, quiz_active, user_id, user_name, remaining_sec
+SELECT uuid, quiz_sha1, quiz_name, quiz_active, user_id, user_name, remaining_sec, checked_answers, results
 FROM session_view
 WHERE quiz_active = ?
 LIMIT ? OFFSET ?
@@ -118,6 +113,8 @@ func (q *Queries) FindAllSessions(ctx context.Context, arg FindAllSessionsParams
 			&i.UserID,
 			&i.UserName,
 			&i.RemainingSec,
+			&i.CheckedAnswers,
+			&i.Results,
 		); err != nil {
 			return nil, err
 		}
@@ -160,7 +157,7 @@ type FindAllSessionsAnswerForSessionRow struct {
 	AnswerSha1   string      `db:"answer_sha1"`
 	SessionUuid  uuid.UUID   `db:"session_uuid"`
 	UserID       string      `db:"user_id"`
-	Checked      int64       `db:"checked"`
+	Checked      bool        `db:"checked"`
 	Column7      interface{} `db:"column_7"`
 }
 
@@ -196,7 +193,7 @@ func (q *Queries) FindAllSessionsAnswerForSession(ctx context.Context, arg FindA
 }
 
 const findAllSessionsForUser = `-- name: FindAllSessionsForUser :many
-SELECT uuid, quiz_sha1, quiz_name, quiz_active, user_id, user_name, remaining_sec
+SELECT uuid, quiz_sha1, quiz_name, quiz_active, user_id, user_name, remaining_sec, checked_answers, results
 FROM session_view
 WHERE quiz_active = ?
   AND user_id = ?
@@ -232,6 +229,8 @@ func (q *Queries) FindAllSessionsForUser(ctx context.Context, arg FindAllSession
 			&i.UserID,
 			&i.UserName,
 			&i.RemainingSec,
+			&i.CheckedAnswers,
+			&i.Results,
 		); err != nil {
 			return nil, err
 		}

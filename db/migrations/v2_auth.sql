@@ -20,5 +20,5 @@ CREATE TABLE user
     active    INTEGER NOT NULL DEFAULT 1,
     role_id   INTEGER NOT NULL,
 
-    CONSTRAINT role_fk FOREIGN KEY (role_id) REFERENCES role (id)
+    FOREIGN KEY (role_id) REFERENCES role (id)
 );

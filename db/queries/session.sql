@@ -1,10 +1,10 @@
 -- name: CreateOrReplaceSession :exec
-REPLACE INTO session (uuid, quiz_sha1, user_id, created_at)
-VALUES (?, ?, ?, ?);
+REPLACE INTO session (uuid, quiz_sha1, user_id)
+VALUES (?, ?, ?);
 
 -- name: CreateOrReplaceSessionAnswer :exec
-REPLACE INTO session_answer (session_uuid, question_sha1, answer_sha1, checked)
-VALUES (?, ?, ?, ?);
+REPLACE INTO session_answer (session_uuid, user_id, question_sha1, answer_sha1, checked)
+VALUES (?, ?, ?, ?, ?);
 
 -- name: FindAllSessions :many
 SELECT *

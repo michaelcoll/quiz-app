@@ -8,8 +8,7 @@ CREATE TABLE quiz
     created_at TEXT    NOT NULL,
     duration   INTEGER NOT NULL,
 
-    CONSTRAINT filename_fk FOREIGN KEY (filename) REFERENCES quiz (filename),
-    CONSTRAINT quiz_version_unique UNIQUE (filename, version)
+    UNIQUE (filename, version)
 );
 
 CREATE TABLE quiz_question
@@ -23,9 +22,9 @@ CREATE TABLE quiz_question_quiz
     quiz_sha1     TEXT NOT NULL,
     question_sha1 TEXT NOT NULL,
 
-    CONSTRAINT pk PRIMARY KEY (quiz_sha1, question_sha1),
-    CONSTRAINT quiz_fk FOREIGN KEY (quiz_sha1) REFERENCES quiz (sha1),
-    CONSTRAINT question_fk FOREIGN KEY (question_sha1) REFERENCES quiz_question (sha1)
+    PRIMARY KEY (quiz_sha1, question_sha1),
+    FOREIGN KEY (quiz_sha1) REFERENCES quiz (sha1),
+    FOREIGN KEY (question_sha1) REFERENCES quiz_question (sha1)
 );
 
 CREATE TABLE quiz_answer
@@ -40,6 +39,6 @@ CREATE TABLE quiz_question_answer
     question_sha1 TEXT NOT NULL,
     answer_sha1   TEXT NOT NULL,
 
-    CONSTRAINT question_fk FOREIGN KEY (question_sha1) REFERENCES quiz_question (sha1),
-    CONSTRAINT answer_fk FOREIGN KEY (answer_sha1) REFERENCES quiz_answer (sha1)
+    FOREIGN KEY (question_sha1) REFERENCES quiz_question (sha1),
+    FOREIGN KEY (answer_sha1) REFERENCES quiz_answer (sha1)
 );

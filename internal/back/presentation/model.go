@@ -138,15 +138,20 @@ func (u *User) fromDomain(d *domain.User) *User {
 	return u
 }
 
+type SessionResult struct {
+	GoodAnswer  int `json:"goodAnswer,omitempty"`
+	TotalAnswer int `json:"totalAnswer,omitempty"`
+}
+
 type Session struct {
-	Id            uuid.UUID `json:"id"`
-	QuizSha1      string    `json:"quizSha1"`
-	QuizName      string    `json:"quizName"`
-	QuizActive    bool      `json:"quizActive"`
-	UserId        string    `json:"userId"`
-	UserName      string    `json:"userName"`
-	RemainingSec  int       `json:"remainingSec"`
-	ResponseRatio float32   `json:"responseRatio"`
+	Id           uuid.UUID      `json:"id"`
+	QuizSha1     string         `json:"quizSha1,omitempty"`
+	QuizName     string         `json:"quizName,omitempty"`
+	QuizActive   bool           `json:"quizActive,omitempty"`
+	UserId       string         `json:"userId,omitempty"`
+	UserName     string         `json:"userName,omitempty"`
+	RemainingSec int            `json:"remainingSec,omitempty"`
+	Result       *SessionResult `json:"result,omitempty"`
 }
 
 func (s *Session) fromDomain(d *domain.Session) *Session {
@@ -157,7 +162,12 @@ func (s *Session) fromDomain(d *domain.Session) *Session {
 	s.UserId = d.UserId
 	s.UserName = d.UserName
 	s.RemainingSec = d.RemainingSec
-	s.ResponseRatio = d.ResponseRatio
+	if d.Result != nil {
+		s.Result = &SessionResult{
+			GoodAnswer:  d.Result.GoodAnswer,
+			TotalAnswer: d.Result.TotalAnswer,
+		}
+	}
 
 	return s
 }
@@ -171,4 +181,10 @@ func toSessionDtos(domains []*domain.Session) []*Session {
 	}
 
 	return dtos
+}
+
+type SessionAnswerRequestBody struct {
+	QuestionSha1 string `json:"questionSha1" binding:"required"`
+	AnswerSha1   string `json:"answerSha1" binding:"required"`
+	Checked      bool   `json:"checked" binding:"required"`
 }

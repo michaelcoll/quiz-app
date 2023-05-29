@@ -5,6 +5,7 @@ package domain
 import (
 	context "context"
 
+	uuid "github.com/google/uuid"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -61,6 +62,53 @@ func (_c *MockQuizRepository_ActivateOnlyVersion_Call) Return(_a0 error) *MockQu
 }
 
 func (_c *MockQuizRepository_ActivateOnlyVersion_Call) RunAndReturn(run func(context.Context, string, int) error) *MockQuizRepository_ActivateOnlyVersion_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// AddSessionAnswer provides a mock function with given fields: ctx, sessionUuid, userId, questionSha1, answerSha1, checked
+func (_m *MockQuizRepository) AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUID, userId string, questionSha1 string, answerSha1 string, checked bool) error {
+	ret := _m.Called(ctx, sessionUuid, userId, questionSha1, answerSha1, checked)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, string, string, string, bool) error); ok {
+		r0 = rf(ctx, sessionUuid, userId, questionSha1, answerSha1, checked)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockQuizRepository_AddSessionAnswer_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AddSessionAnswer'
+type MockQuizRepository_AddSessionAnswer_Call struct {
+	*mock.Call
+}
+
+// AddSessionAnswer is a helper method to define mock.On call
+//   - ctx context.Context
+//   - sessionUuid uuid.UUID
+//   - userId string
+//   - questionSha1 string
+//   - answerSha1 string
+//   - checked bool
+func (_e *MockQuizRepository_Expecter) AddSessionAnswer(ctx interface{}, sessionUuid interface{}, userId interface{}, questionSha1 interface{}, answerSha1 interface{}, checked interface{}) *MockQuizRepository_AddSessionAnswer_Call {
+	return &MockQuizRepository_AddSessionAnswer_Call{Call: _e.mock.On("AddSessionAnswer", ctx, sessionUuid, userId, questionSha1, answerSha1, checked)}
+}
+
+func (_c *MockQuizRepository_AddSessionAnswer_Call) Run(run func(ctx context.Context, sessionUuid uuid.UUID, userId string, questionSha1 string, answerSha1 string, checked bool)) *MockQuizRepository_AddSessionAnswer_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(uuid.UUID), args[2].(string), args[3].(string), args[4].(string), args[5].(bool))
+	})
+	return _c
+}
+
+func (_c *MockQuizRepository_AddSessionAnswer_Call) Return(_a0 error) *MockQuizRepository_AddSessionAnswer_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockQuizRepository_AddSessionAnswer_Call) RunAndReturn(run func(context.Context, uuid.UUID, string, string, string, bool) error) *MockQuizRepository_AddSessionAnswer_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -489,6 +537,62 @@ func (_c *MockQuizRepository_FindLatestVersionByFilename_Call) Return(_a0 *Quiz,
 }
 
 func (_c *MockQuizRepository_FindLatestVersionByFilename_Call) RunAndReturn(run func(context.Context, string) (*Quiz, error)) *MockQuizRepository_FindLatestVersionByFilename_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// StartSession provides a mock function with given fields: ctx, userId, quizSha1
+func (_m *MockQuizRepository) StartSession(ctx context.Context, userId string, quizSha1 string) (uuid.UUID, error) {
+	ret := _m.Called(ctx, userId, quizSha1)
+
+	var r0 uuid.UUID
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) (uuid.UUID, error)); ok {
+		return rf(ctx, userId, quizSha1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) uuid.UUID); ok {
+		r0 = rf(ctx, userId, quizSha1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(uuid.UUID)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, userId, quizSha1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockQuizRepository_StartSession_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'StartSession'
+type MockQuizRepository_StartSession_Call struct {
+	*mock.Call
+}
+
+// StartSession is a helper method to define mock.On call
+//   - ctx context.Context
+//   - userId string
+//   - quizSha1 string
+func (_e *MockQuizRepository_Expecter) StartSession(ctx interface{}, userId interface{}, quizSha1 interface{}) *MockQuizRepository_StartSession_Call {
+	return &MockQuizRepository_StartSession_Call{Call: _e.mock.On("StartSession", ctx, userId, quizSha1)}
+}
+
+func (_c *MockQuizRepository_StartSession_Call) Run(run func(ctx context.Context, userId string, quizSha1 string)) *MockQuizRepository_StartSession_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockQuizRepository_StartSession_Call) Return(_a0 uuid.UUID, _a1 error) *MockQuizRepository_StartSession_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockQuizRepository_StartSession_Call) RunAndReturn(run func(context.Context, string, string) (uuid.UUID, error)) *MockQuizRepository_StartSession_Call {
 	_c.Call.Return(run)
 	return _c
 }

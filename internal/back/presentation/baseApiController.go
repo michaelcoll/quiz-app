@@ -38,32 +38,7 @@ func NewApiController(quizService *domain.QuizService, authService *domain.AuthS
 	return ApiController{quizService: quizService, authService: authService}
 }
 
-var pathRoleMapping = map[*endPointDef]domain.Role{
-	&endPointDef{
-		regex:  regexp.MustCompile(`^/api/v1/quiz`),
-		method: "GET",
-	}: domain.Student,
-	&endPointDef{
-		regex:  regexp.MustCompile(`^/api/v1/quiz/[^/]+`),
-		method: "GET",
-	}: domain.Student,
-	&endPointDef{
-		regex:  regexp.MustCompile(`^/api/v1/user`),
-		method: "GET",
-	}: domain.Admin,
-	&endPointDef{
-		regex:  regexp.MustCompile(`^/api/v1/user/[^/]+`),
-		method: "DELETE",
-	}: domain.Admin,
-	&endPointDef{
-		regex:  regexp.MustCompile(`^/api/v1/user/[^/]+/activate`),
-		method: "POST",
-	}: domain.Admin,
-	&endPointDef{
-		regex:  regexp.MustCompile(`^/api/v1/session`),
-		method: "GET",
-	}: domain.Student,
-}
+var pathRoleMapping = map[*endPointDef]domain.Role{}
 
 func (c *ApiController) Serve() {
 
@@ -81,16 +56,18 @@ func (c *ApiController) Serve() {
 	private.Use(validateAuthHeaderAndGetUser(c.authService))
 	private.Use(enforceRoles)
 
-	public.POST("/register", c.register)
+	addPostEndpoint(public, "/register", domain.NoRole, c.register)
 
-	private.GET("/quiz", c.quizList)
-	private.GET("/quiz/:sha1", c.quizBySha1)
+	addGetEndpoint(private, "/quiz", domain.Student, c.quizList)
+	addGetEndpoint(private, "/quiz/:sha1", domain.Student, c.quizBySha1)
 
-	private.GET("/user", c.userList)
-	private.DELETE("/user/:id", c.deactivateUser)
-	private.POST("/user/:id/activate", c.activateUser)
+	addGetEndpoint(private, "/user", domain.Admin, c.userList)
+	addDeleteEndpoint(private, "/user/:id", domain.Admin, c.deactivateUser)
+	addPostEndpoint(private, "/user/:id/activate", domain.Admin, c.activateUser)
 
-	private.GET("/session", c.sessionList)
+	addGetEndpoint(private, "/session", domain.Student, c.sessionList)
+	addPostEndpoint(private, "/session", domain.Student, c.startSession)
+	addPostEndpoint(private, "/session/:sessionId/answer", domain.Student, c.addSessionAnswer)
 
 	// Listen and serve on 0.0.0.0:8080
 	fmt.Printf("%s Listening API on http://0.0.0.0%s\n", color.GreenString("✓"), color.GreenString(apiPort))
@@ -98,4 +75,35 @@ func (c *ApiController) Serve() {
 	if err != nil {
 		log.Fatalf("Error starting server : %v", err)
 	}
+}
+
+func addGetEndpoint(routerGroup *gin.RouterGroup, path string, role domain.Role, handler gin.HandlerFunc) {
+	appendEndpointDef(routerGroup, path, "GET", role)
+	routerGroup.GET(path, handler)
+}
+
+func addPostEndpoint(routerGroup *gin.RouterGroup, path string, role domain.Role, handler gin.HandlerFunc) {
+	appendEndpointDef(routerGroup, path, "POST", role)
+	routerGroup.POST(path, handler)
+}
+
+func addDeleteEndpoint(routerGroup *gin.RouterGroup, path string, role domain.Role, handler gin.HandlerFunc) {
+	appendEndpointDef(routerGroup, path, "DELETE", role)
+	routerGroup.DELETE(path, handler)
+}
+
+func appendEndpointDef(routerGroup *gin.RouterGroup, path string, method string, role domain.Role) {
+	if role != domain.NoRole {
+		pathRoleMapping[&endPointDef{
+			regex:  toRegExPath(routerGroup, path),
+			method: method,
+		}] = role
+	}
+}
+
+func toRegExPath(routerGroup *gin.RouterGroup, path string) *regexp.Regexp {
+	r := regexp.MustCompile(`:[0-9a-zA-Z]+`)
+	replacedPath := r.ReplaceAllString(path, "[^/]+")
+
+	return regexp.MustCompile(fmt.Sprintf("^%s%s$", routerGroup.BasePath(), replacedPath))
 }
