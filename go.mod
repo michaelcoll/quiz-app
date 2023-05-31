@@ -15,7 +15,7 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
-	github.com/stretchr/testify v1.8.3
+	github.com/stretchr/testify v1.8.4
 	github.com/vitorsalgado/mocha/v3 v3.0.2
 	golang.org/x/net v0.10.0
 )
