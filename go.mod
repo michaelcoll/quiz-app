@@ -11,7 +11,7 @@ require (
 	github.com/go-git/go-git/v5 v5.7.0
 	github.com/google/uuid v1.3.0
 	github.com/joeig/gin-cachecontrol v1.1.1
-	github.com/mattn/go-sqlite3 v1.14.16
+	github.com/mattn/go-sqlite3 v1.14.17
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
