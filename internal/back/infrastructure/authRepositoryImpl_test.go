@@ -32,7 +32,7 @@ func TestAuthDBRepository_FindTokenByTokenStr(t *testing.T) {
 
 	r := NewAuthRepository(connection)
 
-	token, err := r.FindTokenByTokenStr(context.Background(), "42")
+	token, err := r.FindTokenByTokenStr("42")
 	if err != nil {
 		assert.Failf(t, "Fail to get token", "%v", err)
 	}
@@ -53,7 +53,7 @@ func TestAuthDBRepository_FindUserById(t *testing.T) {
 
 	assert.Nil(t, user)
 
-	err = r.CreateUser(context.Background(), &domain.User{
+	err = r.CreateOrReplaceUser(context.Background(), &domain.User{
 		Id:        sub,
 		Email:     email,
 		Firstname: firstName,

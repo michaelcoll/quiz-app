@@ -70,7 +70,7 @@ func Test_addPostEndpoint(t *testing.T) {
 	public := router.Group("/api/v1")
 
 	u := &url.URL{
-		Path: "/api/v1/register",
+		Path: "/api/v1/login",
 	}
 	r := &http.Request{
 		Method: "POST",
@@ -80,7 +80,7 @@ func Test_addPostEndpoint(t *testing.T) {
 		Request: r,
 	}
 
-	addPostEndpoint(public, "/register", domain.Student, testHandlerFunc)
+	addPostEndpoint(public, "/login", domain.Student, testHandlerFunc)
 
 	role := findRoleMatchingEndpointDef(ctx)
 

@@ -106,7 +106,7 @@ func enforceRoles(ctx *gin.Context) {
 		if !userRole.CanAccess(role) {
 			handleHttpError(ctx,
 				http.StatusForbidden,
-				fmt.Sprintf("forbidden access (userRole %d, required role %d)", userRole, role))
+				fmt.Sprintf("forbidden access (userRole %s, required role %s)", toRoleDto(userRole), toRoleDto(role)))
 			return
 		}
 

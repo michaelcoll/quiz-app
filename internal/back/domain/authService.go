@@ -24,55 +24,51 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/spf13/viper"
+	"google.golang.org/api/idtoken"
 )
 
 type AuthService struct {
 	r AuthRepository
-	c AccessTokenCaller
 }
 
-func NewAuthService(r AuthRepository, c AccessTokenCaller) AuthService {
+func NewAuthService(r AuthRepository) AuthService {
 	adminEmail := viper.GetString("default-admin-email")
 
 	if len(adminEmail) > 0 {
-		fmt.Printf("%s Default admin email set to %s\n", color.GreenString("✓"), color.BlueString(adminEmail))
+		fmt.Printf("%s Default admin email set to %s\n", color.HiYellowString("i"), color.BlueString(adminEmail))
 	}
 
-	return AuthService{r: r, c: c}
+	return AuthService{r: r}
 }
 
-func (s *AuthService) Register(ctx context.Context, user *User, accessToken string) (*User, error) {
-	token, err := s.validateToken(ctx, accessToken)
+func (s *AuthService) Login(ctx context.Context, idToken string) (*User, error) {
+	token, err := s.validateToken(ctx, idToken)
 	if err != nil {
 		return nil, err
 	}
 
-	if token.Email != user.Email {
-		return nil, Errorf(UnAuthorized, "token email and user email mismatch (%s != %s)", token.Email, user.Email)
-	}
-
-	if token.Email != user.Email {
-		return nil, Errorf(UnAuthorized, "token email and user email mismatch (%s != %s)", token.Email, user.Email)
-	}
-
-	if token.Sub != user.Id {
-		return nil, Errorf(UnAuthorized, "token sub and user id mismatch (%s != %s)", token.Sub, user.Id)
-	}
-
-	emailDomain := strings.Split(user.Email, "@")[1]
+	emailDomain := strings.Split(token.Email, "@")[1]
 	restrictedDomainName := viper.GetString("restrict-email-domain")
 	if len(restrictedDomainName) > 0 && emailDomain != restrictedDomainName {
-		return nil, Errorf(UnAuthorized, "user is not in a valid domain (%s not in domain %s)", user.Email, restrictedDomainName)
+		return nil, Errorf(UnAuthorized, "user is not in a valid domain (%s not in domain %s)", token.Email, restrictedDomainName)
+	}
+
+	user := &User{
+		Id:        token.Sub,
+		Email:     token.Email,
+		Firstname: token.FirstName,
+		Lastname:  token.LastName,
+		Active:    true,
 	}
 
 	adminEmail := viper.GetString("default-admin-email")
-	if user.Email == adminEmail {
+	if token.Email == adminEmail {
 		user.Role = Admin
 	} else {
 		user.Role = Student
 	}
 
-	err = s.r.CreateUser(ctx, user)
+	err = s.r.CreateOrReplaceUser(ctx, user)
 	if err != nil {
 		return nil, err
 	}
@@ -80,20 +76,34 @@ func (s *AuthService) Register(ctx context.Context, user *User, accessToken stri
 	return user, nil
 }
 
-func (s *AuthService) validateToken(ctx context.Context, tokenStr string) (token *AccessToken, err error) {
-
-	// Try to get the token from the cache
-	token, err = s.r.FindTokenByTokenStr(ctx, tokenStr)
+func (s *AuthService) parseToken(ctx context.Context, tokenStr string) (*IdToken, error) {
+	aud := viper.GetString("auth0-audience")
+	payload, err := idtoken.Validate(ctx, tokenStr, aud)
 	if err != nil {
 		return nil, err
 	}
 
-	// If it's not in cache then get it from API
-	if token == nil {
-		token, err = s.c.Get(ctx, tokenStr)
-		if err != nil {
-			return nil, err
-		}
+	iat := (int64)(payload.Claims["iat"].(float64))
+	exp := (int64)(payload.Claims["exp"].(float64))
+	return &IdToken{
+		Aud:         payload.Claims["aud"].(string),
+		Sub:         payload.Claims["sub"].(string),
+		Exp:         time.Unix(exp, 0),
+		ExpiresIn:   (int)(exp - iat),
+		Email:       payload.Claims["email"].(string),
+		FirstName:   payload.Claims["given_name"].(string),
+		LastName:    payload.Claims["family_name"].(string),
+		Provenance:  Parse,
+		JwtStrToken: tokenStr,
+	}, nil
+}
+
+func (s *AuthService) validateToken(ctx context.Context, tokenStr string) (*IdToken, error) {
+
+	// parse token
+	token, err := s.parseToken(ctx, tokenStr)
+	if err != nil {
+		return nil, err
 	}
 
 	aud := viper.GetString("auth0-audience")
@@ -123,8 +133,8 @@ func (s *AuthService) ValidateTokenAndGetUser(ctx context.Context, accessToken s
 		return nil, Errorf(UnAuthorized, "unknown user '%s'", token.Sub)
 	}
 
-	if token.Provenance == Api {
-		err := s.r.CacheToken(ctx, token)
+	if token.Provenance == Parse {
+		err := s.r.CacheToken(token)
 		if err != nil {
 			return nil, err
 		}

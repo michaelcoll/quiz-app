@@ -62,7 +62,7 @@ func (r *AuthDBRepository) FindUserById(ctx context.Context, id string) (*domain
 	return user, nil
 }
 
-func (r *AuthDBRepository) CreateUser(ctx context.Context, user *domain.User) error {
+func (r *AuthDBRepository) CreateOrReplaceUser(ctx context.Context, user *domain.User) error {
 	err := r.q.CreateOrReplaceUser(ctx, sqlc.CreateOrReplaceUserParams{
 		ID:        user.Id,
 		Email:     user.Email,
@@ -91,17 +91,17 @@ func (r *AuthDBRepository) UpdateUserRole(ctx context.Context, userId string, ro
 	return nil
 }
 
-func (r *AuthDBRepository) CacheToken(_ context.Context, token *domain.AccessToken) error {
+func (r *AuthDBRepository) CacheToken(token *domain.IdToken) error {
 
-	r.tc.Set(token.OpaqueToken, token, time.Duration(token.ExpiresIn)*time.Second)
+	r.tc.Set(token.JwtStrToken, token, time.Duration(token.ExpiresIn)*time.Second)
 
 	return nil
 }
 
-func (r *AuthDBRepository) FindTokenByTokenStr(_ context.Context, tokenStr string) (*domain.AccessToken, error) {
+func (r *AuthDBRepository) FindTokenByTokenStr(tokenStr string) (*domain.IdToken, error) {
 
 	if t, found := r.tc.Get(tokenStr); found {
-		token := t.(*domain.AccessToken)
+		token := t.(*domain.IdToken)
 		token.Provenance = domain.Cache
 
 		return token, nil

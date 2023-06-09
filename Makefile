@@ -52,7 +52,6 @@ gen: sqlc generate
 .PHONY: generate
 generate:
 	@go generate internal/back/domain/repositories.go
-	@go generate internal/back/domain/callers.go
 
 .PHONY: sqlc
 sqlc:

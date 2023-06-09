@@ -104,11 +104,26 @@ func (e *endPointDef) match(request *http.Request) bool {
 	return e.regex.MatchString(path) && e.method == method
 }
 
-type RegisterRequestBody struct {
-	Id        string `json:"id" binding:"required"`
-	Email     string `json:"email" binding:"required"`
-	Firstname string `json:"firstname" binding:"required"`
-	Lastname  string `json:"lastname" binding:"required"`
+type Role string
+
+const (
+	NoRole  Role = "NO_ROLE"
+	Admin   Role = "ADMIN"
+	Teacher Role = "TEACHER"
+	Student Role = "STUDENT"
+)
+
+func toRoleDto(d domain.Role) Role {
+	dto := NoRole
+	switch d {
+	case domain.Admin:
+		dto = Admin
+	case domain.Teacher:
+		dto = Teacher
+	case domain.Student:
+		dto = Student
+	}
+	return dto
 }
 
 type User struct {
@@ -117,7 +132,7 @@ type User struct {
 	Firstname string `json:"firstname"`
 	Lastname  string `json:"lastname"`
 	Active    bool   `json:"active"`
-	Role      string `json:"role,omitempty"`
+	Role      Role   `json:"role,omitempty"`
 }
 
 func (u *User) fromDomain(d *domain.User) *User {
@@ -126,14 +141,7 @@ func (u *User) fromDomain(d *domain.User) *User {
 	u.Firstname = d.Firstname
 	u.Lastname = d.Lastname
 	u.Active = d.Active
-	switch d.Role {
-	case domain.Admin:
-		u.Role = "ADMIN"
-	case domain.Teacher:
-		u.Role = "TEACHER"
-	case domain.Student:
-		u.Role = "STUDENT"
-	}
+	u.Role = toRoleDto(d.Role)
 
 	return u
 }
