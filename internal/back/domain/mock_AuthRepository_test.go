@@ -21,13 +21,13 @@ func (_m *MockAuthRepository) EXPECT() *MockAuthRepository_Expecter {
 	return &MockAuthRepository_Expecter{mock: &_m.Mock}
 }
 
-// CacheToken provides a mock function with given fields: ctx, token
-func (_m *MockAuthRepository) CacheToken(ctx context.Context, token *AccessToken) error {
-	ret := _m.Called(ctx, token)
+// CacheToken provides a mock function with given fields: token
+func (_m *MockAuthRepository) CacheToken(token *IdToken) error {
+	ret := _m.Called(token)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, *AccessToken) error); ok {
-		r0 = rf(ctx, token)
+	if rf, ok := ret.Get(0).(func(*IdToken) error); ok {
+		r0 = rf(token)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -41,15 +41,14 @@ type MockAuthRepository_CacheToken_Call struct {
 }
 
 // CacheToken is a helper method to define mock.On call
-//   - ctx context.Context
-//   - token *AccessToken
-func (_e *MockAuthRepository_Expecter) CacheToken(ctx interface{}, token interface{}) *MockAuthRepository_CacheToken_Call {
-	return &MockAuthRepository_CacheToken_Call{Call: _e.mock.On("CacheToken", ctx, token)}
+//   - token *IdToken
+func (_e *MockAuthRepository_Expecter) CacheToken(token interface{}) *MockAuthRepository_CacheToken_Call {
+	return &MockAuthRepository_CacheToken_Call{Call: _e.mock.On("CacheToken", token)}
 }
 
-func (_c *MockAuthRepository_CacheToken_Call) Run(run func(ctx context.Context, token *AccessToken)) *MockAuthRepository_CacheToken_Call {
+func (_c *MockAuthRepository_CacheToken_Call) Run(run func(token *IdToken)) *MockAuthRepository_CacheToken_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(*AccessToken))
+		run(args[0].(*IdToken))
 	})
 	return _c
 }
@@ -59,13 +58,13 @@ func (_c *MockAuthRepository_CacheToken_Call) Return(_a0 error) *MockAuthReposit
 	return _c
 }
 
-func (_c *MockAuthRepository_CacheToken_Call) RunAndReturn(run func(context.Context, *AccessToken) error) *MockAuthRepository_CacheToken_Call {
+func (_c *MockAuthRepository_CacheToken_Call) RunAndReturn(run func(*IdToken) error) *MockAuthRepository_CacheToken_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// CreateUser provides a mock function with given fields: ctx, user
-func (_m *MockAuthRepository) CreateUser(ctx context.Context, user *User) error {
+// CreateOrReplaceUser provides a mock function with given fields: ctx, user
+func (_m *MockAuthRepository) CreateOrReplaceUser(ctx context.Context, user *User) error {
 	ret := _m.Called(ctx, user)
 
 	var r0 error
@@ -78,31 +77,31 @@ func (_m *MockAuthRepository) CreateUser(ctx context.Context, user *User) error 
 	return r0
 }
 
-// MockAuthRepository_CreateUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateUser'
-type MockAuthRepository_CreateUser_Call struct {
+// MockAuthRepository_CreateOrReplaceUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateOrReplaceUser'
+type MockAuthRepository_CreateOrReplaceUser_Call struct {
 	*mock.Call
 }
 
-// CreateUser is a helper method to define mock.On call
+// CreateOrReplaceUser is a helper method to define mock.On call
 //   - ctx context.Context
 //   - user *User
-func (_e *MockAuthRepository_Expecter) CreateUser(ctx interface{}, user interface{}) *MockAuthRepository_CreateUser_Call {
-	return &MockAuthRepository_CreateUser_Call{Call: _e.mock.On("CreateUser", ctx, user)}
+func (_e *MockAuthRepository_Expecter) CreateOrReplaceUser(ctx interface{}, user interface{}) *MockAuthRepository_CreateOrReplaceUser_Call {
+	return &MockAuthRepository_CreateOrReplaceUser_Call{Call: _e.mock.On("CreateOrReplaceUser", ctx, user)}
 }
 
-func (_c *MockAuthRepository_CreateUser_Call) Run(run func(ctx context.Context, user *User)) *MockAuthRepository_CreateUser_Call {
+func (_c *MockAuthRepository_CreateOrReplaceUser_Call) Run(run func(ctx context.Context, user *User)) *MockAuthRepository_CreateOrReplaceUser_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(*User))
 	})
 	return _c
 }
 
-func (_c *MockAuthRepository_CreateUser_Call) Return(_a0 error) *MockAuthRepository_CreateUser_Call {
+func (_c *MockAuthRepository_CreateOrReplaceUser_Call) Return(_a0 error) *MockAuthRepository_CreateOrReplaceUser_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockAuthRepository_CreateUser_Call) RunAndReturn(run func(context.Context, *User) error) *MockAuthRepository_CreateUser_Call {
+func (_c *MockAuthRepository_CreateOrReplaceUser_Call) RunAndReturn(run func(context.Context, *User) error) *MockAuthRepository_CreateOrReplaceUser_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -161,25 +160,25 @@ func (_c *MockAuthRepository_FindAllUser_Call) RunAndReturn(run func(context.Con
 	return _c
 }
 
-// FindTokenByTokenStr provides a mock function with given fields: ctx, tokenStr
-func (_m *MockAuthRepository) FindTokenByTokenStr(ctx context.Context, tokenStr string) (*AccessToken, error) {
-	ret := _m.Called(ctx, tokenStr)
+// FindTokenByTokenStr provides a mock function with given fields: tokenStr
+func (_m *MockAuthRepository) FindTokenByTokenStr(tokenStr string) (*IdToken, error) {
+	ret := _m.Called(tokenStr)
 
-	var r0 *AccessToken
+	var r0 *IdToken
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*AccessToken, error)); ok {
-		return rf(ctx, tokenStr)
+	if rf, ok := ret.Get(0).(func(string) (*IdToken, error)); ok {
+		return rf(tokenStr)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *AccessToken); ok {
-		r0 = rf(ctx, tokenStr)
+	if rf, ok := ret.Get(0).(func(string) *IdToken); ok {
+		r0 = rf(tokenStr)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*AccessToken)
+			r0 = ret.Get(0).(*IdToken)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, tokenStr)
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(tokenStr)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -193,25 +192,24 @@ type MockAuthRepository_FindTokenByTokenStr_Call struct {
 }
 
 // FindTokenByTokenStr is a helper method to define mock.On call
-//   - ctx context.Context
 //   - tokenStr string
-func (_e *MockAuthRepository_Expecter) FindTokenByTokenStr(ctx interface{}, tokenStr interface{}) *MockAuthRepository_FindTokenByTokenStr_Call {
-	return &MockAuthRepository_FindTokenByTokenStr_Call{Call: _e.mock.On("FindTokenByTokenStr", ctx, tokenStr)}
+func (_e *MockAuthRepository_Expecter) FindTokenByTokenStr(tokenStr interface{}) *MockAuthRepository_FindTokenByTokenStr_Call {
+	return &MockAuthRepository_FindTokenByTokenStr_Call{Call: _e.mock.On("FindTokenByTokenStr", tokenStr)}
 }
 
-func (_c *MockAuthRepository_FindTokenByTokenStr_Call) Run(run func(ctx context.Context, tokenStr string)) *MockAuthRepository_FindTokenByTokenStr_Call {
+func (_c *MockAuthRepository_FindTokenByTokenStr_Call) Run(run func(tokenStr string)) *MockAuthRepository_FindTokenByTokenStr_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
+		run(args[0].(string))
 	})
 	return _c
 }
 
-func (_c *MockAuthRepository_FindTokenByTokenStr_Call) Return(_a0 *AccessToken, _a1 error) *MockAuthRepository_FindTokenByTokenStr_Call {
+func (_c *MockAuthRepository_FindTokenByTokenStr_Call) Return(_a0 *IdToken, _a1 error) *MockAuthRepository_FindTokenByTokenStr_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAuthRepository_FindTokenByTokenStr_Call) RunAndReturn(run func(context.Context, string) (*AccessToken, error)) *MockAuthRepository_FindTokenByTokenStr_Call {
+func (_c *MockAuthRepository_FindTokenByTokenStr_Call) RunAndReturn(run func(string) (*IdToken, error)) *MockAuthRepository_FindTokenByTokenStr_Call {
 	_c.Call.Return(run)
 	return _c
 }

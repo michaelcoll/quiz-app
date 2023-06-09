@@ -56,7 +56,7 @@ func (c *ApiController) Serve() {
 	private.Use(validateAuthHeaderAndGetUser(c.authService))
 	private.Use(enforceRoles)
 
-	addPostEndpoint(public, "/register", domain.NoRole, c.register)
+	addPostEndpoint(public, "/login", domain.NoRole, c.login)
 
 	addGetEndpoint(private, "/quiz", domain.Student, c.quizList)
 	addGetEndpoint(private, "/quiz/:sha1", domain.Student, c.quizBySha1)

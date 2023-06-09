@@ -75,17 +75,19 @@ type TokenProvenance int8
 
 const (
 	Cache = 1
-	Api   = 2
+	Parse = 2
 )
 
-type AccessToken struct {
+type IdToken struct {
 	Aud         string
 	Sub         string
 	Exp         time.Time
 	ExpiresIn   int
 	Email       string
+	FirstName   string
+	LastName    string
 	Provenance  TokenProvenance
-	OpaqueToken string
+	JwtStrToken string
 }
 
 type SessionResult struct {

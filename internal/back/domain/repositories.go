@@ -42,9 +42,9 @@ type QuizRepository interface {
 type AuthRepository interface {
 	FindUserById(ctx context.Context, id string) (*User, error)
 	FindAllUser(ctx context.Context) ([]*User, error)
-	CreateUser(ctx context.Context, user *User) error
+	CreateOrReplaceUser(ctx context.Context, user *User) error
 	UpdateUserActive(ctx context.Context, id string, active bool) error
 	UpdateUserRole(ctx context.Context, userId string, role Role) error
-	CacheToken(ctx context.Context, token *AccessToken) error
-	FindTokenByTokenStr(ctx context.Context, tokenStr string) (*AccessToken, error)
+	CacheToken(token *IdToken) error
+	FindTokenByTokenStr(tokenStr string) (*IdToken, error)
 }

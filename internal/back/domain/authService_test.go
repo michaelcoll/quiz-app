@@ -25,8 +25,7 @@ import (
 
 func TestAuthService_FindUserById(t *testing.T) {
 	mockAuthRepository := NewMockAuthRepository(t)
-	mockAccessTokenCaller := NewMockAccessTokenCaller(t)
-	service := NewAuthService(mockAuthRepository, mockAccessTokenCaller)
+	service := NewAuthService(mockAuthRepository)
 
 	mockAuthRepository.On("FindUserById", context.Background(), sub).Return(nil, nil)
 

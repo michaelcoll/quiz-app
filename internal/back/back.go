@@ -43,10 +43,8 @@ func New() Module {
 	quizRepository := infrastructure.NewQuizRepository(connection)
 	authRepository := infrastructure.NewAuthRepository(connection)
 
-	googleCaller := infrastructure.NewGoogleAccessTokenCaller()
-
 	quizService := domain.NewQuizService(quizRepository)
-	authService := domain.NewAuthService(authRepository, googleCaller)
+	authService := domain.NewAuthService(authRepository)
 
 	return Module{
 		quizServ: quizService,

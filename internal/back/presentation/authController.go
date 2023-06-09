@@ -24,26 +24,14 @@ import (
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
 )
 
-func (c *ApiController) register(ctx *gin.Context) {
-	var request RegisterRequestBody
-
-	if err := ctx.BindJSON(&request); err != nil {
-		handleError(ctx, err)
-		return
-	}
-
+func (c *ApiController) login(ctx *gin.Context) {
 	token, exists := ctx.Get("token")
 	if !exists {
 		handleHttpError(ctx, http.StatusUnauthorized, "no token found in headers")
 		return
 	}
 
-	user, err := c.authService.Register(ctx, &domain.User{
-		Id:        request.Id,
-		Email:     request.Email,
-		Firstname: request.Firstname,
-		Lastname:  request.Lastname,
-	}, token.(string))
+	user, err := c.authService.Login(ctx, token.(string))
 	if err != nil {
 		handleError(ctx, err)
 		return
