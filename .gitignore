@@ -9,6 +9,8 @@ data.db
 data.db-shm
 data.db-wal
 coverage.out
+.openapi-generator
+openapitools.json
 
 # ide
 .idea/*

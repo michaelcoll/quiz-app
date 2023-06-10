@@ -15,30 +15,26 @@
  */
 
 import "./assets/css/styles.css";
+import "./api";
 
-import { createAuth0 } from "@auth0/auth0-vue";
 import { createPinia } from "pinia";
+import piniaPluginPersistedState from "pinia-plugin-persistedstate";
 import { createApp } from "vue";
+import vue3GoogleLogin from "vue3-google-login";
 
 import App from "./app.vue";
 import router from "./router";
 
 const pinia = createPinia();
+pinia.use(piniaPluginPersistedState);
+
 const app = createApp(App);
 
 app
   .use(router)
-  .use(
-    createAuth0({
-      domain: import.meta.env.VITE_AUTH0_DOMAIN,
-      clientId: import.meta.env.VITE_AUTH0_CLIENT_ID,
-      authorizationParams: {
-        redirect_uri: import.meta.env.VITE_AUTH0_CALLBACK_URL,
-        audience: import.meta.env.VITE_AUTH0_API_AUDIENCE,
-      },
-      cacheLocation: "localstorage",
-      useRefreshTokens: true,
-    })
-  )
+  .use(vue3GoogleLogin, {
+    clientId:
+      "1081981653951-ik87nc0ek1s8digcl6cpciadf3iuped4.apps.googleusercontent.com",
+  })
   .use(pinia)
   .mount("#root");

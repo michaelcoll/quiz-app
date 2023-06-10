@@ -132,7 +132,7 @@ type User struct {
 	Firstname string `json:"firstname"`
 	Lastname  string `json:"lastname"`
 	Active    bool   `json:"active"`
-	Role      Role   `json:"role,omitempty"`
+	Role      Role   `json:"role"`
 }
 
 func (u *User) fromDomain(d *domain.User) *User {

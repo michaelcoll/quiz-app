@@ -1,0 +1,566 @@
+openapi: 3.0.3
+info:
+  title: Quiz API
+  description: |
+    Quiz App backend
+  version: v1
+servers:
+  - url: https://localhost:8080/api/v1
+    description: Local Backend
+tags:
+  - name: auth
+    description: The operations used to interact with the authentication
+  - name: quiz
+    description: The operations used to interact with the quizzes
+  - name: user
+    description: The operations used to interact with the users
+  - name: session
+    description: The operations used to interact with the quiz sessions
+paths:
+  /login:
+    post:
+      tags:
+        - auth
+      summary: Login
+      operationId: login
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "401":
+          description: No Bearer token found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+        "400":
+          description: User is not in a valid domain
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+      security:
+        - google: [ ]
+  /quiz:
+    get:
+      tags:
+        - quiz
+      summary: List all quizzes
+      operationId: list
+      parameters:
+        - name: Range
+          in: header
+          description: The range header that specify the element to return
+          schema:
+            type: string
+            nullable: false
+            example: 'quiz=0-25'
+      responses:
+        "200":
+          description: Success
+          headers:
+            Content-Range:
+              description: The header specifying how much elements are return and in total
+              schema:
+                type: string
+                example: "quiz 0-2/2"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Quiz'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+        "416":
+          description: Requested Range Not Satisfiable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+      security:
+        - google: [ ]
+  /quiz/{sha1}:
+    get:
+      tags:
+        - quiz
+      summary: Find quiz by sha1
+      operationId: quizBySha1
+      parameters:
+        - name: sha1
+          in: path
+          description: The sha1 of the quiz to return
+          required: true
+          schema:
+            type: string
+            nullable: false
+            example: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuizDetail'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+        "404":
+          description: Quiz was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+      security:
+        - google: [ ]
+  /user:
+    get:
+      tags:
+        - user
+      summary: List all users
+      description: '⚠️ Required role : **ADMIN**'
+      operationId: userList
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+      security:
+        - google: [ ]
+  /user/{id}:
+    delete:
+      tags:
+        - user
+      summary: Deactivate user by id
+      description: '⚠️ Required role : **ADMIN**'
+      operationId: deactivateUser
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user to deactivate
+          required: true
+          schema:
+            type: string
+            nullable: false
+            example: '424242424242424224242'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+      security:
+        - google: [ ]
+    post:
+      tags:
+        - user
+      summary: Activate user by id
+      description: '⚠️ Required role : **ADMIN**'
+      operationId: activateUser
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user to activate
+          required: true
+          schema:
+            type: string
+            nullable: false
+            example: '424242424242424224242'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+      security:
+        - google: [ ]
+  /session:
+    get:
+      tags:
+        - session
+      summary: List all sessions
+      operationId: sessionList
+      parameters:
+        - name: Range
+          in: header
+          description: The range header that specify the element to return
+          schema:
+            type: string
+            nullable: false
+            example: 'session=0-25'
+      responses:
+        "200":
+          description: Success
+          headers:
+            Content-Range:
+              description: The header specifying how much elements are return and in total
+              schema:
+                type: string
+                example: "session 0-2/2"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Session'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+      security:
+        - google: [ ]
+    post:
+      tags:
+        - session
+      summary: Start a new session
+      operationId: startSession
+      parameters:
+        - name: quizSha1
+          in: query
+          description: The sha1 of the quiz to start
+          required: true
+          schema:
+            type: string
+            nullable: false
+            example: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+      security:
+        - google: [ ]
+  /session/{sessionId}/answer:
+    post:
+      tags:
+        - session
+      summary: Add a session answer
+      operationId: addSessionAnswer
+      parameters:
+        - name: sessionId
+          in: path
+          description: The id of the session
+          required: true
+          schema:
+            type: string
+            format: uuid
+            nullable: false
+            example: '497f6eca-6276-4993-bfeb-53cbbbba6f08'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionAnswerRequestBody'
+            example:
+              questionSha1: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
+              answerSha1: '699760c8572753f7510ec615ea8bb64a1bd99518'
+              checked: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        "400":
+          description: the request body is malformed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+      security:
+        - google: [ ]
+components:
+  securitySchemes:
+    google:
+      type: oauth2
+      name: google
+      scheme: bearer
+      bearerFormat: jwt
+      flows:
+        authorizationCode:
+          scopes: {
+            https://www.googleapis.com/auth/userinfo.email: 'read email',
+            https://www.googleapis.com/auth/userinfo.profile: 'read profile info'
+          }
+          authorizationUrl: https://accounts.google.com/o/oauth2/v2/auth?access_type=offline
+          tokenUrl: https://oauth2.googleapis.com/token
+  schemas:
+    Quiz:
+      type: object
+      properties:
+        sha1:
+          type: string
+          description: The sha1 of the whole quiz
+          nullable: false
+          example: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
+        filename:
+          type: string
+          description: The filename of the quiz
+          nullable: false
+          example: 'marvel-universe.quiz.md'
+        name:
+          type: string
+          description: The name of the quiz
+          nullable: false
+          example: 'Marvel Universe'
+        version:
+          type: integer
+          description: The version of the quiz
+          nullable: false
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          description: The date of creation of the quiz
+          nullable: false
+        duration:
+          type: integer
+          description: The duration of the quiz in seconds
+          nullable: false
+          example: 840
+    QuizDetail:
+      type: object
+      properties:
+        sha1:
+          type: string
+          description: The sha1 of the whole quiz
+          nullable: false
+          example: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
+        filename:
+          type: string
+          description: The filename of the quiz
+          nullable: false
+          example: 'marvel-universe.quiz.md'
+        name:
+          type: string
+          description: The name of the quiz
+          nullable: false
+          example: 'Marvel Universe'
+        version:
+          type: integer
+          description: The version of the quiz
+          nullable: false
+          example: 1
+        createdAt:
+          type: string
+          description: The date of creation of the quiz
+          nullable: false
+          example: '2023-06-09T15:53:05+02:00'
+        duration:
+          type: integer
+          description: The duration of the quiz in seconds
+          nullable: false
+          example: 840
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizQuestion'
+    QuizQuestion:
+      type: object
+      properties:
+        sha1:
+          type: string
+          description: The sha1 of the whole quiz question
+          nullable: false
+          example: '816e5f98a72707e47a581525b94e860b3a490cbb'
+        content:
+          type: string
+          description: The question content
+          nullable: false
+          example: 'Which of the following characters have used the title "Captain America" in the comics? (Select all that apply)'
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizQuestionAnswer'
+    QuizQuestionAnswer:
+      type: object
+      properties:
+        sha1:
+          type: string
+          description: The sha1 of the question answer
+          nullable: false
+          example: '699760c8572753f7510ec615ea8bb64a1bd99518'
+        content:
+          type: string
+          description: The question content
+          nullable: false
+          example: 'Star-Lord'
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the user
+          nullable: false
+          example: '424242424242424224242'
+        email:
+          type: string
+          description: The email of the user
+          nullable: false
+          example: 'darth.vador@sith.org'
+        firstname:
+          type: string
+          description: The firstname of the user
+          nullable: false
+          example: 'Anakin'
+        lastname:
+          type: string
+          description: The lastname of the user
+          nullable: false
+          example: 'Skywalker'
+        active:
+          type: boolean
+          description: If the user is active or not
+          nullable: false
+          example: true
+        role:
+          type: string
+          description: The role of the user
+          nullable: false
+          enum:
+            - 'NO_ROLE'
+            - 'STUDENT'
+            - 'TEACHER'
+            - 'ADMIN'
+          example: 'STUDENT'
+    ErrorMsg:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The error message
+          nullable: false
+          example: 'error message'
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The message
+          nullable: false
+          example: 'a message'
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The id of the session
+          nullable: false
+        quizSha1:
+          type: string
+          description: The sha1 of the quiz
+          nullable: true
+          example: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
+        quizName:
+          type: string
+          description: The name of the quiz
+          nullable: true
+          example: 'Marvel Universe'
+        quizActive:
+          type: boolean
+          description: If the session was realized on an active quiz or not
+          nullable: true
+          example: true
+        userId:
+          type: string
+          description: The id of the user
+          nullable: true
+          example: '424242424242424224242'
+        userName:
+          type: string
+          description: The firstname of the user
+          nullable: true
+          example: 'Anakin Skywalker'
+        remainingSec:
+          type: integer
+          description: The remaining seconds before the end of the session
+          nullable: true
+          example: 840
+        result:
+          type: object
+          description: An object describing the result of the quiz
+          nullable: true
+          properties:
+            goodAnswer:
+              type: integer
+              description: The number of good answer in the quiz
+              nullable: true
+              example: 12
+            totalAnswer:
+              type: integer
+              description: The total number of answer in the quiz
+              nullable: true
+              example: 24
+    SessionAnswerRequestBody:
+      type: object
+      properties:
+        questionSha1:
+          type: string
+          description: The sha1 of the question
+          nullable: false
+          example: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
+        answerSha1:
+          type: string
+          description: The sha1 of the answer
+          nullable: false
+          example: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
+        checked:
+          type: boolean
+          description: If the answer is checked or not
+          nullable: false
+          example: true
