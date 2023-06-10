@@ -57,3 +57,19 @@ generate:
 sqlc:
 	@sqlc generate
 	@sqlc-addon generate --quiet
+
+.PHONY: ts-model
+ts-model:
+	openapi-generator-cli \
+		generate \
+		-i doc/openapi/spec.yml \
+		-g typescript-axios \
+		-o internal/web/src/api \
+		--additional-properties=apiPackage=api \
+		--additional-properties=modelPackage=model \
+		--additional-properties=withSeparateModelsAndApi=true \
+		--additional-properties=enablePostProcessFile=true \
+		&& find ./internal/web/src/api/model -type f -exec sed -i 's:/\* eslint-disable \*/::g' {} \; \
+		&& find ./internal/web/src/api/model -type f -exec sed -i 's@/\* tslint:disable \*/@@g' {} \; \
+		&& cd internal/web \
+		&& pnpm run lint

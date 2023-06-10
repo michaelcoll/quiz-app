@@ -15,18 +15,24 @@
   -->
 
 <script setup lang="ts">
-import { useAuth0 } from "@auth0/auth0-vue";
-import { HomeIcon } from "@heroicons/vue/24/solid";
-import { PhotoIcon } from "@heroicons/vue/24/solid";
+import { AcademicCapIcon, HomeIcon } from "@heroicons/vue/24/solid";
+import {
+  CallbackTypes,
+  decodeCredential,
+  GoogleLogin,
+} from "vue3-google-login";
 
-import LoginButton from "@/components/buttons/login-button.vue";
-import SignupButton from "@/components/buttons/signup-button.vue";
 import NavBarBrand from "@/components/navigation/desktop/nav-bar-brand.vue";
 import NavBarDarkMode from "@/components/navigation/desktop/nav-bar-darkmode.vue";
 import NavBarProfile from "@/components/navigation/desktop/nav-bar-profile.vue";
-import NavDaemonDropDown from "@/components/navigation/desktop/nav-daemon-dropdown.vue";
+import { useAuthStore } from "@/stores/auth";
 
-const { isAuthenticated } = useAuth0();
+const authStore = useAuthStore();
+
+const callback: CallbackTypes.CredentialCallback = (response) => {
+  let token = decodeCredential(response.credential);
+  authStore.login(response.credential, token["picture"]);
+};
 </script>
 
 <template>
@@ -36,17 +42,16 @@ const { isAuthenticated } = useAuth0();
         <NavBarBrand />
       </div>
       <div class="flex-none gap-4">
-        <!--        <NavBarDarkMode />-->
-        <template v-if="isAuthenticated">
-          <NavDaemonDropDown />
+        <NavBarDarkMode style="display: none" />
+        <template v-if="authStore.isLogged">
           <div class="tabs tabs-boxed">
             <router-link
-              to="/gallery"
+              to="/quiz"
               exact
               class="tab tab-lg"
               active-class="tab-active"
             >
-              <PhotoIcon class="h-5 w-5 text-base-500" />
+              <AcademicCapIcon class="h-5 w-5 text-base-500" />
             </router-link>
           </div>
           <NavBarProfile />
@@ -62,8 +67,9 @@ const { isAuthenticated } = useAuth0();
               <HomeIcon class="h-5 w-5 text-base-500" />
             </router-link>
           </div>
-          <SignupButton />
-          <LoginButton />
+          <GoogleLogin :callback="callback" prompt auto-login>
+            <button class="btn btn-accent">Log In</button>
+          </GoogleLogin>
         </template>
       </div>
     </nav>

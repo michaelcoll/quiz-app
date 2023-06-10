@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/fatih/color"
 	"github.com/gin-gonic/gin"
 
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
@@ -75,5 +76,6 @@ func handleError(ctx *gin.Context, err error) {
 }
 
 func handleHttpError(ctx *gin.Context, st int, message string) {
+	fmt.Printf("%s Error : %s\n", color.RedString("✗"), message)
 	ctx.AbortWithStatusJSON(st, gin.H{"message": message})
 }

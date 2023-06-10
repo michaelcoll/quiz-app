@@ -15,23 +15,13 @@
   -->
 
 <script setup lang="ts">
-import { useAuth0 } from "@auth0/auth0-vue";
-
-const { loginWithRedirect } = useAuth0();
-
-const handleSignUp = () => {
-  loginWithRedirect({
-    authorizationParams: {
-      prompt: "login",
-      screen_hint: "signup",
-    },
-    appState: {
-      target: "/gallery",
-    },
-  });
-};
+import PageLayout from "@/components/page-layout.vue";
 </script>
 
 <template>
-  <button class="btn btn-outline" @click="handleSignUp">Sign Up</button>
+  <PageLayout>
+    <div class="content-layout">
+      <h1 id="page-title" class="content__title">Quiz</h1>
+    </div>
+  </PageLayout>
 </template>

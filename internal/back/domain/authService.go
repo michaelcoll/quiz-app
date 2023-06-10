@@ -50,7 +50,7 @@ func (s *AuthService) Login(ctx context.Context, idToken string) (*User, error) 
 	emailDomain := strings.Split(token.Email, "@")[1]
 	restrictedDomainName := viper.GetString("restrict-email-domain")
 	if len(restrictedDomainName) > 0 && emailDomain != restrictedDomainName {
-		return nil, Errorf(UnAuthorized, "user is not in a valid domain (%s not in domain %s)", token.Email, restrictedDomainName)
+		return nil, Errorf(InvalidArgument, "user is not in a valid domain (%s not in domain %s)", token.Email, restrictedDomainName)
 	}
 
 	user := &User{
@@ -103,6 +103,7 @@ func (s *AuthService) validateToken(ctx context.Context, tokenStr string) (*IdTo
 	// parse token
 	token, err := s.parseToken(ctx, tokenStr)
 	if err != nil {
+		fmt.Printf("%s Can't parse token %s : (%v)\n", color.RedString("✗"), tokenStr, err)
 		return nil, err
 	}
 
