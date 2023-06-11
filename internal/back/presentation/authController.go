@@ -41,47 +41,6 @@ func (c *ApiController) login(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, dto.fromDomain(user))
 }
 
-func (c *ApiController) userList(ctx *gin.Context) {
-	users, err := c.authService.FindAllUser(ctx)
-	if err != nil {
-		handleError(ctx, err)
-		return
-	}
-
-	dtos := make([]*User, len(users))
-
-	for i, user := range users {
-		dto := User{}
-		dtos[i] = dto.fromDomain(user)
-	}
-
-	ctx.JSON(http.StatusOK, dtos)
-}
-
-func (c *ApiController) deactivateUser(ctx *gin.Context) {
-	id := ctx.Param("id")
-
-	err := c.authService.DeactivateUser(ctx, id)
-	if err != nil {
-		handleError(ctx, err)
-		return
-	}
-
-	ctx.JSON(http.StatusNoContent, gin.H{"message": "user deactivated"})
-}
-
-func (c *ApiController) activateUser(ctx *gin.Context) {
-	id := ctx.Param("id")
-
-	err := c.authService.ActivateUser(ctx, id)
-	if err != nil {
-		handleError(ctx, err)
-		return
-	}
-
-	ctx.JSON(http.StatusNoContent, gin.H{"message": "user activated"})
-}
-
 func getRoleFromContext(ctx *gin.Context) (domain.Role, bool) {
 	if r, found := ctx.Get(roleCtxKey); found {
 		return r.(domain.Role), true

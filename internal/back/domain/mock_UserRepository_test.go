@@ -5,6 +5,7 @@ package domain
 import (
 	context "context"
 
+	uuid "github.com/google/uuid"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -19,6 +20,50 @@ type MockUserRepository_Expecter struct {
 
 func (_m *MockUserRepository) EXPECT() *MockUserRepository_Expecter {
 	return &MockUserRepository_Expecter{mock: &_m.Mock}
+}
+
+// AssignUserToClass provides a mock function with given fields: ctx, userId, classId
+func (_m *MockUserRepository) AssignUserToClass(ctx context.Context, userId string, classId uuid.UUID) error {
+	ret := _m.Called(ctx, userId, classId)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, uuid.UUID) error); ok {
+		r0 = rf(ctx, userId, classId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockUserRepository_AssignUserToClass_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AssignUserToClass'
+type MockUserRepository_AssignUserToClass_Call struct {
+	*mock.Call
+}
+
+// AssignUserToClass is a helper method to define mock.On call
+//   - ctx context.Context
+//   - userId string
+//   - classId uuid.UUID
+func (_e *MockUserRepository_Expecter) AssignUserToClass(ctx interface{}, userId interface{}, classId interface{}) *MockUserRepository_AssignUserToClass_Call {
+	return &MockUserRepository_AssignUserToClass_Call{Call: _e.mock.On("AssignUserToClass", ctx, userId, classId)}
+}
+
+func (_c *MockUserRepository_AssignUserToClass_Call) Run(run func(ctx context.Context, userId string, classId uuid.UUID)) *MockUserRepository_AssignUserToClass_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *MockUserRepository_AssignUserToClass_Call) Return(_a0 error) *MockUserRepository_AssignUserToClass_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockUserRepository_AssignUserToClass_Call) RunAndReturn(run func(context.Context, string, uuid.UUID) error) *MockUserRepository_AssignUserToClass_Call {
+	_c.Call.Return(run)
+	return _c
 }
 
 // CreateOrReplaceUser provides a mock function with given fields: ctx, user

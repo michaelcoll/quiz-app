@@ -51,6 +51,7 @@ type UserRepository interface {
 	CreateOrReplaceUser(ctx context.Context, user *User) error
 	UpdateUserActive(ctx context.Context, id string, active bool) error
 	UpdateUserRole(ctx context.Context, userId string, role Role) error
+	AssignUserToClass(ctx context.Context, userId string, classId uuid.UUID) error
 }
 
 //go:generate mockery --name ClassRepository

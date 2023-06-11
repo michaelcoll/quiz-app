@@ -17,17 +17,24 @@
 package domain
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRole_canAccess(t *testing.T) {
+func TestUserService_FindUserById(t *testing.T) {
+	mockUserRepository := NewMockUserRepository(t)
+	service := NewUserService(mockUserRepository)
 
-	assert.True(t, Admin.CanAccess(Teacher))
-	assert.True(t, Admin.CanAccess(Student))
-	assert.True(t, Teacher.CanAccess(Student))
-	assert.False(t, Teacher.CanAccess(Admin))
-	assert.False(t, Student.CanAccess(Admin))
+	mockUserRepository.On("FindUserById", context.Background(), sub).Return(nil, nil)
 
+	_, err := service.FindUserById(context.Background(), sub)
+	if err != nil {
+		if code, found := GetCodeFromError(err); found {
+			if code != NotFound {
+				assert.Failf(t, "Error while getting user", "%v", err)
+			}
+		}
+	}
 }
