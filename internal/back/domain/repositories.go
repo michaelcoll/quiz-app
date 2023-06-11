@@ -24,10 +24,9 @@ import (
 
 //go:generate mockery --name QuizRepository
 type QuizRepository interface {
-	FindBySha1(ctx context.Context, sha1 string) (*Quiz, error)
-	FindFullBySha1(ctx context.Context, sha1 string) (*Quiz, error)
+	FindFullBySha1(ctx context.Context, sha1 string, userId string) (*Quiz, error)
 	FindLatestVersionByFilename(ctx context.Context, filename string) (*Quiz, error)
-	FindAllActive(ctx context.Context, limit uint16, offset uint16) ([]*Quiz, error)
+	FindAllActive(ctx context.Context, userId string, limit uint16, offset uint16) ([]*Quiz, error)
 	CountAllActive(ctx context.Context) (uint32, error)
 	Create(ctx context.Context, quiz *Quiz) error
 	ActivateOnlyVersion(ctx context.Context, filename string, version int) error

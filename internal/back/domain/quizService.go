@@ -34,8 +34,8 @@ func NewQuizService(r QuizRepository) QuizService {
 	return QuizService{r: r}
 }
 
-func (s *QuizService) FindFullBySha1(ctx context.Context, sha1 string) (*Quiz, error) {
-	quiz, err := s.r.FindFullBySha1(ctx, sha1)
+func (s *QuizService) FindFullBySha1(ctx context.Context, sha1 string, userId string) (*Quiz, error) {
+	quiz, err := s.r.FindFullBySha1(ctx, sha1, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -43,8 +43,8 @@ func (s *QuizService) FindFullBySha1(ctx context.Context, sha1 string) (*Quiz, e
 	return quiz, nil
 }
 
-func (s *QuizService) FindAllActive(ctx context.Context, limit uint16, offset uint16) ([]*Quiz, uint32, error) {
-	quizzes, err := s.r.FindAllActive(ctx, limit, offset)
+func (s *QuizService) FindAllActive(ctx context.Context, userId string, limit uint16, offset uint16) ([]*Quiz, uint32, error) {
+	quizzes, err := s.r.FindAllActive(ctx, userId, limit, offset)
 	if err != nil {
 		return nil, 0, err
 	}

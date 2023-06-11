@@ -32,7 +32,17 @@ func (c *ApiController) quizList(ctx *gin.Context) {
 		return
 	}
 
-	quizzes, total, err := c.quizService.FindAllActive(ctx.Request.Context(), end-start, start)
+	userId := ""
+	if isStudent(ctx) {
+		if id, found := getUserIdFromContext(ctx); found {
+			userId = id
+		} else {
+			handleHttpError(ctx, http.StatusUnauthorized, "userId not present in context")
+			return
+		}
+	}
+
+	quizzes, total, err := c.quizService.FindAllActive(ctx.Request.Context(), userId, end-start, start)
 	if err != nil {
 		handleError(ctx, err)
 		return
@@ -45,7 +55,17 @@ func (c *ApiController) quizList(ctx *gin.Context) {
 func (c *ApiController) quizBySha1(ctx *gin.Context) {
 	sha1 := ctx.Param("sha1")
 
-	quiz, err := c.quizService.FindFullBySha1(ctx, sha1)
+	userId := ""
+	if isStudent(ctx) {
+		if id, found := getUserIdFromContext(ctx); found {
+			userId = id
+		} else {
+			handleHttpError(ctx, http.StatusUnauthorized, "userId not present in context")
+			return
+		}
+	}
+
+	quiz, err := c.quizService.FindFullBySha1(ctx, sha1, userId)
 	if err != nil {
 		handleError(ctx, err)
 		return

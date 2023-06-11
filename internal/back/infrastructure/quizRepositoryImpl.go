@@ -39,17 +39,11 @@ func NewQuizRepository(c *sql.DB) *QuizDBRepository {
 	return &QuizDBRepository{q: sqlc.New(c)}
 }
 
-func (r *QuizDBRepository) FindBySha1(ctx context.Context, sha1 string) (*domain.Quiz, error) {
-	entity, err := r.q.FindQuizBySha1(ctx, sha1)
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toQuiz(entity), nil
-}
-
-func (r *QuizDBRepository) FindFullBySha1(ctx context.Context, sha1 string) (*domain.Quiz, error) {
-	entities, err := r.q.FindQuizFullBySha1(ctx, sha1)
+func (r *QuizDBRepository) FindFullBySha1(ctx context.Context, sha1 string, userId string) (*domain.Quiz, error) {
+	entities, err := r.q.FindQuizFullBySha1(ctx, sqlc.FindQuizFullBySha1Params{
+		Sha1: sha1,
+		ID:   userId,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -91,8 +85,9 @@ func (r *QuizDBRepository) FindFullBySha1(ctx context.Context, sha1 string) (*do
 	return &quiz, nil
 }
 
-func (r *QuizDBRepository) FindAllActive(ctx context.Context, limit uint16, offset uint16) ([]*domain.Quiz, error) {
+func (r *QuizDBRepository) FindAllActive(ctx context.Context, userId string, limit uint16, offset uint16) ([]*domain.Quiz, error) {
 	quizzes, err := r.q.FindAllActiveQuiz(ctx, sqlc.FindAllActiveQuizParams{
+		ID:     userId,
 		Limit:  int64(limit),
 		Offset: int64(offset),
 	})
@@ -202,11 +197,19 @@ func (r *QuizDBRepository) toQuiz(entity sqlc.Quiz) *domain.Quiz {
 	}
 }
 
-func (r *QuizDBRepository) toQuizArray(entities []sqlc.Quiz) []*domain.Quiz {
+func (r *QuizDBRepository) toQuizArray(entities []sqlc.FindAllActiveQuizRow) []*domain.Quiz {
 	domains := make([]*domain.Quiz, len(entities))
 
 	for i, entity := range entities {
-		domains[i] = r.toQuiz(entity)
+		domains[i] = &domain.Quiz{
+			Sha1:      entity.Sha1,
+			Filename:  entity.Filename,
+			Name:      entity.Name,
+			Version:   int(entity.Version),
+			Duration:  int(entity.Duration),
+			Active:    entity.Active,
+			CreatedAt: entity.CreatedAt,
+		}
 	}
 
 	return domains

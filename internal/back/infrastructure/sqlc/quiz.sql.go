@@ -116,66 +116,23 @@ func (q *Queries) CreateOrReplaceQuiz(ctx context.Context, arg CreateOrReplaceQu
 }
 
 const findAllActiveQuiz = `-- name: FindAllActiveQuiz :many
-SELECT sha1, name, filename, version, active, created_at, duration
-FROM quiz
-WHERE active = 1
-LIMIT ? OFFSET ?
-`
-
-type FindAllActiveQuizParams struct {
-	Limit  int64 `db:"limit"`
-	Offset int64 `db:"offset"`
-}
-
-func (q *Queries) FindAllActiveQuiz(ctx context.Context, arg FindAllActiveQuizParams) ([]Quiz, error) {
-	rows, err := q.db.QueryContext(ctx, findAllActiveQuiz, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []Quiz{}
-	for rows.Next() {
-		var i Quiz
-		if err := rows.Scan(
-			&i.Sha1,
-			&i.Name,
-			&i.Filename,
-			&i.Version,
-			&i.Active,
-			&i.CreatedAt,
-			&i.Duration,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const findAllActiveQuizRestrictedToClass = `-- name: FindAllActiveQuizRestrictedToClass :many
 SELECT sha1, q.name, filename, version, q.active, created_at, duration, qcv.class_uuid, quiz_sha1, uuid, sc.name, id, email, firstname, lastname, u.active, role_id, u.class_uuid
 FROM quiz q
          JOIN quiz_class_visibility qcv ON q.sha1 = qcv.quiz_sha1
          JOIN student_class sc ON sc.uuid = qcv.class_uuid
          JOIN user u ON sc.uuid = u.class_uuid
 WHERE q.active = 1
-  AND u.id = ?
+  AND u.id IS NULL OR u.id = ?
 LIMIT ? OFFSET ?
 `
 
-type FindAllActiveQuizRestrictedToClassParams struct {
+type FindAllActiveQuizParams struct {
 	ID     string `db:"id"`
 	Limit  int64  `db:"limit"`
 	Offset int64  `db:"offset"`
 }
 
-type FindAllActiveQuizRestrictedToClassRow struct {
+type FindAllActiveQuizRow struct {
 	Sha1        string    `db:"sha1"`
 	Name        string    `db:"name"`
 	Filename    string    `db:"filename"`
@@ -196,15 +153,15 @@ type FindAllActiveQuizRestrictedToClassRow struct {
 	ClassUuid_2 uuid.UUID `db:"class_uuid_2"`
 }
 
-func (q *Queries) FindAllActiveQuizRestrictedToClass(ctx context.Context, arg FindAllActiveQuizRestrictedToClassParams) ([]FindAllActiveQuizRestrictedToClassRow, error) {
-	rows, err := q.db.QueryContext(ctx, findAllActiveQuizRestrictedToClass, arg.ID, arg.Limit, arg.Offset)
+func (q *Queries) FindAllActiveQuiz(ctx context.Context, arg FindAllActiveQuizParams) ([]FindAllActiveQuizRow, error) {
+	rows, err := q.db.QueryContext(ctx, findAllActiveQuiz, arg.ID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []FindAllActiveQuizRestrictedToClassRow{}
+	items := []FindAllActiveQuizRow{}
 	for rows.Next() {
-		var i FindAllActiveQuizRestrictedToClassRow
+		var i FindAllActiveQuizRow
 		if err := rows.Scan(
 			&i.Sha1,
 			&i.Name,
@@ -300,8 +257,17 @@ FROM quiz q
          JOIN quiz_question qq ON qq.sha1 = qqq.question_sha1
          JOIN quiz_question_answer qqa ON qq.sha1 = qqa.question_sha1
          JOIN quiz_answer qa ON qa.sha1 = qqa.answer_sha1
+         JOIN quiz_class_visibility qcv ON q.sha1 = qcv.quiz_sha1
+         JOIN student_class sc ON sc.uuid = qcv.class_uuid
+         JOIN user u ON sc.uuid = u.class_uuid
 WHERE q.sha1 = ?
+  AND u.id IS NULL OR u.id = ?
 `
+
+type FindQuizFullBySha1Params struct {
+	Sha1 string `db:"sha1"`
+	ID   string `db:"id"`
+}
 
 type FindQuizFullBySha1Row struct {
 	QuizSha1        string `db:"quiz_sha1"`
@@ -318,8 +284,8 @@ type FindQuizFullBySha1Row struct {
 	AnswerValid     bool   `db:"answer_valid"`
 }
 
-func (q *Queries) FindQuizFullBySha1(ctx context.Context, sha1 string) ([]FindQuizFullBySha1Row, error) {
-	rows, err := q.db.QueryContext(ctx, findQuizFullBySha1, sha1)
+func (q *Queries) FindQuizFullBySha1(ctx context.Context, arg FindQuizFullBySha1Params) ([]FindQuizFullBySha1Row, error) {
+	rows, err := q.db.QueryContext(ctx, findQuizFullBySha1, arg.Sha1, arg.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -327,87 +293,6 @@ func (q *Queries) FindQuizFullBySha1(ctx context.Context, sha1 string) ([]FindQu
 	items := []FindQuizFullBySha1Row{}
 	for rows.Next() {
 		var i FindQuizFullBySha1Row
-		if err := rows.Scan(
-			&i.QuizSha1,
-			&i.QuizFilename,
-			&i.QuizName,
-			&i.QuizVersion,
-			&i.QuizCreatedAt,
-			&i.QuizDuration,
-			&i.QuizActive,
-			&i.QuestionSha1,
-			&i.QuestionContent,
-			&i.AnswerSha1,
-			&i.AnswerContent,
-			&i.AnswerValid,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const findQuizFullBySha1RestrictedToClass = `-- name: FindQuizFullBySha1RestrictedToClass :many
-SELECT q.sha1       AS quiz_sha1,
-       q.filename   AS quiz_filename,
-       q.name       AS quiz_name,
-       q.version    AS quiz_version,
-       q.created_at AS quiz_created_at,
-       q.duration   AS quiz_duration,
-       q.active     AS quiz_active,
-       qq.sha1      AS question_sha1,
-       qq.content   AS question_content,
-       qa.sha1      AS answer_sha1,
-       qa.content   AS answer_content,
-       qa.valid     AS answer_valid
-FROM quiz q
-         JOIN quiz_question_quiz qqq ON q.sha1 = qqq.quiz_sha1
-         JOIN quiz_question qq ON qq.sha1 = qqq.question_sha1
-         JOIN quiz_question_answer qqa ON qq.sha1 = qqa.question_sha1
-         JOIN quiz_answer qa ON qa.sha1 = qqa.answer_sha1
-         JOIN quiz_class_visibility qcv ON q.sha1 = qcv.quiz_sha1
-         JOIN student_class sc ON sc.uuid = qcv.class_uuid
-         JOIN user u ON sc.uuid = u.class_uuid
-WHERE q.sha1 = ?
-  AND u.id = ?
-`
-
-type FindQuizFullBySha1RestrictedToClassParams struct {
-	Sha1 string `db:"sha1"`
-	ID   string `db:"id"`
-}
-
-type FindQuizFullBySha1RestrictedToClassRow struct {
-	QuizSha1        string `db:"quiz_sha1"`
-	QuizFilename    string `db:"quiz_filename"`
-	QuizName        string `db:"quiz_name"`
-	QuizVersion     int64  `db:"quiz_version"`
-	QuizCreatedAt   string `db:"quiz_created_at"`
-	QuizDuration    int64  `db:"quiz_duration"`
-	QuizActive      bool   `db:"quiz_active"`
-	QuestionSha1    string `db:"question_sha1"`
-	QuestionContent string `db:"question_content"`
-	AnswerSha1      string `db:"answer_sha1"`
-	AnswerContent   string `db:"answer_content"`
-	AnswerValid     bool   `db:"answer_valid"`
-}
-
-func (q *Queries) FindQuizFullBySha1RestrictedToClass(ctx context.Context, arg FindQuizFullBySha1RestrictedToClassParams) ([]FindQuizFullBySha1RestrictedToClassRow, error) {
-	rows, err := q.db.QueryContext(ctx, findQuizFullBySha1RestrictedToClass, arg.Sha1, arg.ID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []FindQuizFullBySha1RestrictedToClassRow{}
-	for rows.Next() {
-		var i FindQuizFullBySha1RestrictedToClassRow
 		if err := rows.Scan(
 			&i.QuizSha1,
 			&i.QuizFilename,
