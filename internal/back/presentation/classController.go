@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Michaël COLL.
+ * Copyright (c) 2022-2023 Michaël COLL.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,29 @@
  * limitations under the License.
  */
 
-package infrastructure
+package presentation
 
 import (
-	"testing"
+	"fmt"
+	"net/http"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/gin-gonic/gin"
 )
 
-func TestAuthDBRepository_FindTokenByTokenStr(t *testing.T) {
+func (c *ApiController) classList(ctx *gin.Context) {
 
-	connection := getDBConnection(t, true)
-	defer connection.Close()
-
-	r := NewAuthRepository(connection)
-
-	token, err := r.FindTokenByTokenStr("42")
+	start, end, err := extractRangeHeader(ctx.GetHeader("Range"), "class")
 	if err != nil {
-		assert.Failf(t, "Fail to get token", "%v", err)
+		handleError(ctx, err)
+		return
 	}
 
-	assert.Nil(t, token)
+	classes, total, err := c.classService.FindAllClasses(ctx.Request.Context(), end-start, start)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	ctx.Header("Content-Range", fmt.Sprintf("%s %d-%d/%d", "class", start, int(start)+len(classes), total))
+	ctx.JSON(http.StatusOK, toClassDtos(classes))
 }

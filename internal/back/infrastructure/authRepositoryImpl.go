@@ -17,9 +17,7 @@
 package infrastructure
 
 import (
-	"context"
 	"database/sql"
-	"errors"
 	"time"
 
 	"github.com/patrickmn/go-cache"
@@ -32,63 +30,12 @@ type AuthDBRepository struct {
 	domain.AuthRepository
 
 	q  *sqlc.Queries
-	uc *cache.Cache
 	tc *cache.Cache
 }
 
 func NewAuthRepository(c *sql.DB) *AuthDBRepository {
-	userCache := cache.New(30*time.Minute, 10*time.Minute)
 	tokenCache := cache.New(1*time.Hour, 1*time.Second)
-	return &AuthDBRepository{q: sqlc.New(c), uc: userCache, tc: tokenCache}
-}
-
-func (r *AuthDBRepository) FindUserById(ctx context.Context, id string) (*domain.User, error) {
-
-	if user, found := r.uc.Get(id); found {
-		return user.(*domain.User), nil
-	}
-
-	entity, err := r.q.FindUserById(ctx, id)
-	if err != nil && errors.Is(err, sql.ErrNoRows) {
-		return nil, nil
-	} else if err != nil {
-		return nil, err
-	}
-
-	user := r.toUser(entity)
-
-	r.uc.Set(id, user, cache.DefaultExpiration)
-
-	return user, nil
-}
-
-func (r *AuthDBRepository) CreateOrReplaceUser(ctx context.Context, user *domain.User) error {
-	err := r.q.CreateOrReplaceUser(ctx, sqlc.CreateOrReplaceUserParams{
-		ID:        user.Id,
-		Email:     user.Email,
-		Firstname: user.Firstname,
-		Lastname:  user.Lastname,
-		RoleID:    int64(user.Role),
-	})
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (r *AuthDBRepository) UpdateUserRole(ctx context.Context, userId string, role domain.Role) error {
-	err := r.q.UpdateUserRole(ctx, sqlc.UpdateUserRoleParams{
-		ID:     userId,
-		RoleID: int64(role),
-	})
-	if err != nil {
-		return err
-	}
-
-	r.uc.Delete(userId)
-
-	return nil
+	return &AuthDBRepository{q: sqlc.New(c), tc: tokenCache}
 }
 
 func (r *AuthDBRepository) CacheToken(token *domain.IdToken) error {
@@ -108,50 +55,4 @@ func (r *AuthDBRepository) FindTokenByTokenStr(tokenStr string) (*domain.IdToken
 	}
 
 	return nil, nil
-}
-
-func (r *AuthDBRepository) FindAllUser(ctx context.Context) ([]*domain.User, error) {
-	entities, err := r.q.FindAllUser(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	users := make([]*domain.User, len(entities))
-
-	for i, entity := range entities {
-		users[i] = r.toUser(entity)
-	}
-
-	return users, nil
-}
-
-func (r *AuthDBRepository) UpdateUserActive(ctx context.Context, id string, active bool) error {
-	return r.q.UpdateUserActive(ctx, sqlc.UpdateUserActiveParams{
-		Active: active,
-		ID:     id,
-	})
-}
-
-func (r *AuthDBRepository) toUser(entity sqlc.User) *domain.User {
-	return &domain.User{
-		Id:        entity.ID,
-		Email:     entity.Email,
-		Firstname: entity.Firstname,
-		Lastname:  entity.Lastname,
-		Active:    entity.Active,
-		Role:      r.toRole(entity.RoleID),
-	}
-}
-
-func (r *AuthDBRepository) toRole(entity int64) domain.Role {
-	switch entity {
-	case int64(domain.Admin):
-		return domain.Admin
-	case int64(domain.Teacher):
-		return domain.Teacher
-	case int64(domain.Student):
-		return domain.Student
-	}
-
-	return 0
 }

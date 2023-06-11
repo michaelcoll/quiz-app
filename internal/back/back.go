@@ -42,13 +42,16 @@ func New() Module {
 
 	quizRepository := infrastructure.NewQuizRepository(connection)
 	authRepository := infrastructure.NewAuthRepository(connection)
+	userRepository := infrastructure.NewUserRepository(connection)
+	classRepository := infrastructure.NewClassRepository(connection)
 
 	quizService := domain.NewQuizService(quizRepository)
-	authService := domain.NewAuthService(authRepository)
+	authService := domain.NewAuthService(authRepository, userRepository)
+	classService := domain.NewClassService(classRepository)
 
 	return Module{
 		quizServ: quizService,
 		authServ: authService,
-		quizCtrl: presentation.NewApiController(&quizService, &authService),
+		quizCtrl: presentation.NewApiController(&quizService, &authService, &classService),
 	}
 }

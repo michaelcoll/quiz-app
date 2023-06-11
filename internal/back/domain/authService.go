@@ -28,17 +28,18 @@ import (
 )
 
 type AuthService struct {
-	r AuthRepository
+	authRepository AuthRepository
+	userRepository UserRepository
 }
 
-func NewAuthService(r AuthRepository) AuthService {
+func NewAuthService(authRepository AuthRepository, userRepository UserRepository) AuthService {
 	adminEmail := viper.GetString("default-admin-email")
 
 	if len(adminEmail) > 0 {
 		fmt.Printf("%s Default admin email set to %s\n", color.HiYellowString("i"), color.BlueString(adminEmail))
 	}
 
-	return AuthService{r: r}
+	return AuthService{authRepository: authRepository, userRepository: userRepository}
 }
 
 func (s *AuthService) Login(ctx context.Context, idToken string) (*User, error) {
@@ -68,7 +69,7 @@ func (s *AuthService) Login(ctx context.Context, idToken string) (*User, error) 
 		user.Role = Student
 	}
 
-	err = s.r.CreateOrReplaceUser(ctx, user)
+	err = s.userRepository.CreateOrReplaceUser(ctx, user)
 	if err != nil {
 		return nil, err
 	}
@@ -125,7 +126,7 @@ func (s *AuthService) ValidateTokenAndGetUser(ctx context.Context, accessToken s
 		return nil, err
 	}
 
-	user, err := s.r.FindUserById(ctx, token.Sub)
+	user, err := s.userRepository.FindUserById(ctx, token.Sub)
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +136,7 @@ func (s *AuthService) ValidateTokenAndGetUser(ctx context.Context, accessToken s
 	}
 
 	if token.Provenance == Parse {
-		err := s.r.CacheToken(token)
+		err := s.authRepository.CacheToken(token)
 		if err != nil {
 			return nil, err
 		}
@@ -145,7 +146,7 @@ func (s *AuthService) ValidateTokenAndGetUser(ctx context.Context, accessToken s
 }
 
 func (s *AuthService) FindUserById(ctx context.Context, id string) (*User, error) {
-	user, err := s.r.FindUserById(ctx, id)
+	user, err := s.userRepository.FindUserById(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -175,13 +176,13 @@ func (role Role) CanAccess(other Role) bool {
 }
 
 func (s *AuthService) FindAllUser(ctx context.Context) ([]*User, error) {
-	return s.r.FindAllUser(ctx)
+	return s.userRepository.FindAllUser(ctx)
 }
 
 func (s *AuthService) DeactivateUser(ctx context.Context, id string) error {
-	return s.r.UpdateUserActive(ctx, id, false)
+	return s.userRepository.UpdateUserActive(ctx, id, false)
 }
 
 func (s *AuthService) ActivateUser(ctx context.Context, id string) error {
-	return s.r.UpdateUserActive(ctx, id, true)
+	return s.userRepository.UpdateUserActive(ctx, id, true)
 }

@@ -69,6 +69,7 @@ type User struct {
 	Lastname  string
 	Active    bool
 	Role      Role
+	Class     *Class
 }
 
 type TokenProvenance int8
@@ -104,4 +105,9 @@ type Session struct {
 	UserName     string
 	RemainingSec int
 	Result       *SessionResult
+}
+
+type Class struct {
+	Id   uuid.UUID
+	Name string
 }
