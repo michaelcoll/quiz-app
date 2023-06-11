@@ -76,9 +76,7 @@ CREATE TABLE quiz_question_answer
     FOREIGN KEY (question_sha1) REFERENCES quiz_question (sha1),
     FOREIGN KEY (answer_sha1) REFERENCES quiz_answer (sha1)
 );
-`
 
-const v2Auth = `
 CREATE TABLE role
 (
     id   INTEGER PRIMARY KEY,
@@ -92,20 +90,26 @@ VALUES (2, 'Teacher');
 INSERT INTO role (id, name)
 VALUES (3, 'Student');
 
+CREATE TABLE student_class
+(
+    uuid TEXT PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
 CREATE TABLE user
 (
-    id        TEXT PRIMARY KEY,
-    email     TEXT    NOT NULL,
-    firstname TEXT    NOT NULL,
-    lastname  TEXT    NOT NULL,
-    active    INTEGER NOT NULL DEFAULT 1,
-    role_id   INTEGER NOT NULL,
+    id         TEXT PRIMARY KEY,
+    email      TEXT    NOT NULL,
+    firstname  TEXT    NOT NULL,
+    lastname   TEXT    NOT NULL,
+    active     INTEGER NOT NULL DEFAULT 1,
+    role_id    INTEGER NOT NULL,
+    class_uuid TEXT,
 
-    FOREIGN KEY (role_id) REFERENCES role (id)
+    FOREIGN KEY (role_id) REFERENCES role (id),
+    FOREIGN KEY (class_uuid) REFERENCES student_class (uuid) ON DELETE SET NULL
 );
-`
 
-const v3Session = `
 CREATE TABLE session
 (
     uuid       TEXT PRIMARY KEY,
@@ -202,12 +206,20 @@ BEGIN
                    RAISE(ABORT, 'session is over')
                END;
 END;
+
+CREATE TABLE quiz_class_visibility
+(
+    class_uuid TEXT NOT NULL,
+    quiz_sha1  TEXT NOT NULL,
+
+    PRIMARY KEY (class_uuid, quiz_sha1),
+    FOREIGN KEY (class_uuid) REFERENCES student_class (uuid) ON DELETE CASCADE,
+    FOREIGN KEY (quiz_sha1) REFERENCES quiz (sha1)
+);
 `
 
 var migrations = map[int]string{
 	1: v1Init,
-	2: v2Auth,
-	3: v3Session,
 }
 
 type DB interface {
