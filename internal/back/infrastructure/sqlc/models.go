@@ -32,6 +32,11 @@ type QuizAnswerCountView struct {
 	CheckedAnswers int64  `db:"checked_answers"`
 }
 
+type QuizClassVisibility struct {
+	ClassUuid uuid.UUID `db:"class_uuid"`
+	QuizSha1  string    `db:"quiz_sha1"`
+}
+
 type QuizQuestion struct {
 	Sha1    string `db:"sha1"`
 	Content string `db:"content"`
@@ -89,11 +94,17 @@ type SessionView struct {
 	Results        sql.NullFloat64 `db:"results"`
 }
 
+type StudentClass struct {
+	Uuid uuid.UUID `db:"uuid"`
+	Name string    `db:"name"`
+}
+
 type User struct {
-	ID        string `db:"id"`
-	Email     string `db:"email"`
-	Firstname string `db:"firstname"`
-	Lastname  string `db:"lastname"`
-	Active    bool   `db:"active"`
-	RoleID    int64  `db:"role_id"`
+	ID        string    `db:"id"`
+	Email     string    `db:"email"`
+	Firstname string    `db:"firstname"`
+	Lastname  string    `db:"lastname"`
+	Active    bool      `db:"active"`
+	RoleID    int64     `db:"role_id"`
+	ClassUuid uuid.UUID `db:"class_uuid"`
 }

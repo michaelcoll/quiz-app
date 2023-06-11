@@ -34,7 +34,7 @@ func (q *Queries) CreateOrReplaceUser(ctx context.Context, arg CreateOrReplaceUs
 }
 
 const findAllUser = `-- name: FindAllUser :many
-SELECT id, email, firstname, lastname, active, role_id
+SELECT id, email, firstname, lastname, active, role_id, class_uuid
 FROM user
 `
 
@@ -54,6 +54,7 @@ func (q *Queries) FindAllUser(ctx context.Context) ([]User, error) {
 			&i.Lastname,
 			&i.Active,
 			&i.RoleID,
+			&i.ClassUuid,
 		); err != nil {
 			return nil, err
 		}
@@ -69,7 +70,7 @@ func (q *Queries) FindAllUser(ctx context.Context) ([]User, error) {
 }
 
 const findUserById = `-- name: FindUserById :one
-SELECT id, email, firstname, lastname, active, role_id
+SELECT id, email, firstname, lastname, active, role_id, class_uuid
 FROM user
 WHERE id = ?
 `
@@ -84,6 +85,7 @@ func (q *Queries) FindUserById(ctx context.Context, id string) (User, error) {
 		&i.Lastname,
 		&i.Active,
 		&i.RoleID,
+		&i.ClassUuid,
 	)
 	return i, err
 }
