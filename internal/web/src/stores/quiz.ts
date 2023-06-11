@@ -16,52 +16,57 @@
 
 import { defineStore } from "pinia";
 
-export interface Quiz {
-  hash: string;
-  dateTime: string;
-  iso: number | undefined;
-  exposureTime: string | undefined;
-  xDimension: number;
-  yDimension: number;
-  model: string | undefined;
-  fNumber: string | undefined;
-}
+import { getApi } from "@/api/common-api";
+import { Quiz } from "@/api/model";
+
+const pageSize = 15;
 
 export const useQuizStore = defineStore("quiz", {
   state: () => {
     return {
-      userName: null,
-      picture: null,
-      jwtToken: null,
-      logged: false,
+      quizzes: null,
+      page: 0,
     };
   },
   getters: {
-    isLogged(): boolean {
-      return this.logged;
+    getQuizzes(): Quiz[] {
+      return this.quizzes;
     },
-    getPicture(): string {
-      return this.picture;
-    },
-    getUsername(): string {
-      return this.userName;
+    getCurrentPage(): number {
+      return this.page;
     },
   },
   actions: {
-    setLogged() {
-      this.logged = true;
+    fetchQuizzes() {
+      const start = pageSize * this.page;
+      const end = pageSize * (this.page + 1) - 1;
+
+      getApi()
+        .then((axiosInstance) =>
+          axiosInstance.post<Quiz[]>(`/api/v1/quiz`, {
+            headers: {
+              Range: `quiz=${start}-${end}`,
+            },
+          })
+        )
+        .then(({ data }) => {
+          this.quizzes = data;
+        });
     },
-    setLoggedOut() {
-      this.logged = false;
+    setPage(page: number) {
+      this.page = page;
+      this.fetchQuizzes();
     },
-    setJwtToken(token: string) {
-      this.jwtToken = token;
+    incrementPage() {
+      this.page++;
+      this.fetchQuizzes();
     },
-    setUserName(userName: string) {
-      this.userName = userName;
-    },
-    setPicture(picture: string) {
-      this.picture = picture;
+    decrementPage() {
+      this.page--;
+      if (this.page < 0) {
+        this.page = 0;
+      }
+      this.fetchQuizzes();
     },
   },
 });
