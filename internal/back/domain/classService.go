@@ -73,3 +73,11 @@ func (s *ClassService) Delete(ctx context.Context, id uuid.UUID) error {
 
 	return s.r.Delete(ctx, id)
 }
+
+func (s *ClassService) CreateQuizClassVisibility(ctx context.Context, quizSha1 string, classId uuid.UUID) error {
+	return s.r.CreateQuizClassVisibility(ctx, quizSha1, classId)
+}
+
+func (s *ClassService) DeleteQuizClassVisibility(ctx context.Context, quizSha1 string, classId uuid.UUID) error {
+	return s.r.DeleteQuizClassVisibility(ctx, quizSha1, classId)
+}
