@@ -25,9 +25,10 @@ import (
 
 func TestAuthService_FindUserById(t *testing.T) {
 	mockAuthRepository := NewMockAuthRepository(t)
-	service := NewAuthService(mockAuthRepository)
+	mockUserRepository := NewMockUserRepository(t)
+	service := NewAuthService(mockAuthRepository, mockUserRepository)
 
-	mockAuthRepository.On("FindUserById", context.Background(), sub).Return(nil, nil)
+	mockUserRepository.On("FindUserById", context.Background(), sub).Return(nil, nil)
 
 	_, err := service.FindUserById(context.Background(), sub)
 	if err != nil {

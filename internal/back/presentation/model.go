@@ -196,3 +196,25 @@ type SessionAnswerRequestBody struct {
 	AnswerSha1   string `json:"answerSha1" binding:"required"`
 	Checked      bool   `json:"checked" binding:"required"`
 }
+
+type Class struct {
+	Id   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
+}
+
+func toClassDto(domain *domain.Class) *Class {
+	return &Class{
+		Id:   domain.Id,
+		Name: domain.Name,
+	}
+}
+
+func toClassDtos(domains []*domain.Class) []*Class {
+	dtos := make([]*Class, len(domains))
+
+	for i, d := range domains {
+		dtos[i] = toClassDto(d)
+	}
+
+	return dtos
+}

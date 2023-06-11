@@ -14,25 +14,28 @@
  * limitations under the License.
  */
 
-package infrastructure
+package domain
 
-import (
-	"testing"
+import "context"
 
-	"github.com/stretchr/testify/assert"
-)
+type ClassService struct {
+	r ClassRepository
+}
 
-func TestAuthDBRepository_FindTokenByTokenStr(t *testing.T) {
+func NewClassService(classRepository ClassRepository) ClassService {
+	return ClassService{r: classRepository}
+}
 
-	connection := getDBConnection(t, true)
-	defer connection.Close()
-
-	r := NewAuthRepository(connection)
-
-	token, err := r.FindTokenByTokenStr("42")
+func (s *ClassService) FindAllClasses(ctx context.Context, limit uint16, offset uint16) ([]*Class, uint32, error) {
+	classes, err := s.r.FindAll(ctx, limit, offset)
 	if err != nil {
-		assert.Failf(t, "Fail to get token", "%v", err)
+		return nil, 0, err
 	}
 
-	assert.Nil(t, token)
+	total, err := s.r.CountAll(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return classes, total, nil
 }

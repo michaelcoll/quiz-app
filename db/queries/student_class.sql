@@ -7,6 +7,10 @@ SELECT *
 FROM student_class
 LIMIT ? OFFSET ?;
 
+-- name: CountAllClasses :one
+SELECT COUNT(1)
+FROM student_class;
+
 -- name: DeleteClassById :exec
 DELETE
 FROM student_class

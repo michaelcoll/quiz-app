@@ -19,14 +19,10 @@ package presentation
 import (
 	"fmt"
 	"net/http"
-	"regexp"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
-
-var rangeRxp = regexp.MustCompile(`(?P<Unit>.*)=(?P<Start>[0-9]+)-(?P<End>[0-9]*)`)
 
 func (c *ApiController) quizList(ctx *gin.Context) {
 
@@ -44,40 +40,6 @@ func (c *ApiController) quizList(ctx *gin.Context) {
 
 	ctx.Header("Content-Range", fmt.Sprintf("%s %d-%d/%d", "quiz", start, int(start)+len(quizzes), total))
 	ctx.JSON(http.StatusOK, toQuizDtos(quizzes))
-}
-
-func extractRangeHeader(rangeHeader string, unit string) (uint16, uint16, error) {
-	r := rangeRxp.FindStringSubmatch(rangeHeader)
-	st := http.StatusRequestedRangeNotSatisfiable
-
-	if len(r) < 4 {
-		return 0, 0, Errorf(st, "Range is not valid, supported format : %s=0-25", unit)
-	}
-
-	if r[1] != unit {
-		return 0, 0, Errorf(st, "Unit in range is not valid, supported unit : %s", unit)
-	}
-
-	start, errStart := strconv.ParseUint(r[2], 10, 16)
-	end, errEnd := strconv.ParseUint(r[3], 10, 16)
-
-	if len(r[3]) == 0 {
-		end = 0
-	}
-
-	if errStart != nil {
-		return 0, 0, Errorf(st, "Start range is not valid")
-	}
-
-	if len(r[3]) != 0 && errEnd != nil {
-		return 0, 0, Errorf(st, "End range is not valid")
-	}
-
-	if end != 0 && start >= end {
-		return 0, 0, Errorf(st, "Range is not valid, start > end")
-	}
-
-	return uint16(start), uint16(end), nil
 }
 
 func (c *ApiController) quizBySha1(ctx *gin.Context) {

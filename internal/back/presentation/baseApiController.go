@@ -19,7 +19,9 @@ package presentation
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"regexp"
+	"strconv"
 
 	"github.com/fatih/color"
 	"github.com/gin-gonic/gin"
@@ -29,13 +31,19 @@ import (
 
 const apiPort = ":8080"
 
+var rangeRxp = regexp.MustCompile(`(?P<Unit>.*)=(?P<Start>[0-9]+)-(?P<End>[0-9]*)`)
+
 type ApiController struct {
-	quizService *domain.QuizService
-	authService *domain.AuthService
+	quizService  *domain.QuizService
+	authService  *domain.AuthService
+	classService *domain.ClassService
 }
 
-func NewApiController(quizService *domain.QuizService, authService *domain.AuthService) ApiController {
-	return ApiController{quizService: quizService, authService: authService}
+func NewApiController(
+	quizService *domain.QuizService,
+	authService *domain.AuthService,
+	classService *domain.ClassService) ApiController {
+	return ApiController{quizService: quizService, authService: authService, classService: classService}
 }
 
 var pathRoleMapping = map[*endPointDef]domain.Role{}
@@ -68,6 +76,8 @@ func (c *ApiController) Serve() {
 	addGetEndpoint(private, "/session", domain.Student, c.sessionList)
 	addPostEndpoint(private, "/session", domain.Student, c.startSession)
 	addPostEndpoint(private, "/session/:sessionId/answer", domain.Student, c.addSessionAnswer)
+
+	addGetEndpoint(private, "/class", domain.Teacher, c.classList)
 
 	// Listen and serve on 0.0.0.0:8080
 	fmt.Printf("%s Listening API on http://0.0.0.0%s\n", color.GreenString("✓"), color.GreenString(apiPort))
@@ -106,4 +116,38 @@ func toRegExPath(routerGroup *gin.RouterGroup, path string) *regexp.Regexp {
 	replacedPath := r.ReplaceAllString(path, "[^/]+")
 
 	return regexp.MustCompile(fmt.Sprintf("^%s%s$", routerGroup.BasePath(), replacedPath))
+}
+
+func extractRangeHeader(rangeHeader string, unit string) (uint16, uint16, error) {
+	r := rangeRxp.FindStringSubmatch(rangeHeader)
+	st := http.StatusRequestedRangeNotSatisfiable
+
+	if len(r) < 4 {
+		return 0, 0, Errorf(st, "Range is not valid, supported format : %s=0-25", unit)
+	}
+
+	if r[1] != unit {
+		return 0, 0, Errorf(st, "Unit in range is not valid, supported unit : %s", unit)
+	}
+
+	start, errStart := strconv.ParseUint(r[2], 10, 16)
+	end, errEnd := strconv.ParseUint(r[3], 10, 16)
+
+	if len(r[3]) == 0 {
+		end = 0
+	}
+
+	if errStart != nil {
+		return 0, 0, Errorf(st, "Start range is not valid")
+	}
+
+	if len(r[3]) != 0 && errEnd != nil {
+		return 0, 0, Errorf(st, "End range is not valid")
+	}
+
+	if end != 0 && start >= end {
+		return 0, 0, Errorf(st, "Range is not valid, start > end")
+	}
+
+	return uint16(start), uint16(end), nil
 }

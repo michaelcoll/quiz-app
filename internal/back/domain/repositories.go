@@ -40,11 +40,21 @@ type QuizRepository interface {
 
 //go:generate mockery --name AuthRepository
 type AuthRepository interface {
+	CacheToken(token *IdToken) error
+	FindTokenByTokenStr(tokenStr string) (*IdToken, error)
+}
+
+//go:generate mockery --name UserRepository
+type UserRepository interface {
 	FindUserById(ctx context.Context, id string) (*User, error)
 	FindAllUser(ctx context.Context) ([]*User, error)
 	CreateOrReplaceUser(ctx context.Context, user *User) error
 	UpdateUserActive(ctx context.Context, id string, active bool) error
 	UpdateUserRole(ctx context.Context, userId string, role Role) error
-	CacheToken(token *IdToken) error
-	FindTokenByTokenStr(tokenStr string) (*IdToken, error)
+}
+
+//go:generate mockery --name ClassRepository
+type ClassRepository interface {
+	FindAll(ctx context.Context, limit uint16, offset uint16) ([]*Class, error)
+	CountAll(ctx context.Context) (uint32, error)
 }
