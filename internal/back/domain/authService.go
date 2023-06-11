@@ -145,19 +145,6 @@ func (s *AuthService) ValidateTokenAndGetUser(ctx context.Context, accessToken s
 	return user, nil
 }
 
-func (s *AuthService) FindUserById(ctx context.Context, id string) (*User, error) {
-	user, err := s.userRepository.FindUserById(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-
-	if user == nil {
-		return nil, Errorf(NotFound, "user with id '%s' not found", id)
-	}
-
-	return user, nil
-}
-
 func (role Role) CanAccess(other Role) bool {
 
 	if role == other {
@@ -173,16 +160,4 @@ func (role Role) CanAccess(other Role) bool {
 	}
 
 	return false
-}
-
-func (s *AuthService) FindAllUser(ctx context.Context) ([]*User, error) {
-	return s.userRepository.FindAllUser(ctx)
-}
-
-func (s *AuthService) DeactivateUser(ctx context.Context, id string) error {
-	return s.userRepository.UpdateUserActive(ctx, id, false)
-}
-
-func (s *AuthService) ActivateUser(ctx context.Context, id string) error {
-	return s.userRepository.UpdateUserActive(ctx, id, true)
 }

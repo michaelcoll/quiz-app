@@ -34,16 +34,19 @@ const apiPort = ":8080"
 var rangeRxp = regexp.MustCompile(`(?P<Unit>.*)=(?P<Start>[0-9]+)-(?P<End>[0-9]*)`)
 
 type ApiController struct {
-	quizService  *domain.QuizService
 	authService  *domain.AuthService
 	classService *domain.ClassService
+	quizService  *domain.QuizService
+	userService  *domain.UserService
 }
 
 func NewApiController(
-	quizService *domain.QuizService,
 	authService *domain.AuthService,
-	classService *domain.ClassService) ApiController {
-	return ApiController{quizService: quizService, authService: authService, classService: classService}
+	classService *domain.ClassService,
+	quizService *domain.QuizService,
+	userService *domain.UserService) ApiController {
+	return ApiController{authService: authService, classService: classService,
+		quizService: quizService, userService: userService}
 }
 
 var pathRoleMapping = map[*endPointDef]domain.Role{}

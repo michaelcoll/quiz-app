@@ -5,6 +5,7 @@ package domain
 import (
 	context "context"
 
+	uuid "github.com/google/uuid"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -69,6 +70,135 @@ func (_c *MockClassRepository_CountAll_Call) Return(_a0 uint32, _a1 error) *Mock
 }
 
 func (_c *MockClassRepository_CountAll_Call) RunAndReturn(run func(context.Context) (uint32, error)) *MockClassRepository_CountAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CreateOrReplace provides a mock function with given fields: ctx, class
+func (_m *MockClassRepository) CreateOrReplace(ctx context.Context, class *Class) error {
+	ret := _m.Called(ctx, class)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *Class) error); ok {
+		r0 = rf(ctx, class)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockClassRepository_CreateOrReplace_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateOrReplace'
+type MockClassRepository_CreateOrReplace_Call struct {
+	*mock.Call
+}
+
+// CreateOrReplace is a helper method to define mock.On call
+//   - ctx context.Context
+//   - class *Class
+func (_e *MockClassRepository_Expecter) CreateOrReplace(ctx interface{}, class interface{}) *MockClassRepository_CreateOrReplace_Call {
+	return &MockClassRepository_CreateOrReplace_Call{Call: _e.mock.On("CreateOrReplace", ctx, class)}
+}
+
+func (_c *MockClassRepository_CreateOrReplace_Call) Run(run func(ctx context.Context, class *Class)) *MockClassRepository_CreateOrReplace_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*Class))
+	})
+	return _c
+}
+
+func (_c *MockClassRepository_CreateOrReplace_Call) Return(_a0 error) *MockClassRepository_CreateOrReplace_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClassRepository_CreateOrReplace_Call) RunAndReturn(run func(context.Context, *Class) error) *MockClassRepository_CreateOrReplace_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Delete provides a mock function with given fields: ctx, classId
+func (_m *MockClassRepository) Delete(ctx context.Context, classId uuid.UUID) error {
+	ret := _m.Called(ctx, classId)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) error); ok {
+		r0 = rf(ctx, classId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockClassRepository_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
+type MockClassRepository_Delete_Call struct {
+	*mock.Call
+}
+
+// Delete is a helper method to define mock.On call
+//   - ctx context.Context
+//   - classId uuid.UUID
+func (_e *MockClassRepository_Expecter) Delete(ctx interface{}, classId interface{}) *MockClassRepository_Delete_Call {
+	return &MockClassRepository_Delete_Call{Call: _e.mock.On("Delete", ctx, classId)}
+}
+
+func (_c *MockClassRepository_Delete_Call) Run(run func(ctx context.Context, classId uuid.UUID)) *MockClassRepository_Delete_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *MockClassRepository_Delete_Call) Return(_a0 error) *MockClassRepository_Delete_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClassRepository_Delete_Call) RunAndReturn(run func(context.Context, uuid.UUID) error) *MockClassRepository_Delete_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ExistsById provides a mock function with given fields: ctx, classId
+func (_m *MockClassRepository) ExistsById(ctx context.Context, classId uuid.UUID) bool {
+	ret := _m.Called(ctx, classId)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) bool); ok {
+		r0 = rf(ctx, classId)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// MockClassRepository_ExistsById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ExistsById'
+type MockClassRepository_ExistsById_Call struct {
+	*mock.Call
+}
+
+// ExistsById is a helper method to define mock.On call
+//   - ctx context.Context
+//   - classId uuid.UUID
+func (_e *MockClassRepository_Expecter) ExistsById(ctx interface{}, classId interface{}) *MockClassRepository_ExistsById_Call {
+	return &MockClassRepository_ExistsById_Call{Call: _e.mock.On("ExistsById", ctx, classId)}
+}
+
+func (_c *MockClassRepository_ExistsById_Call) Run(run func(ctx context.Context, classId uuid.UUID)) *MockClassRepository_ExistsById_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *MockClassRepository_ExistsById_Call) Return(_a0 bool) *MockClassRepository_ExistsById_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClassRepository_ExistsById_Call) RunAndReturn(run func(context.Context, uuid.UUID) bool) *MockClassRepository_ExistsById_Call {
 	_c.Call.Return(run)
 	return _c
 }

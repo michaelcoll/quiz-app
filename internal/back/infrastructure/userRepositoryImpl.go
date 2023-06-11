@@ -22,6 +22,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/patrickmn/go-cache"
 
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
@@ -108,6 +109,13 @@ func (r *UserDBRepository) UpdateUserActive(ctx context.Context, id string, acti
 	return r.q.UpdateUserActive(ctx, sqlc.UpdateUserActiveParams{
 		Active: active,
 		ID:     id,
+	})
+}
+
+func (r *UserDBRepository) AssignUserToClass(ctx context.Context, userId string, classId uuid.UUID) error {
+	return r.q.AssignUserToClass(ctx, sqlc.AssignUserToClassParams{
+		ClassUuid: classId,
+		ID:        userId,
 	})
 }
 

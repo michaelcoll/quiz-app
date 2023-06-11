@@ -40,18 +40,19 @@ func (m *Module) GetService() *domain.QuizService {
 func New() Module {
 	connection := db.Init("data")
 
-	quizRepository := infrastructure.NewQuizRepository(connection)
 	authRepository := infrastructure.NewAuthRepository(connection)
-	userRepository := infrastructure.NewUserRepository(connection)
 	classRepository := infrastructure.NewClassRepository(connection)
+	quizRepository := infrastructure.NewQuizRepository(connection)
+	userRepository := infrastructure.NewUserRepository(connection)
 
-	quizService := domain.NewQuizService(quizRepository)
 	authService := domain.NewAuthService(authRepository, userRepository)
 	classService := domain.NewClassService(classRepository)
+	quizService := domain.NewQuizService(quizRepository)
+	userService := domain.NewUserService(userRepository)
 
 	return Module{
 		quizServ: quizService,
 		authServ: authService,
-		quizCtrl: presentation.NewApiController(&quizService, &authService, &classService),
+		quizCtrl: presentation.NewApiController(&authService, &classService, &quizService, &userService),
 	}
 }
