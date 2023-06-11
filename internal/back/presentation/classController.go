@@ -21,6 +21,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+
+	"github.com/michaelcoll/quiz-app/internal/back/domain"
 )
 
 func (c *ApiController) classList(ctx *gin.Context) {
@@ -39,4 +42,66 @@ func (c *ApiController) classList(ctx *gin.Context) {
 
 	ctx.Header("Content-Range", fmt.Sprintf("%s %d-%d/%d", "class", start, int(start)+len(classes), total))
 	ctx.JSON(http.StatusOK, toClassDtos(classes))
+}
+
+func (c *ApiController) classCreate(ctx *gin.Context) {
+
+	var r ClassCreateRequestBody
+	if err := ctx.BindJSON(&r); err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	err := c.classService.Create(ctx, r.Name)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, gin.H{"message": "class created"})
+}
+
+func (c *ApiController) classUpdate(ctx *gin.Context) {
+	classIdStr := ctx.Param("uuid")
+
+	classId, err := uuid.Parse(classIdStr)
+	if err != nil {
+		handleHttpError(ctx, http.StatusBadRequest, "invalid classId")
+		return
+	}
+
+	var r ClassCreateRequestBody
+	if err := ctx.BindJSON(&r); err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	err = c.classService.Update(ctx, &domain.Class{
+		Id:   classId,
+		Name: r.Name,
+	})
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "class updated"})
+}
+
+func (c *ApiController) classDelete(ctx *gin.Context) {
+	classIdStr := ctx.Param("uuid")
+
+	classId, err := uuid.Parse(classIdStr)
+	if err != nil {
+		handleHttpError(ctx, http.StatusBadRequest, "invalid classId")
+		return
+	}
+
+	err = c.classService.Delete(ctx, classId)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "class deleted"})
 }

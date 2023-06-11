@@ -16,7 +16,11 @@
 
 package domain
 
-import "context"
+import (
+	"context"
+
+	"github.com/google/uuid"
+)
 
 type ClassService struct {
 	r ClassRepository
@@ -38,4 +42,34 @@ func (s *ClassService) FindAllClasses(ctx context.Context, limit uint16, offset 
 	}
 
 	return classes, total, nil
+}
+
+func (s *ClassService) Create(ctx context.Context, name string) error {
+	id, err := uuid.NewRandom()
+	if err != nil {
+		return err
+	}
+
+	return s.r.CreateOrReplace(ctx, &Class{
+		Id:   id,
+		Name: name,
+	})
+}
+
+func (s *ClassService) Update(ctx context.Context, class *Class) error {
+
+	if !s.r.ExistsById(ctx, class.Id) {
+		return Errorf(NotFound, "class with id (%s) not found", class.Id)
+	}
+
+	return s.r.CreateOrReplace(ctx, class)
+}
+
+func (s *ClassService) Delete(ctx context.Context, id uuid.UUID) error {
+
+	if !s.r.ExistsById(ctx, id) {
+		return Errorf(NotFound, "class with id (%s) not found", id)
+	}
+
+	return s.r.Delete(ctx, id)
 }

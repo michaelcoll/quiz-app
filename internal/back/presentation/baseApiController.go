@@ -75,9 +75,12 @@ func (c *ApiController) Serve() {
 
 	addGetEndpoint(private, "/session", domain.Student, c.sessionList)
 	addPostEndpoint(private, "/session", domain.Student, c.startSession)
-	addPostEndpoint(private, "/session/:sessionId/answer", domain.Student, c.addSessionAnswer)
+	addPostEndpoint(private, "/session/:uuid/answer", domain.Student, c.addSessionAnswer)
 
 	addGetEndpoint(private, "/class", domain.Teacher, c.classList)
+	addPostEndpoint(private, "/class", domain.Teacher, c.classCreate)
+	addPutEndpoint(private, "/class/:uuid", domain.Teacher, c.classUpdate)
+	addDeleteEndpoint(private, "/class/:uuid", domain.Teacher, c.classDelete)
 
 	// Listen and serve on 0.0.0.0:8080
 	fmt.Printf("%s Listening API on http://0.0.0.0%s\n", color.GreenString("✓"), color.GreenString(apiPort))
@@ -95,6 +98,11 @@ func addGetEndpoint(routerGroup *gin.RouterGroup, path string, role domain.Role,
 func addPostEndpoint(routerGroup *gin.RouterGroup, path string, role domain.Role, handler gin.HandlerFunc) {
 	appendEndpointDef(routerGroup, path, "POST", role)
 	routerGroup.POST(path, handler)
+}
+
+func addPutEndpoint(routerGroup *gin.RouterGroup, path string, role domain.Role, handler gin.HandlerFunc) {
+	appendEndpointDef(routerGroup, path, "PUT", role)
+	routerGroup.PUT(path, handler)
 }
 
 func addDeleteEndpoint(routerGroup *gin.RouterGroup, path string, role domain.Role, handler gin.HandlerFunc) {
