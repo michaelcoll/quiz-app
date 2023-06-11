@@ -262,25 +262,25 @@ func (_c *MockQuizRepository_Create_Call) RunAndReturn(run func(context.Context,
 	return _c
 }
 
-// FindAllActive provides a mock function with given fields: ctx, limit, offset
-func (_m *MockQuizRepository) FindAllActive(ctx context.Context, limit uint16, offset uint16) ([]*Quiz, error) {
-	ret := _m.Called(ctx, limit, offset)
+// FindAllActive provides a mock function with given fields: ctx, userId, limit, offset
+func (_m *MockQuizRepository) FindAllActive(ctx context.Context, userId string, limit uint16, offset uint16) ([]*Quiz, error) {
+	ret := _m.Called(ctx, userId, limit, offset)
 
 	var r0 []*Quiz
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uint16, uint16) ([]*Quiz, error)); ok {
-		return rf(ctx, limit, offset)
+	if rf, ok := ret.Get(0).(func(context.Context, string, uint16, uint16) ([]*Quiz, error)); ok {
+		return rf(ctx, userId, limit, offset)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, uint16, uint16) []*Quiz); ok {
-		r0 = rf(ctx, limit, offset)
+	if rf, ok := ret.Get(0).(func(context.Context, string, uint16, uint16) []*Quiz); ok {
+		r0 = rf(ctx, userId, limit, offset)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*Quiz)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, uint16, uint16) error); ok {
-		r1 = rf(ctx, limit, offset)
+	if rf, ok := ret.Get(1).(func(context.Context, string, uint16, uint16) error); ok {
+		r1 = rf(ctx, userId, limit, offset)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -295,15 +295,16 @@ type MockQuizRepository_FindAllActive_Call struct {
 
 // FindAllActive is a helper method to define mock.On call
 //   - ctx context.Context
+//   - userId string
 //   - limit uint16
 //   - offset uint16
-func (_e *MockQuizRepository_Expecter) FindAllActive(ctx interface{}, limit interface{}, offset interface{}) *MockQuizRepository_FindAllActive_Call {
-	return &MockQuizRepository_FindAllActive_Call{Call: _e.mock.On("FindAllActive", ctx, limit, offset)}
+func (_e *MockQuizRepository_Expecter) FindAllActive(ctx interface{}, userId interface{}, limit interface{}, offset interface{}) *MockQuizRepository_FindAllActive_Call {
+	return &MockQuizRepository_FindAllActive_Call{Call: _e.mock.On("FindAllActive", ctx, userId, limit, offset)}
 }
 
-func (_c *MockQuizRepository_FindAllActive_Call) Run(run func(ctx context.Context, limit uint16, offset uint16)) *MockQuizRepository_FindAllActive_Call {
+func (_c *MockQuizRepository_FindAllActive_Call) Run(run func(ctx context.Context, userId string, limit uint16, offset uint16)) *MockQuizRepository_FindAllActive_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(uint16), args[2].(uint16))
+		run(args[0].(context.Context), args[1].(string), args[2].(uint16), args[3].(uint16))
 	})
 	return _c
 }
@@ -313,7 +314,7 @@ func (_c *MockQuizRepository_FindAllActive_Call) Return(_a0 []*Quiz, _a1 error) 
 	return _c
 }
 
-func (_c *MockQuizRepository_FindAllActive_Call) RunAndReturn(run func(context.Context, uint16, uint16) ([]*Quiz, error)) *MockQuizRepository_FindAllActive_Call {
+func (_c *MockQuizRepository_FindAllActive_Call) RunAndReturn(run func(context.Context, string, uint16, uint16) ([]*Quiz, error)) *MockQuizRepository_FindAllActive_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -376,80 +377,25 @@ func (_c *MockQuizRepository_FindAllSessions_Call) RunAndReturn(run func(context
 	return _c
 }
 
-// FindBySha1 provides a mock function with given fields: ctx, sha1
-func (_m *MockQuizRepository) FindBySha1(ctx context.Context, sha1 string) (*Quiz, error) {
-	ret := _m.Called(ctx, sha1)
+// FindFullBySha1 provides a mock function with given fields: ctx, sha1, userId
+func (_m *MockQuizRepository) FindFullBySha1(ctx context.Context, sha1 string, userId string) (*Quiz, error) {
+	ret := _m.Called(ctx, sha1, userId)
 
 	var r0 *Quiz
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*Quiz, error)); ok {
-		return rf(ctx, sha1)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*Quiz, error)); ok {
+		return rf(ctx, sha1, userId)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *Quiz); ok {
-		r0 = rf(ctx, sha1)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *Quiz); ok {
+		r0 = rf(ctx, sha1, userId)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*Quiz)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, sha1)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockQuizRepository_FindBySha1_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FindBySha1'
-type MockQuizRepository_FindBySha1_Call struct {
-	*mock.Call
-}
-
-// FindBySha1 is a helper method to define mock.On call
-//   - ctx context.Context
-//   - sha1 string
-func (_e *MockQuizRepository_Expecter) FindBySha1(ctx interface{}, sha1 interface{}) *MockQuizRepository_FindBySha1_Call {
-	return &MockQuizRepository_FindBySha1_Call{Call: _e.mock.On("FindBySha1", ctx, sha1)}
-}
-
-func (_c *MockQuizRepository_FindBySha1_Call) Run(run func(ctx context.Context, sha1 string)) *MockQuizRepository_FindBySha1_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockQuizRepository_FindBySha1_Call) Return(_a0 *Quiz, _a1 error) *MockQuizRepository_FindBySha1_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockQuizRepository_FindBySha1_Call) RunAndReturn(run func(context.Context, string) (*Quiz, error)) *MockQuizRepository_FindBySha1_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// FindFullBySha1 provides a mock function with given fields: ctx, sha1
-func (_m *MockQuizRepository) FindFullBySha1(ctx context.Context, sha1 string) (*Quiz, error) {
-	ret := _m.Called(ctx, sha1)
-
-	var r0 *Quiz
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*Quiz, error)); ok {
-		return rf(ctx, sha1)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *Quiz); ok {
-		r0 = rf(ctx, sha1)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*Quiz)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, sha1)
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, sha1, userId)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -465,13 +411,14 @@ type MockQuizRepository_FindFullBySha1_Call struct {
 // FindFullBySha1 is a helper method to define mock.On call
 //   - ctx context.Context
 //   - sha1 string
-func (_e *MockQuizRepository_Expecter) FindFullBySha1(ctx interface{}, sha1 interface{}) *MockQuizRepository_FindFullBySha1_Call {
-	return &MockQuizRepository_FindFullBySha1_Call{Call: _e.mock.On("FindFullBySha1", ctx, sha1)}
+//   - userId string
+func (_e *MockQuizRepository_Expecter) FindFullBySha1(ctx interface{}, sha1 interface{}, userId interface{}) *MockQuizRepository_FindFullBySha1_Call {
+	return &MockQuizRepository_FindFullBySha1_Call{Call: _e.mock.On("FindFullBySha1", ctx, sha1, userId)}
 }
 
-func (_c *MockQuizRepository_FindFullBySha1_Call) Run(run func(ctx context.Context, sha1 string)) *MockQuizRepository_FindFullBySha1_Call {
+func (_c *MockQuizRepository_FindFullBySha1_Call) Run(run func(ctx context.Context, sha1 string, userId string)) *MockQuizRepository_FindFullBySha1_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
 	})
 	return _c
 }
@@ -481,7 +428,7 @@ func (_c *MockQuizRepository_FindFullBySha1_Call) Return(_a0 *Quiz, _a1 error) *
 	return _c
 }
 
-func (_c *MockQuizRepository_FindFullBySha1_Call) RunAndReturn(run func(context.Context, string) (*Quiz, error)) *MockQuizRepository_FindFullBySha1_Call {
+func (_c *MockQuizRepository_FindFullBySha1_Call) RunAndReturn(run func(context.Context, string, string) (*Quiz, error)) *MockQuizRepository_FindFullBySha1_Call {
 	_c.Call.Return(run)
 	return _c
 }

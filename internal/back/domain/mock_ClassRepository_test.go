@@ -117,6 +117,50 @@ func (_c *MockClassRepository_CreateOrReplace_Call) RunAndReturn(run func(contex
 	return _c
 }
 
+// CreateQuizClassVisibility provides a mock function with given fields: ctx, quizSha1, classId
+func (_m *MockClassRepository) CreateQuizClassVisibility(ctx context.Context, quizSha1 string, classId uuid.UUID) error {
+	ret := _m.Called(ctx, quizSha1, classId)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, uuid.UUID) error); ok {
+		r0 = rf(ctx, quizSha1, classId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockClassRepository_CreateQuizClassVisibility_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateQuizClassVisibility'
+type MockClassRepository_CreateQuizClassVisibility_Call struct {
+	*mock.Call
+}
+
+// CreateQuizClassVisibility is a helper method to define mock.On call
+//   - ctx context.Context
+//   - quizSha1 string
+//   - classId uuid.UUID
+func (_e *MockClassRepository_Expecter) CreateQuizClassVisibility(ctx interface{}, quizSha1 interface{}, classId interface{}) *MockClassRepository_CreateQuizClassVisibility_Call {
+	return &MockClassRepository_CreateQuizClassVisibility_Call{Call: _e.mock.On("CreateQuizClassVisibility", ctx, quizSha1, classId)}
+}
+
+func (_c *MockClassRepository_CreateQuizClassVisibility_Call) Run(run func(ctx context.Context, quizSha1 string, classId uuid.UUID)) *MockClassRepository_CreateQuizClassVisibility_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *MockClassRepository_CreateQuizClassVisibility_Call) Return(_a0 error) *MockClassRepository_CreateQuizClassVisibility_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClassRepository_CreateQuizClassVisibility_Call) RunAndReturn(run func(context.Context, string, uuid.UUID) error) *MockClassRepository_CreateQuizClassVisibility_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Delete provides a mock function with given fields: ctx, classId
 func (_m *MockClassRepository) Delete(ctx context.Context, classId uuid.UUID) error {
 	ret := _m.Called(ctx, classId)
@@ -156,6 +200,50 @@ func (_c *MockClassRepository_Delete_Call) Return(_a0 error) *MockClassRepositor
 }
 
 func (_c *MockClassRepository_Delete_Call) RunAndReturn(run func(context.Context, uuid.UUID) error) *MockClassRepository_Delete_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteQuizClassVisibility provides a mock function with given fields: ctx, quizSha1, classId
+func (_m *MockClassRepository) DeleteQuizClassVisibility(ctx context.Context, quizSha1 string, classId uuid.UUID) error {
+	ret := _m.Called(ctx, quizSha1, classId)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, uuid.UUID) error); ok {
+		r0 = rf(ctx, quizSha1, classId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockClassRepository_DeleteQuizClassVisibility_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteQuizClassVisibility'
+type MockClassRepository_DeleteQuizClassVisibility_Call struct {
+	*mock.Call
+}
+
+// DeleteQuizClassVisibility is a helper method to define mock.On call
+//   - ctx context.Context
+//   - quizSha1 string
+//   - classId uuid.UUID
+func (_e *MockClassRepository_Expecter) DeleteQuizClassVisibility(ctx interface{}, quizSha1 interface{}, classId interface{}) *MockClassRepository_DeleteQuizClassVisibility_Call {
+	return &MockClassRepository_DeleteQuizClassVisibility_Call{Call: _e.mock.On("DeleteQuizClassVisibility", ctx, quizSha1, classId)}
+}
+
+func (_c *MockClassRepository_DeleteQuizClassVisibility_Call) Run(run func(ctx context.Context, quizSha1 string, classId uuid.UUID)) *MockClassRepository_DeleteQuizClassVisibility_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *MockClassRepository_DeleteQuizClassVisibility_Call) Return(_a0 error) *MockClassRepository_DeleteQuizClassVisibility_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClassRepository_DeleteQuizClassVisibility_Call) RunAndReturn(run func(context.Context, string, uuid.UUID) error) *MockClassRepository_DeleteQuizClassVisibility_Call {
 	_c.Call.Return(run)
 	return _c
 }

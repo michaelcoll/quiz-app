@@ -57,6 +57,14 @@ func isAdmin(ctx *gin.Context) bool {
 	return false
 }
 
+func isStudent(ctx *gin.Context) bool {
+	if role, found := getRoleFromContext(ctx); found {
+		return role == domain.Student
+	}
+
+	return false
+}
+
 func getUserIdFromContext(ctx *gin.Context) (string, bool) {
 	if r, found := ctx.Get(userIdCtxKey); found {
 		return r.(string), true
