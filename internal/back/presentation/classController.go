@@ -105,3 +105,43 @@ func (c *ApiController) classDelete(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "class deleted"})
 }
+
+func (c *ApiController) createQuizClassVisibility(ctx *gin.Context) {
+	quizSha1 := ctx.Param("sha1")
+
+	classIdStr := ctx.Param("uuid")
+
+	classId, err := uuid.Parse(classIdStr)
+	if err != nil {
+		handleHttpError(ctx, http.StatusBadRequest, "invalid classId")
+		return
+	}
+
+	err = c.classService.CreateQuizClassVisibility(ctx, quizSha1, classId)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "the class can access the quizz"})
+}
+
+func (c *ApiController) deleteQuizClassVisibility(ctx *gin.Context) {
+	quizSha1 := ctx.Param("sha1")
+
+	classIdStr := ctx.Param("uuid")
+
+	classId, err := uuid.Parse(classIdStr)
+	if err != nil {
+		handleHttpError(ctx, http.StatusBadRequest, "invalid classId")
+		return
+	}
+
+	err = c.classService.DeleteQuizClassVisibility(ctx, quizSha1, classId)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "the class can no longer access the quizz"})
+}

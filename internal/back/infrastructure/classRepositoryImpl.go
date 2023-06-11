@@ -93,3 +93,25 @@ func (r *ClassDBRepository) ExistsById(ctx context.Context, classId uuid.UUID) b
 
 	return count == 1
 }
+
+func (r *ClassDBRepository) CreateQuizClassVisibility(ctx context.Context, quizSha1 string, classId uuid.UUID) error {
+	err := r.q.CreateQuizClassVisibility(ctx, sqlc.CreateQuizClassVisibilityParams{
+		ClassUuid: classId,
+		QuizSha1:  quizSha1,
+	})
+	if err != nil {
+		if err.Error() == "FOREIGN KEY constraint failed" {
+			return domain.Errorf(domain.InvalidArgument, err.Error())
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (r *ClassDBRepository) DeleteQuizClassVisibility(ctx context.Context, quizSha1 string, classId uuid.UUID) error {
+	return r.q.DeleteQuizClassVisibility(ctx, sqlc.DeleteQuizClassVisibilityParams{
+		ClassUuid: classId,
+		QuizSha1:  quizSha1,
+	})
+}

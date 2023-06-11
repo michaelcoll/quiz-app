@@ -61,4 +61,6 @@ type ClassRepository interface {
 	CreateOrReplace(ctx context.Context, class *Class) error
 	Delete(ctx context.Context, classId uuid.UUID) error
 	ExistsById(ctx context.Context, classId uuid.UUID) bool
+	CreateQuizClassVisibility(ctx context.Context, quizSha1 string, classId uuid.UUID) error
+	DeleteQuizClassVisibility(ctx context.Context, quizSha1 string, classId uuid.UUID) error
 }
