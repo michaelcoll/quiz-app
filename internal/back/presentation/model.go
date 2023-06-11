@@ -218,3 +218,7 @@ func toClassDtos(domains []*domain.Class) []*Class {
 
 	return dtos
 }
+
+type ClassCreateRequestBody struct {
+	Name string `json:"name" binding:"required"`
+}

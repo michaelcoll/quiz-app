@@ -115,7 +115,7 @@ func (c *ApiController) startSession(ctx *gin.Context) {
 }
 
 func (c *ApiController) addSessionAnswer(ctx *gin.Context) {
-	sessionIdStr := ctx.Param("sessionId")
+	sessionIdStr := ctx.Param("uuid")
 
 	sessionId, err := uuid.Parse(sessionIdStr)
 	if err != nil {

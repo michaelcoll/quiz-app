@@ -11,6 +11,11 @@ LIMIT ? OFFSET ?;
 SELECT COUNT(1)
 FROM student_class;
 
+-- name: CountClassById :one
+SELECT COUNT(1)
+FROM student_class
+WHERE uuid = ?;
+
 -- name: DeleteClassById :exec
 DELETE
 FROM student_class

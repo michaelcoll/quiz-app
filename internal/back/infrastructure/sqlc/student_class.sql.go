@@ -39,6 +39,19 @@ func (q *Queries) CountAllClasses(ctx context.Context) (int64, error) {
 	return count, err
 }
 
+const countClassById = `-- name: CountClassById :one
+SELECT COUNT(1)
+FROM student_class
+WHERE uuid = ?
+`
+
+func (q *Queries) CountClassById(ctx context.Context, argUuid uuid.UUID) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countClassById, argUuid)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createOrReplaceClass = `-- name: CreateOrReplaceClass :exec
 REPLACE INTO student_class (uuid, name)
 VALUES (?, ?)
@@ -97,7 +110,7 @@ func (q *Queries) DeleteQuizClassVisibility(ctx context.Context, arg DeleteQuizC
 	return err
 }
 
-const findAllClasses = `-- name: FindAll :many
+const findAllClasses = `-- name: FindAllClasses :many
 SELECT uuid, name
 FROM student_class
 LIMIT ? OFFSET ?

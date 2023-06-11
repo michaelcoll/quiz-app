@@ -57,4 +57,7 @@ type UserRepository interface {
 type ClassRepository interface {
 	FindAll(ctx context.Context, limit uint16, offset uint16) ([]*Class, error)
 	CountAll(ctx context.Context) (uint32, error)
+	CreateOrReplace(ctx context.Context, class *Class) error
+	Delete(ctx context.Context, classId uuid.UUID) error
+	ExistsById(ctx context.Context, classId uuid.UUID) bool
 }

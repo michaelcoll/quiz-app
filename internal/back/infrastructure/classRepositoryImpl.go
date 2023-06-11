@@ -20,6 +20,8 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/google/uuid"
+
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
 	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/sqlc"
 )
@@ -70,4 +72,24 @@ func (r *ClassDBRepository) toClassArray(entities []sqlc.StudentClass) []*domain
 	}
 
 	return domains
+}
+
+func (r *ClassDBRepository) CreateOrReplace(ctx context.Context, class *domain.Class) error {
+	return r.q.CreateOrReplaceClass(ctx, sqlc.CreateOrReplaceClassParams{
+		Uuid: class.Id,
+		Name: class.Name,
+	})
+}
+
+func (r *ClassDBRepository) Delete(ctx context.Context, classId uuid.UUID) error {
+	return r.q.DeleteClassById(ctx, classId)
+}
+
+func (r *ClassDBRepository) ExistsById(ctx context.Context, classId uuid.UUID) bool {
+	count, err := r.q.CountClassById(ctx, classId)
+	if err != nil {
+		return false
+	}
+
+	return count == 1
 }
