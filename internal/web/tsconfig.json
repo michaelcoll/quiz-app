@@ -1,6 +1,6 @@
 {
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
-  "exclude": ["./**/dist","src/**/__tests__/*", "**/auth0-vue/src/**"],
+  "exclude": ["./**/dist","src/**/__tests__/*"],
   "compilerOptions": {
     "target": "esnext",
     "useDefineForClassFields": true,
