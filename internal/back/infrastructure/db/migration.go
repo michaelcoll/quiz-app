@@ -216,6 +216,24 @@ CREATE TABLE quiz_class_visibility
     FOREIGN KEY (class_uuid) REFERENCES student_class (uuid) ON DELETE CASCADE,
     FOREIGN KEY (quiz_sha1) REFERENCES quiz (sha1)
 );
+
+CREATE VIEW quiz_session_view
+AS
+SELECT q.sha1                                                                  AS quiz_sha1,
+       q.name                                                                  AS quiz_name,
+       q.filename                                                              AS quiz_filename,
+       q.version                                                               AS quiz_version,
+       q.duration                                                              AS quiz_duration,
+       q.created_at                                                            AS quiz_created_at,
+       CASE WHEN sv.uuid IS NULL THEN '' ELSE sv.uuid END                      AS session_uuid,
+       CASE WHEN sv.user_id IS NULL THEN '' ELSE sv.user_id END                AS user_id,
+       CASE WHEN sv.user_name IS NULL THEN '' ELSE sv.user_name END            AS user_name,
+       CASE WHEN sv.remaining_sec IS NULL THEN 0 ELSE sv.remaining_sec END     AS remaining_sec,
+       CASE WHEN sv.checked_answers IS NULL THEN 0 ELSE sv.checked_answers END AS checked_answers,
+       CASE WHEN sv.results IS NULL THEN 0 ELSE sv.results END                 AS results
+FROM quiz q
+         LEFT JOIN session_view sv ON q.sha1 = sv.quiz_sha1
+WHERE q.active = TRUE;
 `
 
 var migrations = map[int]string{

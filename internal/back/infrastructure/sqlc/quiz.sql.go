@@ -30,29 +30,17 @@ func (q *Queries) ActivateOnlyVersion(ctx context.Context, arg ActivateOnlyVersi
 
 const countAllActiveQuiz = `-- name: CountAllActiveQuiz :one
 SELECT COUNT(1)
-FROM quiz
-WHERE active = 1
-`
-
-func (q *Queries) CountAllActiveQuiz(ctx context.Context) (int64, error) {
-	row := q.db.QueryRowContext(ctx, countAllActiveQuiz)
-	var count int64
-	err := row.Scan(&count)
-	return count, err
-}
-
-const countAllActiveQuizRestrictedToClass = `-- name: CountAllActiveQuizRestrictedToClass :one
-SELECT COUNT(1)
 FROM quiz q
          JOIN quiz_class_visibility qcv ON q.sha1 = qcv.quiz_sha1
          JOIN student_class sc ON sc.uuid = qcv.class_uuid
          JOIN user u ON sc.uuid = u.class_uuid
 WHERE q.active = 1
-  AND u.id = ?
+    AND u.id = ''
+   OR u.id = ?
 `
 
-func (q *Queries) CountAllActiveQuizRestrictedToClass(ctx context.Context, id string) (int64, error) {
-	row := q.db.QueryRowContext(ctx, countAllActiveQuizRestrictedToClass, id)
+func (q *Queries) CountAllActiveQuiz(ctx context.Context, id string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countAllActiveQuiz, id)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -122,7 +110,8 @@ FROM quiz q
          JOIN student_class sc ON sc.uuid = qcv.class_uuid
          JOIN user u ON sc.uuid = u.class_uuid
 WHERE q.active = 1
-  AND u.id IS NULL OR u.id = ?
+    AND u.id = ''
+   OR u.id = ?
 LIMIT ? OFFSET ?
 `
 
@@ -195,6 +184,106 @@ func (q *Queries) FindAllActiveQuiz(ctx context.Context, arg FindAllActiveQuizPa
 	return items, nil
 }
 
+const findAllQuizSessions = `-- name: FindAllQuizSessions :many
+SELECT quiz_sha1, quiz_name, quiz_filename, quiz_version, quiz_duration, quiz_created_at, session_uuid, user_id, user_name, remaining_sec, checked_answers, results
+FROM quiz_session_view
+LIMIT ? OFFSET ?
+`
+
+type FindAllQuizSessionsParams struct {
+	Limit  int64 `db:"limit"`
+	Offset int64 `db:"offset"`
+}
+
+func (q *Queries) FindAllQuizSessions(ctx context.Context, arg FindAllQuizSessionsParams) ([]QuizSessionView, error) {
+	rows, err := q.db.QueryContext(ctx, findAllQuizSessions, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []QuizSessionView{}
+	for rows.Next() {
+		var i QuizSessionView
+		if err := rows.Scan(
+			&i.QuizSha1,
+			&i.QuizName,
+			&i.QuizFilename,
+			&i.QuizVersion,
+			&i.QuizDuration,
+			&i.QuizCreatedAt,
+			&i.SessionUuid,
+			&i.UserID,
+			&i.UserName,
+			&i.RemainingSec,
+			&i.CheckedAnswers,
+			&i.Results,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const findAllQuizSessionsForUser = `-- name: FindAllQuizSessionsForUser :many
+SELECT qsv.quiz_sha1, qsv.quiz_name, qsv.quiz_filename, qsv.quiz_version, qsv.quiz_duration, qsv.quiz_created_at, qsv.session_uuid, qsv.user_id, qsv.user_name, qsv.remaining_sec, qsv.checked_answers, qsv.results
+FROM quiz_session_view qsv
+         JOIN quiz_class_visibility qcv ON qsv.quiz_sha1 = qcv.quiz_sha1
+         JOIN student_class sc ON sc.uuid = qcv.class_uuid
+         JOIN user u ON sc.uuid = u.class_uuid AND qsv.user_id = u.id
+WHERE user_id = ?
+
+LIMIT ? OFFSET ?
+`
+
+type FindAllQuizSessionsForUserParams struct {
+	UserID string `db:"user_id"`
+	Limit  int64  `db:"limit"`
+	Offset int64  `db:"offset"`
+}
+
+func (q *Queries) FindAllQuizSessionsForUser(ctx context.Context, arg FindAllQuizSessionsForUserParams) ([]QuizSessionView, error) {
+	rows, err := q.db.QueryContext(ctx, findAllQuizSessionsForUser, arg.UserID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []QuizSessionView{}
+	for rows.Next() {
+		var i QuizSessionView
+		if err := rows.Scan(
+			&i.QuizSha1,
+			&i.QuizName,
+			&i.QuizFilename,
+			&i.QuizVersion,
+			&i.QuizDuration,
+			&i.QuizCreatedAt,
+			&i.SessionUuid,
+			&i.UserID,
+			&i.UserName,
+			&i.RemainingSec,
+			&i.CheckedAnswers,
+			&i.Results,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const findQuizByFilenameAndLatestVersion = `-- name: FindQuizByFilenameAndLatestVersion :one
 SELECT sha1, name, filename, version, active, created_at, duration
 FROM quiz
@@ -205,27 +294,6 @@ LIMIT 1
 
 func (q *Queries) FindQuizByFilenameAndLatestVersion(ctx context.Context, filename string) (Quiz, error) {
 	row := q.db.QueryRowContext(ctx, findQuizByFilenameAndLatestVersion, filename)
-	var i Quiz
-	err := row.Scan(
-		&i.Sha1,
-		&i.Name,
-		&i.Filename,
-		&i.Version,
-		&i.Active,
-		&i.CreatedAt,
-		&i.Duration,
-	)
-	return i, err
-}
-
-const findQuizBySha1 = `-- name: FindQuizBySha1 :one
-SELECT sha1, name, filename, version, active, created_at, duration
-FROM quiz
-WHERE sha1 = ?
-`
-
-func (q *Queries) FindQuizBySha1(ctx context.Context, sha1 string) (Quiz, error) {
-	row := q.db.QueryRowContext(ctx, findQuizBySha1, sha1)
 	var i Quiz
 	err := row.Scan(
 		&i.Sha1,
@@ -261,7 +329,8 @@ FROM quiz q
          JOIN student_class sc ON sc.uuid = qcv.class_uuid
          JOIN user u ON sc.uuid = u.class_uuid
 WHERE q.sha1 = ?
-  AND u.id IS NULL OR u.id = ?
+    AND u.id = ''
+   OR u.id = ?
 `
 
 type FindQuizFullBySha1Params struct {

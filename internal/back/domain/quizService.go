@@ -49,7 +49,7 @@ func (s *QuizService) FindAllActive(ctx context.Context, userId string, limit ui
 		return nil, 0, err
 	}
 
-	count, err := s.r.CountAllActive(ctx)
+	count, err := s.r.CountAllActive(ctx, userId)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -170,4 +170,18 @@ func (s *QuizService) StartSession(ctx context.Context, userId string, quizSha1 
 
 func (s *QuizService) AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUID, userId string, questionSha1 string, answerSha1 string, checked bool) error {
 	return s.r.AddSessionAnswer(ctx, sessionUuid, userId, questionSha1, answerSha1, checked)
+}
+
+func (s *QuizService) FindAllQuizSessions(ctx context.Context, userId string, limit uint16, offset uint16) ([]*QuizSession, uint32, error) {
+	quizzes, err := s.r.FindAllQuizSessions(ctx, userId, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	count, err := s.r.CountAllActive(ctx, userId)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return quizzes, count, nil
 }

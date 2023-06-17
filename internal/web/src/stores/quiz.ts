@@ -17,56 +17,56 @@
 import { defineStore } from "pinia";
 
 import { getApi } from "@/api/common-api";
-import { Quiz } from "@/api/model";
+import { QuizSession } from "@/api/model";
 
 const pageSize = 15;
 
-export const useQuizStore = defineStore("quiz", {
+export const useQuizSessionStore = defineStore("quiz-session", {
   state: () => {
     return {
-      quizzes: null,
+      quizSessions: null,
       page: 0,
     };
   },
   getters: {
-    getQuizzes(): Quiz[] {
-      return this.quizzes;
+    getQuizSessions(): QuizSession[] {
+      return this.quizSessions;
     },
     getCurrentPage(): number {
       return this.page;
     },
   },
   actions: {
-    fetchQuizzes() {
+    fetchQuizSessions() {
       const start = pageSize * this.page;
       const end = pageSize * (this.page + 1) - 1;
 
       getApi()
         .then((axiosInstance) =>
-          axiosInstance.post<Quiz[]>(`/api/v1/quiz`, {
+          axiosInstance.get<QuizSession[]>(`/api/v1/quiz-session`, {
             headers: {
-              Range: `quiz=${start}-${end}`,
+              Range: `quiz-session=${start}-${end}`,
             },
           })
         )
         .then(({ data }) => {
-          this.quizzes = data;
+          this.quizSessions = data;
         });
     },
     setPage(page: number) {
       this.page = page;
-      this.fetchQuizzes();
+      this.fetchQuizSessions();
     },
     incrementPage() {
       this.page++;
-      this.fetchQuizzes();
+      this.fetchQuizSessions();
     },
     decrementPage() {
       this.page--;
       if (this.page < 0) {
         this.page = 0;
       }
-      this.fetchQuizzes();
+      this.fetchQuizSessions();
     },
   },
 });

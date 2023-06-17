@@ -113,23 +113,23 @@ func (_c *MockQuizRepository_AddSessionAnswer_Call) RunAndReturn(run func(contex
 	return _c
 }
 
-// CountAllActive provides a mock function with given fields: ctx
-func (_m *MockQuizRepository) CountAllActive(ctx context.Context) (uint32, error) {
-	ret := _m.Called(ctx)
+// CountAllActive provides a mock function with given fields: ctx, userId
+func (_m *MockQuizRepository) CountAllActive(ctx context.Context, userId string) (uint32, error) {
+	ret := _m.Called(ctx, userId)
 
 	var r0 uint32
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) (uint32, error)); ok {
-		return rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, string) (uint32, error)); ok {
+		return rf(ctx, userId)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context) uint32); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, string) uint32); ok {
+		r0 = rf(ctx, userId)
 	} else {
 		r0 = ret.Get(0).(uint32)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, userId)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -144,13 +144,14 @@ type MockQuizRepository_CountAllActive_Call struct {
 
 // CountAllActive is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockQuizRepository_Expecter) CountAllActive(ctx interface{}) *MockQuizRepository_CountAllActive_Call {
-	return &MockQuizRepository_CountAllActive_Call{Call: _e.mock.On("CountAllActive", ctx)}
+//   - userId string
+func (_e *MockQuizRepository_Expecter) CountAllActive(ctx interface{}, userId interface{}) *MockQuizRepository_CountAllActive_Call {
+	return &MockQuizRepository_CountAllActive_Call{Call: _e.mock.On("CountAllActive", ctx, userId)}
 }
 
-func (_c *MockQuizRepository_CountAllActive_Call) Run(run func(ctx context.Context)) *MockQuizRepository_CountAllActive_Call {
+func (_c *MockQuizRepository_CountAllActive_Call) Run(run func(ctx context.Context, userId string)) *MockQuizRepository_CountAllActive_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(string))
 	})
 	return _c
 }
@@ -160,7 +161,7 @@ func (_c *MockQuizRepository_CountAllActive_Call) Return(_a0 uint32, _a1 error) 
 	return _c
 }
 
-func (_c *MockQuizRepository_CountAllActive_Call) RunAndReturn(run func(context.Context) (uint32, error)) *MockQuizRepository_CountAllActive_Call {
+func (_c *MockQuizRepository_CountAllActive_Call) RunAndReturn(run func(context.Context, string) (uint32, error)) *MockQuizRepository_CountAllActive_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -315,6 +316,63 @@ func (_c *MockQuizRepository_FindAllActive_Call) Return(_a0 []*Quiz, _a1 error) 
 }
 
 func (_c *MockQuizRepository_FindAllActive_Call) RunAndReturn(run func(context.Context, string, uint16, uint16) ([]*Quiz, error)) *MockQuizRepository_FindAllActive_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// FindAllQuizSessions provides a mock function with given fields: ctx, userId, limit, offset
+func (_m *MockQuizRepository) FindAllQuizSessions(ctx context.Context, userId string, limit uint16, offset uint16) ([]*QuizSession, error) {
+	ret := _m.Called(ctx, userId, limit, offset)
+
+	var r0 []*QuizSession
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, uint16, uint16) ([]*QuizSession, error)); ok {
+		return rf(ctx, userId, limit, offset)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, uint16, uint16) []*QuizSession); ok {
+		r0 = rf(ctx, userId, limit, offset)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*QuizSession)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, uint16, uint16) error); ok {
+		r1 = rf(ctx, userId, limit, offset)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockQuizRepository_FindAllQuizSessions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FindAllQuizSessions'
+type MockQuizRepository_FindAllQuizSessions_Call struct {
+	*mock.Call
+}
+
+// FindAllQuizSessions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - userId string
+//   - limit uint16
+//   - offset uint16
+func (_e *MockQuizRepository_Expecter) FindAllQuizSessions(ctx interface{}, userId interface{}, limit interface{}, offset interface{}) *MockQuizRepository_FindAllQuizSessions_Call {
+	return &MockQuizRepository_FindAllQuizSessions_Call{Call: _e.mock.On("FindAllQuizSessions", ctx, userId, limit, offset)}
+}
+
+func (_c *MockQuizRepository_FindAllQuizSessions_Call) Run(run func(ctx context.Context, userId string, limit uint16, offset uint16)) *MockQuizRepository_FindAllQuizSessions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(uint16), args[3].(uint16))
+	})
+	return _c
+}
+
+func (_c *MockQuizRepository_FindAllQuizSessions_Call) Return(_a0 []*QuizSession, _a1 error) *MockQuizRepository_FindAllQuizSessions_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockQuizRepository_FindAllQuizSessions_Call) RunAndReturn(run func(context.Context, string, uint16, uint16) ([]*QuizSession, error)) *MockQuizRepository_FindAllQuizSessions_Call {
 	_c.Call.Return(run)
 	return _c
 }
