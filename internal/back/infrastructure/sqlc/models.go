@@ -52,6 +52,21 @@ type QuizQuestionQuiz struct {
 	QuestionSha1 string `db:"question_sha1"`
 }
 
+type QuizSessionView struct {
+	QuizSha1       string    `db:"quiz_sha1"`
+	QuizName       string    `db:"quiz_name"`
+	QuizFilename   string    `db:"quiz_filename"`
+	QuizVersion    int64     `db:"quiz_version"`
+	QuizDuration   int64     `db:"quiz_duration"`
+	QuizCreatedAt  string    `db:"quiz_created_at"`
+	SessionUuid    uuid.UUID `db:"session_uuid"`
+	UserID         string    `db:"user_id"`
+	UserName       string    `db:"user_name"`
+	RemainingSec   int       `db:"remaining_sec"`
+	CheckedAnswers int       `db:"checked_answers"`
+	Results        int       `db:"results"`
+}
+
 type Role struct {
 	ID   int64  `db:"id"`
 	Name string `db:"name"`

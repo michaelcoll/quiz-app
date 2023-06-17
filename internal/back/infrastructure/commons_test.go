@@ -27,16 +27,37 @@ import (
 )
 
 const (
-	aud           = "aud"
-	sub           = "103275817862301231842"
-	expStr        = "1684494062"
-	expInStr      = "3591"
-	expIn         = 3591
-	exp           = 1684494062
-	firstName     = "Cordell"
-	lastName      = "Walker"
-	email         = "cordell.walker@texas-ranger.com"
-	emailVerified = "true"
+	aud             = "aud"
+	sub             = "103275817862301231842"
+	expStr          = "1684494062"
+	expInStr        = "3591"
+	expIn           = 3591
+	exp             = 1684494062
+	firstName       = "Cordell"
+	lastName        = "Walker"
+	userName        = firstName + " " + lastName
+	email           = "cordell.walker@texas-ranger.com"
+	emailVerified   = "true"
+	sha1Quiz1       = "c152b2d0a2509a82ea5e8a6ae22fea55c7221002"
+	sha1Quiz2       = "770ef94955911a984e3d4925d2419c44d3aaca28"
+	quizName1       = "Marvel Universe"
+	quizName2       = "Video games"
+	quizDuration1   = 840
+	quizDuration2   = 1200
+	quizFilename1   = "marvel-universe.quiz.md"
+	quizFilename2   = "video-games.quiz.md"
+	quizVersion1    = 1
+	quizVersion2    = 2
+	quizCreatedAt1  = "2023-06-16T18:26:54+02:00"
+	quizCreatedAt2  = "2023-06-16T18:26:54+02:00"
+	userId1         = "103275817862301231842"
+	remainingSec1   = 0
+	checkedAnswers1 = 1
+	results1        = 25
+	userId2         = "103275817862301234242"
+	remainingSec2   = 0
+	checkedAnswers2 = 2
+	results2        = 25
 )
 
 func getDBConnection(t *testing.T, dropBeforeConnect bool) *sql.DB {

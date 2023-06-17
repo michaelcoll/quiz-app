@@ -222,3 +222,82 @@ func toClassDtos(domains []*domain.Class) []*Class {
 type ClassCreateRequestBody struct {
 	Name string `json:"name" binding:"required"`
 }
+
+type UserSession struct {
+	SessionId    *uuid.UUID     `json:"sessionId"`
+	UserId       string         `json:"userId"`
+	UserName     string         `json:"userName"`
+	RemainingSec int            `json:"remainingSec,omitempty"`
+	Result       *SessionResult `json:"result,omitempty"`
+}
+
+type QuizSession struct {
+	QuizSha1     string         `json:"quizSha1"`
+	Name         string         `json:"name"`
+	Duration     int            `json:"duration"`
+	Filename     string         `json:"filename,omitempty"`
+	Version      int            `json:"version,omitempty"`
+	CreatedAt    string         `json:"createdAt,omitempty"`
+	SessionId    *uuid.UUID     `json:"sessionId,omitempty"`
+	UserId       string         `json:"userId,omitempty"`
+	UserName     string         `json:"userName,omitempty"`
+	RemainingSec int            `json:"remainingSec,omitempty"`
+	Result       *SessionResult `json:"result,omitempty"`
+	UserSessions []*UserSession `json:"userSessions,omitempty"`
+}
+
+func toQuizSession(domain *domain.QuizSession, userId string) *QuizSession {
+	session := QuizSession{
+		QuizSha1:  domain.QuizSha1,
+		Name:      domain.Name,
+		Duration:  domain.Duration,
+		Filename:  domain.Filename,
+		Version:   domain.Version,
+		CreatedAt: domain.CreatedAt,
+	}
+
+	if len(domain.UserSessions) > 0 {
+		for _, userSession := range domain.UserSessions {
+			if userId == userSession.UserId {
+				session.SessionId = &userSession.SessionId
+				session.UserId = userSession.UserId
+				session.UserName = userSession.UserName
+				session.RemainingSec = userSession.RemainingSec
+
+				if userSession.Result != nil {
+					session.Result = &SessionResult{
+						GoodAnswer:  userSession.Result.GoodAnswer,
+						TotalAnswer: userSession.Result.TotalAnswer,
+					}
+				}
+			} else {
+				session.UserSessions = append(session.UserSessions, toUserSession(userSession))
+			}
+		}
+	}
+
+	return &session
+}
+
+func toUserSession(domain *domain.UserSession) *UserSession {
+	return &UserSession{
+		SessionId:    &domain.SessionId,
+		UserId:       domain.UserId,
+		UserName:     domain.UserName,
+		RemainingSec: domain.RemainingSec,
+		Result: &SessionResult{
+			GoodAnswer:  domain.Result.GoodAnswer,
+			TotalAnswer: domain.Result.TotalAnswer,
+		},
+	}
+}
+
+func toQuizSessionDtos(domains []*domain.QuizSession, userId string) []*QuizSession {
+	dtos := make([]*QuizSession, len(domains))
+
+	for i, d := range domains {
+		dtos[i] = toQuizSession(d, userId)
+	}
+
+	return dtos
+}

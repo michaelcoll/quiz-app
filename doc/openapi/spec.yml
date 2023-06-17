@@ -1,6 +1,9 @@
 openapi: 3.0.3
 info:
   title: Quiz API
+  license:
+    name: Michael COLL
+    url: https://github.com/michaelcoll
   description: |
     Quiz App backend
   version: v1
@@ -21,7 +24,8 @@ paths:
     post:
       tags:
         - auth
-      summary: Login
+      summary: v1/login
+      description: Login
       operationId: login
       responses:
         "200":
@@ -48,7 +52,8 @@ paths:
     get:
       tags:
         - quiz
-      summary: List all quizzes
+      summary: v1/quiz
+      description: List all quizzes
       operationId: list
       parameters:
         - name: Range
@@ -87,11 +92,56 @@ paths:
                 $ref: '#/components/schemas/ErrorMsg'
       security:
         - google: [ ]
+  /quiz-session:
+    get:
+      tags:
+        - quiz
+      summary: v1/quiz-session
+      description: List all quizzes sessions
+      operationId: listQuizSession
+      parameters:
+        - name: Range
+          in: header
+          description: The range header that specify the element to return
+          schema:
+            type: string
+            nullable: false
+            example: 'quiz-session=0-25'
+      responses:
+        "200":
+          description: Success
+          headers:
+            Content-Range:
+              description: The header specifying how much elements are return and in total
+              schema:
+                type: string
+                example: "quiz-session 0-2/2"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuizSession'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+        "416":
+          description: Requested Range Not Satisfiable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+      security:
+        - google: [ ]
   /quiz/{sha1}:
     get:
       tags:
         - quiz
-      summary: Find quiz by sha1
+      summary: v1/quiz/{sha1}
+      description: Find quiz by sha1
       operationId: quizBySha1
       parameters:
         - name: sha1
@@ -129,8 +179,8 @@ paths:
     get:
       tags:
         - user
-      summary: List all users
-      description: '⚠️ Required role : **ADMIN**'
+      summary: v1/user
+      description: 'List all users <br /> ⚠️ Required role : **ADMIN**'
       operationId: userList
       responses:
         "200":
@@ -153,8 +203,8 @@ paths:
     delete:
       tags:
         - user
-      summary: Deactivate user by id
-      description: '⚠️ Required role : **ADMIN**'
+      summary: v1/user/{id}
+      description: 'Deactivate user by id <br/> ⚠️ Required role : **ADMIN**'
       operationId: deactivateUser
       parameters:
         - name: id
@@ -183,8 +233,8 @@ paths:
     post:
       tags:
         - user
-      summary: Activate user by id
-      description: '⚠️ Required role : **ADMIN**'
+      summary: v1/user/{id}
+      description: 'Activate user by id <br /> ⚠️ Required role : **ADMIN**'
       operationId: activateUser
       parameters:
         - name: id
@@ -214,7 +264,8 @@ paths:
     get:
       tags:
         - session
-      summary: List all sessions
+      summary: v1/session
+      description: List all sessions
       operationId: sessionList
       parameters:
         - name: Range
@@ -250,7 +301,8 @@ paths:
     post:
       tags:
         - session
-      summary: Start a new session
+      summary: v1/session
+      description: Start a new session
       operationId: startSession
       parameters:
         - name: quizSha1
@@ -280,7 +332,8 @@ paths:
     post:
       tags:
         - session
-      summary: Add a session answer
+      summary: v1/session/{sessionId}/answer
+      description: Add a session answer
       operationId: addSessionAnswer
       parameters:
         - name: sessionId
@@ -532,20 +585,7 @@ components:
           nullable: true
           example: 840
         result:
-          type: object
-          description: An object describing the result of the quiz
-          nullable: true
-          properties:
-            goodAnswer:
-              type: integer
-              description: The number of good answer in the quiz
-              nullable: true
-              example: 12
-            totalAnswer:
-              type: integer
-              description: The total number of answer in the quiz
-              nullable: true
-              example: 24
+          $ref: '#/components/schemas/SessionResult'
     SessionAnswerRequestBody:
       type: object
       properties:
@@ -564,3 +604,101 @@ components:
           description: If the answer is checked or not
           nullable: false
           example: true
+    SessionResult:
+      type: object
+      description: An object describing the result of the quiz
+      nullable: true
+      properties:
+        goodAnswer:
+          type: integer
+          description: The number of good answer in the quiz
+          nullable: true
+          example: 12
+        totalAnswer:
+          type: integer
+          description: The total number of answer in the quiz
+          nullable: true
+          example: 24
+    QuizSession:
+      type: object
+      properties:
+        quizSha1:
+          type: string
+          description: The sha1 of the whole quiz
+          nullable: false
+          example: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
+        name:
+          type: string
+          description: The name of the quiz
+          nullable: false
+          example: 'Marvel Universe'
+        duration:
+          type: integer
+          description: The duration of the quiz in seconds
+          nullable: false
+          example: 840
+        filename:
+          type: string
+          description: The filename of the quiz
+          nullable: true
+          example: 'marvel-universe.quiz.md'
+        version:
+          type: integer
+          description: The version of the quiz
+          nullable: true
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          description: The date of creation of the quiz
+          nullable: true
+        sessionId:
+          type: string
+          format: uuid
+          description: The date of creation of the quiz
+          nullable: true
+        userId:
+          type: string
+          description: The id of the user
+          nullable: true
+          example: '424242424242424224242'
+        userName:
+          type: string
+          description: The firstname of the user
+          nullable: true
+          example: 'Anakin Skywalker'
+        remainingSec:
+          type: integer
+          description: The remaining seconds before the end of the session
+          nullable: true
+          example: 840
+        result:
+          $ref: '#/components/schemas/SessionResult'
+        userSessions:
+          nullable: true
+          description: The list of all user session on the quiz
+          type: array
+          items:
+            properties:
+              sessionId:
+                type: string
+                format: uuid
+                description: The date of creation of the quiz
+                nullable: false
+              userId:
+                type: string
+                description: The id of the user
+                nullable: false
+                example: '424242424242424224242'
+              userName:
+                type: string
+                description: The firstname of the user
+                nullable: false
+                example: 'Anakin Skywalker'
+              remainingSec:
+                type: integer
+                description: The remaining seconds before the end of the session
+                nullable: true
+                example: 840
+              result:
+                $ref: '#/components/schemas/SessionResult'

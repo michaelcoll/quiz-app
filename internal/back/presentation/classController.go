@@ -123,7 +123,7 @@ func (c *ApiController) createQuizClassVisibility(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "the class can access the quizz"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "the class can access the quiz"})
 }
 
 func (c *ApiController) deleteQuizClassVisibility(ctx *gin.Context) {
@@ -143,5 +143,5 @@ func (c *ApiController) deleteQuizClassVisibility(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "the class can no longer access the quizz"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "the class can no longer access the quiz"})
 }

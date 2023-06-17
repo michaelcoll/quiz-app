@@ -111,3 +111,21 @@ type Class struct {
 	Id   uuid.UUID
 	Name string
 }
+
+type UserSession struct {
+	SessionId    uuid.UUID
+	UserId       string
+	UserName     string
+	RemainingSec int
+	Result       *SessionResult
+}
+
+type QuizSession struct {
+	QuizSha1     string
+	Name         string
+	Duration     int
+	Filename     string
+	Version      int
+	CreatedAt    string
+	UserSessions []*UserSession
+}

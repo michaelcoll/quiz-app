@@ -163,3 +163,35 @@ func (c *ApiController) addSessionAnswer(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusCreated, gin.H{"message": "answer saved"})
 }
+
+func (c *ApiController) quizSessionList(ctx *gin.Context) {
+
+	unit := "quiz-session"
+	start, end, err := extractRangeHeader(ctx.GetHeader("Range"), unit)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	userId := ""
+	if id, found := getUserIdFromContext(ctx); found {
+		userId = id
+	} else {
+		handleHttpError(ctx, http.StatusUnauthorized, "userId not present in context")
+		return
+	}
+
+	studentUserId := ""
+	if isStudent(ctx) {
+		studentUserId = userId
+	}
+
+	sessions, total, err := c.quizService.FindAllQuizSessions(ctx.Request.Context(), studentUserId, end-start, start)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	ctx.Header("Content-Range", fmt.Sprintf("%s %d-%d/%d", unit, start, int(start)+len(sessions), total))
+	ctx.JSON(http.StatusOK, toQuizSessionDtos(sessions, userId))
+}

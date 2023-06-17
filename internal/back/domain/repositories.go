@@ -27,7 +27,7 @@ type QuizRepository interface {
 	FindFullBySha1(ctx context.Context, sha1 string, userId string) (*Quiz, error)
 	FindLatestVersionByFilename(ctx context.Context, filename string) (*Quiz, error)
 	FindAllActive(ctx context.Context, userId string, limit uint16, offset uint16) ([]*Quiz, error)
-	CountAllActive(ctx context.Context) (uint32, error)
+	CountAllActive(ctx context.Context, userId string) (uint32, error)
 	Create(ctx context.Context, quiz *Quiz) error
 	ActivateOnlyVersion(ctx context.Context, filename string, version int) error
 
@@ -35,6 +35,8 @@ type QuizRepository interface {
 	CountAllSessions(ctx context.Context, quizActive bool, userId string) (uint32, error)
 	StartSession(ctx context.Context, userId string, quizSha1 string) (uuid.UUID, error)
 	AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUID, userId string, questionSha1 string, answerSha1 string, checked bool) error
+
+	FindAllQuizSessions(ctx context.Context, userId string, limit uint16, offset uint16) ([]*QuizSession, error)
 }
 
 //go:generate mockery --name AuthRepository

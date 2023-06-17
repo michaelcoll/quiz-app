@@ -46,7 +46,8 @@ FROM quiz q
          JOIN student_class sc ON sc.uuid = qcv.class_uuid
          JOIN user u ON sc.uuid = u.class_uuid
 WHERE q.sha1 = ?
-  AND u.id IS NULL OR u.id = ?;
+    AND u.id = ''
+   OR u.id = ?;
 
 -- name: FindQuizByFilenameAndLatestVersion :one
 SELECT *
@@ -62,19 +63,31 @@ FROM quiz q
          JOIN student_class sc ON sc.uuid = qcv.class_uuid
          JOIN user u ON sc.uuid = u.class_uuid
 WHERE q.active = 1
-  AND u.id IS NULL OR u.id = ?
+    AND u.id = ''
+   OR u.id = ?
 LIMIT ? OFFSET ?;
 
 -- name: CountAllActiveQuiz :one
-SELECT COUNT(1)
-FROM quiz
-WHERE active = 1;
-
--- name: CountAllActiveQuizRestrictedToClass :one
 SELECT COUNT(1)
 FROM quiz q
          JOIN quiz_class_visibility qcv ON q.sha1 = qcv.quiz_sha1
          JOIN student_class sc ON sc.uuid = qcv.class_uuid
          JOIN user u ON sc.uuid = u.class_uuid
 WHERE q.active = 1
-  AND u.id = ?;
+    AND u.id = ''
+   OR u.id = ?;
+
+-- name: FindAllQuizSessions :many
+SELECT *
+FROM quiz_session_view
+LIMIT ? OFFSET ?;
+
+-- name: FindAllQuizSessionsForUser :many
+SELECT qsv.*
+FROM quiz_session_view qsv
+         JOIN quiz_class_visibility qcv ON qsv.quiz_sha1 = qcv.quiz_sha1
+         JOIN student_class sc ON sc.uuid = qcv.class_uuid
+         JOIN user u ON sc.uuid = u.class_uuid AND qsv.user_id = u.id
+WHERE user_id = ?
+
+LIMIT ? OFFSET ?;

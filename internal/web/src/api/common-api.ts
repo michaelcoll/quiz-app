@@ -56,7 +56,7 @@ const onErrorResponse = (error: AxiosError | Error): Promise<AxiosError> => {
   if (axios.isAxiosError(error)) {
     const { message } = error;
     const { method, url } = error.config as AxiosRequestConfig;
-    const { statusText, status } = (error.response as AxiosResponse) ?? {};
+    const { status } = (error.response as AxiosResponse) ?? {};
 
     logOnDev(
       `🚨 [API] ${method?.toUpperCase()} ${url} | Error ${status} ${message}`
