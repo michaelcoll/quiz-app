@@ -3,6 +3,9 @@ build: build-web build-go
 prepare:
 	cd internal/web \
 		&& corepack enable && corepack prepare \
+		&& rm -fr .output \
+        && rm -fr .nuxt \
+        && rm -fr node_modules \
 		&& pnpm i
 
 dep-upgrade: dep-upgrade-go dep-upgrade-node
@@ -20,7 +23,7 @@ build-go:
 
 build-web:
 	cd internal/web \
-		&& pnpm run build
+		&& pnpm run generate
 
 build-docker:
 	@docker build . -t michaelcoll/quiz-app:latest --pull --build-arg VERSION=v0.0.1
@@ -33,14 +36,14 @@ test:
 coverage:
 	@go test -vet=all -covermode atomic -coverprofile=coverage.out ./...
 
-run:
+run-back:
 	@go run . serve
 
-run-vue:
+run-front:
 	cd internal/web \
   		&& pnpm run dev
 
-vue-lint:
+lint-front:
 	cd internal/web \
   		&& pnpm run lint
 
@@ -64,12 +67,12 @@ ts-model:
 		generate \
 		-i doc/openapi/spec.yml \
 		-g typescript-axios \
-		-o internal/web/src/api \
+		-o internal/web/api \
 		--additional-properties=apiPackage=api \
 		--additional-properties=modelPackage=model \
 		--additional-properties=withSeparateModelsAndApi=true \
 		--additional-properties=enablePostProcessFile=true \
-		&& find ./internal/web/src/api/model -type f -exec sed -i 's:/\* eslint-disable \*/::g' {} \; \
-		&& find ./internal/web/src/api/model -type f -exec sed -i 's@/\* tslint:disable \*/@@g' {} \; \
+		&& find ./internal/web/api/model -type f -exec sed -i 's:/\* eslint-disable \*/::g' {} \; \
+		&& find ./internal/web/api/model -type f -exec sed -i 's@/\* tslint:disable \*/@@g' {} \; \
 		&& cd internal/web \
 		&& pnpm run lint

@@ -70,12 +70,16 @@ LIMIT ? OFFSET ?;
 -- name: CountAllActiveQuiz :one
 SELECT COUNT(1)
 FROM quiz q
+WHERE q.active = 1;
+
+-- name: CountAllActiveQuizForUser :one
+SELECT COUNT(1)
+FROM quiz q
          JOIN quiz_class_visibility qcv ON q.sha1 = qcv.quiz_sha1
          JOIN student_class sc ON sc.uuid = qcv.class_uuid
          JOIN user u ON sc.uuid = u.class_uuid
 WHERE q.active = 1
-    AND u.id = ''
-   OR u.id = ?;
+  AND u.id = ?;
 
 -- name: FindAllQuizSessions :many
 SELECT *

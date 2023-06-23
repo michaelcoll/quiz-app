@@ -38,7 +38,7 @@ const (
 func addCommonMiddlewares(group *gin.Engine) {
 	// CORS middleware
 	group.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:4040"},
+		AllowOrigins:     []string{"http://localhost:4040", "http://localhost:3000"},
 		AllowMethods:     []string{"GET", "POST"},
 		AllowHeaders:     []string{"Content-Type", "Content-Length", "Accept-Encoding", "Authorization", "Cache-Control", "Range"},
 		ExposeHeaders:    []string{"Content-Length", "Content-Range"},

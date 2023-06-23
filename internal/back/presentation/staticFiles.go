@@ -30,26 +30,26 @@ import (
 )
 
 func serveStatic(router *gin.Engine) {
-	static, _ := fs.Sub(web.Static, "dist")
+	static, _ := fs.Sub(web.Static, ".output/public")
 	staticIndexFS(http.FS(static), router)
 
-	staticAssets, _ := fs.Sub(web.Static, "dist/assets")
-	staticImg, _ := fs.Sub(web.Static, "dist/img")
-	staticFavIcon, _ := fs.Sub(web.Static, "dist/favicon")
+	staticNuxtResources, _ := fs.Sub(web.Static, ".output/public/_nuxt")
+	staticQuizPage, _ := fs.Sub(web.Static, ".output/public/quiz")
+
+	// Pages
+	router.StaticFS("/quiz", http.FS(staticQuizPage))
 
 	cachedStatic := router.Group("/")
 
 	// Add middlewares
 	cachedStatic.Use(cachecontrol.New(&cachecontrol.Config{
 		Public:    true,
-		MaxAge:    cachecontrol.Duration(7 * 24 * time.Hour),
+		MaxAge:    cachecontrol.Duration(30 * 24 * time.Hour),
 		Immutable: true,
 	}))
 	cachedStatic.Use(gzip.Gzip(gzip.DefaultCompression))
 
-	cachedStatic.StaticFS("/assets", http.FS(staticAssets))
-	cachedStatic.StaticFS("/img", http.FS(staticImg))
-	cachedStatic.StaticFS("/favicon", http.FS(staticFavIcon))
+	cachedStatic.StaticFS("/_nuxt", http.FS(staticNuxtResources))
 }
 
 func staticIndexFS(fs http.FileSystem, router *gin.Engine) {
