@@ -18,8 +18,10 @@ package web
 
 import "embed"
 
-//go:embed dist/assets
-//go:embed dist/favicon
-//go:embed dist/img
-//go:embed dist/index.html
+//go:embed .output/public/_nuxt
+//go:embed .output/public/quiz/index.html
+//go:embed .output/public/200.html
+//go:embed .output/public/404.html
+//go:embed .output/public/favicon.ico
+//go:embed .output/public/index.html
 var Static embed.FS

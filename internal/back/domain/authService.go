@@ -104,8 +104,7 @@ func (s *AuthService) validateToken(ctx context.Context, tokenStr string) (*IdTo
 	// parse token
 	token, err := s.parseToken(ctx, tokenStr)
 	if err != nil {
-		fmt.Printf("%s Can't parse token %s : (%v)\n", color.RedString("✗"), tokenStr, err)
-		return nil, err
+		return nil, Errorf(UnAuthorized, "error while parsing token : %v", err)
 	}
 
 	aud := viper.GetString("auth0-audience")

@@ -31,16 +31,28 @@ func (q *Queries) ActivateOnlyVersion(ctx context.Context, arg ActivateOnlyVersi
 const countAllActiveQuiz = `-- name: CountAllActiveQuiz :one
 SELECT COUNT(1)
 FROM quiz q
+WHERE q.active = 1
+`
+
+func (q *Queries) CountAllActiveQuiz(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countAllActiveQuiz)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countAllActiveQuizForUser = `-- name: CountAllActiveQuizForUser :one
+SELECT COUNT(1)
+FROM quiz q
          JOIN quiz_class_visibility qcv ON q.sha1 = qcv.quiz_sha1
          JOIN student_class sc ON sc.uuid = qcv.class_uuid
          JOIN user u ON sc.uuid = u.class_uuid
 WHERE q.active = 1
-    AND u.id = ''
-   OR u.id = ?
+  AND u.id = ?
 `
 
-func (q *Queries) CountAllActiveQuiz(ctx context.Context, id string) (int64, error) {
-	row := q.db.QueryRowContext(ctx, countAllActiveQuiz, id)
+func (q *Queries) CountAllActiveQuizForUser(ctx context.Context, id string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countAllActiveQuizForUser, id)
 	var count int64
 	err := row.Scan(&count)
 	return count, err

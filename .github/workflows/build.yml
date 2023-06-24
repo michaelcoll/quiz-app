@@ -57,7 +57,7 @@ jobs:
         run: goveralls -coverprofile=coverage.out -service=github
 
       - name: Web ESLint
-        run: make vue-lint
+        run: make lint-front
 
       - name: Save Golang cache
         if: always()
