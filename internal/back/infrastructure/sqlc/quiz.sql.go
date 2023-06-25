@@ -20,7 +20,7 @@ WHERE filename = ?
 
 type ActivateOnlyVersionParams struct {
 	Filename string `db:"filename"`
-	Version  int64  `db:"version"`
+	Version  int    `db:"version"`
 }
 
 func (q *Queries) ActivateOnlyVersion(ctx context.Context, arg ActivateOnlyVersionParams) error {
@@ -98,8 +98,8 @@ type CreateOrReplaceQuizParams struct {
 	Sha1      string `db:"sha1"`
 	Name      string `db:"name"`
 	Filename  string `db:"filename"`
-	Version   int64  `db:"version"`
-	Duration  int64  `db:"duration"`
+	Version   int    `db:"version"`
+	Duration  int    `db:"duration"`
 	CreatedAt string `db:"created_at"`
 }
 
@@ -137,10 +137,10 @@ type FindAllActiveQuizRow struct {
 	Sha1        string    `db:"sha1"`
 	Name        string    `db:"name"`
 	Filename    string    `db:"filename"`
-	Version     int64     `db:"version"`
+	Version     int       `db:"version"`
 	Active      bool      `db:"active"`
 	CreatedAt   string    `db:"created_at"`
-	Duration    int64     `db:"duration"`
+	Duration    int       `db:"duration"`
 	ClassUuid   uuid.UUID `db:"class_uuid"`
 	QuizSha1    string    `db:"quiz_sha1"`
 	Uuid        uuid.UUID `db:"uuid"`
@@ -150,7 +150,7 @@ type FindAllActiveQuizRow struct {
 	Firstname   string    `db:"firstname"`
 	Lastname    string    `db:"lastname"`
 	Active_2    bool      `db:"active_2"`
-	RoleID      int64     `db:"role_id"`
+	RoleID      int8      `db:"role_id"`
 	ClassUuid_2 uuid.UUID `db:"class_uuid_2"`
 }
 
@@ -250,7 +250,6 @@ FROM quiz_session_view qsv
          JOIN student_class sc ON sc.uuid = qcv.class_uuid
          JOIN user u ON sc.uuid = u.class_uuid AND qsv.user_id = u.id
 WHERE user_id = ?
-
 LIMIT ? OFFSET ?
 `
 
@@ -354,9 +353,9 @@ type FindQuizFullBySha1Row struct {
 	QuizSha1        string `db:"quiz_sha1"`
 	QuizFilename    string `db:"quiz_filename"`
 	QuizName        string `db:"quiz_name"`
-	QuizVersion     int64  `db:"quiz_version"`
+	QuizVersion     int    `db:"quiz_version"`
 	QuizCreatedAt   string `db:"quiz_created_at"`
-	QuizDuration    int64  `db:"quiz_duration"`
+	QuizDuration    int    `db:"quiz_duration"`
 	QuizActive      bool   `db:"quiz_active"`
 	QuestionSha1    string `db:"question_sha1"`
 	QuestionContent string `db:"question_content"`
@@ -386,6 +385,49 @@ func (q *Queries) FindQuizFullBySha1(ctx context.Context, arg FindQuizFullBySha1
 			&i.QuestionContent,
 			&i.AnswerSha1,
 			&i.AnswerContent,
+			&i.AnswerValid,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const findQuizSessionByUuid = `-- name: FindQuizSessionByUuid :many
+SELECT session_uuid, user_id, remaining_sec, quiz_sha1, quiz_name, checked_answers, results, question_sha1, question_content, answer_sha1, answer_content, answer_checked, answer_valid
+FROM quiz_session_detail_view
+WHERE session_uuid = ?
+`
+
+func (q *Queries) FindQuizSessionByUuid(ctx context.Context, sessionUuid uuid.UUID) ([]QuizSessionDetailView, error) {
+	rows, err := q.db.QueryContext(ctx, findQuizSessionByUuid, sessionUuid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []QuizSessionDetailView{}
+	for rows.Next() {
+		var i QuizSessionDetailView
+		if err := rows.Scan(
+			&i.SessionUuid,
+			&i.UserID,
+			&i.RemainingSec,
+			&i.QuizSha1,
+			&i.QuizName,
+			&i.CheckedAnswers,
+			&i.Results,
+			&i.QuestionSha1,
+			&i.QuestionContent,
+			&i.AnswerSha1,
+			&i.AnswerContent,
+			&i.AnswerChecked,
 			&i.AnswerValid,
 		); err != nil {
 			return nil, err

@@ -136,6 +136,46 @@ paths:
                 $ref: '#/components/schemas/ErrorMsg'
       security:
         - google: [ ]
+  /quiz-session/{uuid}:
+    get:
+      tags:
+        - quiz
+      summary: v1/quiz-session/{uuid}
+      description: Detail of a quizzes sessions by its Uuid
+      operationId: quizSessionByUuid
+      parameters:
+        - name: sessionId
+          in: path
+          description: The id of the session
+          required: true
+          schema:
+            type: string
+            format: uuid
+            nullable: false
+            example: '497f6eca-6276-4993-bfeb-53cbbbba6f08'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuizSession'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+        "416":
+          description: Requested Range Not Satisfiable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+      security:
+        - google: [ ]
   /quiz/{sha1}:
     get:
       tags:
@@ -492,6 +532,16 @@ components:
           description: The question content
           nullable: false
           example: 'Star-Lord'
+        checked:
+          type: boolean
+          description: if the answer is checked or not
+          nullable: false
+          example: true
+        valid:
+          type: boolean
+          description: if this is a valid answer
+          nullable: true
+          example: true
     User:
       type: object
       properties:
@@ -655,7 +705,7 @@ components:
         sessionId:
           type: string
           format: uuid
-          description: The date of creation of the quiz
+          description: The id of the session
           nullable: true
         userId:
           type: string
@@ -702,3 +752,37 @@ components:
                 example: 840
               result:
                 $ref: '#/components/schemas/SessionResult'
+    QuizSessionDetail:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+          description: The id of the session
+          nullable: true
+        userId:
+          type: string
+          description: The id of the user
+          nullable: true
+          example: '424242424242424224242'
+        remainingSec:
+          type: integer
+          description: The remaining seconds before the end of the session
+          nullable: true
+          example: 840
+        result:
+          $ref: '#/components/schemas/SessionResult'
+        quizSha1:
+          type: string
+          description: The sha1 of the whole quiz
+          nullable: false
+          example: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
+        name:
+          type: string
+          description: The name of the quiz
+          nullable: false
+          example: 'Marvel Universe'
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizQuestion'

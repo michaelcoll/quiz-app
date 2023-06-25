@@ -67,7 +67,7 @@ func (r *UserDBRepository) CreateOrReplaceUser(ctx context.Context, user *domain
 		Email:     user.Email,
 		Firstname: user.Firstname,
 		Lastname:  user.Lastname,
-		RoleID:    int64(user.Role),
+		RoleID:    int8(user.Role),
 	})
 	if err != nil {
 		return err
@@ -79,7 +79,7 @@ func (r *UserDBRepository) CreateOrReplaceUser(ctx context.Context, user *domain
 func (r *UserDBRepository) UpdateUserRole(ctx context.Context, userId string, role domain.Role) error {
 	err := r.q.UpdateUserRole(ctx, sqlc.UpdateUserRoleParams{
 		ID:     userId,
-		RoleID: int64(role),
+		RoleID: int8(role),
 	})
 	if err != nil {
 		return err
@@ -130,13 +130,13 @@ func (r *UserDBRepository) toUser(entity sqlc.User) *domain.User {
 	}
 }
 
-func (r *UserDBRepository) toRole(entity int64) domain.Role {
+func (r *UserDBRepository) toRole(entity int8) domain.Role {
 	switch entity {
-	case int64(domain.Admin):
+	case int8(domain.Admin):
 		return domain.Admin
-	case int64(domain.Teacher):
+	case int8(domain.Teacher):
 		return domain.Teacher
-	case int64(domain.Student):
+	case int8(domain.Student):
 		return domain.Student
 	}
 

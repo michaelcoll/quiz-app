@@ -139,12 +139,13 @@ CREATE TABLE session_answer
 
 CREATE VIEW quiz_answer_count_view
 AS
-SELECT q.sha1          AS quiz_sha1,
-       COUNT(qa.valid) AS checked_answers
+SELECT q.sha1   AS quiz_sha1,
+       COUNT(1) AS checked_answers
 FROM quiz q
          JOIN quiz_question_quiz qqq ON q.sha1 = qqq.quiz_sha1
          JOIN quiz_question_answer qqa ON qqq.question_sha1 = qqa.question_sha1
          JOIN quiz_answer qa ON qa.sha1 = qqa.answer_sha1
+WHERE qa.valid = 1
 GROUP BY q.sha1;
 
 CREATE VIEW session_response_view
@@ -234,6 +235,26 @@ SELECT q.sha1                                                                  A
 FROM quiz q
          LEFT JOIN session_view sv ON q.sha1 = sv.quiz_sha1
 WHERE q.active = TRUE;
+
+CREATE VIEW quiz_session_detail_view
+AS
+SELECT qsv.session_uuid                                          AS session_uuid,
+       qsv.user_id                                               AS user_id,
+       qsv.remaining_sec                                         AS remaining_sec,
+       qsv.quiz_sha1                                             AS quiz_sha1,
+       qsv.quiz_name                                             AS quiz_name,
+       qsv.checked_answers                                       AS checked_answers,
+       qsv.results                                               AS results,
+       srv.question_sha1                                         AS question_sha1,
+       qq.content                                                AS question_content,
+       srv.answer_sha1                                           AS answer_sha1,
+       qa.content                                                AS answer_content,
+       CASE WHEN srv.checked IS NULL THEN 0 ELSE srv.checked END AS answer_checked,
+       qa.valid                                                  AS answer_valid
+FROM quiz_session_view qsv
+         JOIN session_response_view srv ON qsv.session_uuid = srv.session_uuid
+         JOIN quiz_question qq ON srv.question_sha1 = qq.sha1
+         JOIN quiz_answer qa ON srv.answer_sha1 = qa.sha1
 `
 
 var migrations = map[int]string{

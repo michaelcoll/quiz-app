@@ -88,6 +88,7 @@ func (c *ApiController) Serve() {
 	addDeleteEndpoint(private, "/class/:uuid", domain.Teacher, c.classDelete)
 
 	addGetEndpoint(private, "/quiz-session", domain.Student, c.quizSessionList)
+	addGetEndpoint(private, "/quiz-session/:uuid", domain.Student, c.quizSessionByUuid)
 
 	// Listen and serve on 0.0.0.0:8080
 	fmt.Printf("%s Listening API on http://0.0.0.0%s\n", color.GreenString("✓"), color.GreenString(apiPort))

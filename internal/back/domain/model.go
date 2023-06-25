@@ -22,6 +22,11 @@ import (
 	"github.com/google/uuid"
 )
 
+type QuizInfos interface {
+	GetSha1AndName() (string, string)
+	GetQuestions() map[string]QuizQuestion
+}
+
 type Quiz struct {
 	Sha1 string
 
@@ -32,6 +37,14 @@ type Quiz struct {
 	Active    bool
 	Duration  int
 	Questions map[string]QuizQuestion
+}
+
+func (q *Quiz) GetSha1AndName() (string, string) {
+	return q.Sha1, q.Name
+}
+
+func (q *Quiz) GetQuestions() map[string]QuizQuestion {
+	return q.Questions
 }
 
 type QuizQuestion struct {
@@ -45,6 +58,7 @@ type QuizQuestionAnswer struct {
 	Sha1 string
 
 	Content string
+	Checked bool
 	Valid   bool
 }
 
@@ -63,7 +77,8 @@ const (
 )
 
 type User struct {
-	Id        string
+	Id string
+
 	Email     string
 	Firstname string
 	Lastname  string
@@ -80,8 +95,9 @@ const (
 )
 
 type IdToken struct {
+	Sub string
+
 	Aud         string
-	Sub         string
 	Exp         time.Time
 	ExpiresIn   int
 	Email       string
@@ -97,7 +113,8 @@ type SessionResult struct {
 }
 
 type Session struct {
-	Id           uuid.UUID
+	Id uuid.UUID
+
 	QuizSha1     string
 	QuizName     string
 	QuizActive   bool
@@ -108,24 +125,46 @@ type Session struct {
 }
 
 type Class struct {
-	Id   uuid.UUID
+	Id uuid.UUID
+
 	Name string
 }
 
 type UserSession struct {
-	SessionId    uuid.UUID
-	UserId       string
+	SessionId uuid.UUID
+	UserId    string
+
 	UserName     string
 	RemainingSec int
 	Result       *SessionResult
 }
 
 type QuizSession struct {
-	QuizSha1     string
+	QuizSha1 string
+
 	Name         string
 	Duration     int
 	Filename     string
 	Version      int
 	CreatedAt    string
 	UserSessions []*UserSession
+}
+
+type QuizSessionDetail struct {
+	SessionId uuid.UUID
+
+	UserId       string
+	RemainingSec int
+	Result       *SessionResult
+	QuizSha1     string
+	Name         string
+	Questions    map[string]QuizQuestion
+}
+
+func (qd *QuizSessionDetail) GetSha1AndName() (string, string) {
+	return qd.QuizSha1, qd.Name
+}
+
+func (qd *QuizSessionDetail) GetQuestions() map[string]QuizQuestion {
+	return qd.Questions
 }

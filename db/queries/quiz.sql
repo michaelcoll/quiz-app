@@ -93,5 +93,9 @@ FROM quiz_session_view qsv
          JOIN student_class sc ON sc.uuid = qcv.class_uuid
          JOIN user u ON sc.uuid = u.class_uuid AND qsv.user_id = u.id
 WHERE user_id = ?
-
 LIMIT ? OFFSET ?;
+
+-- name: FindQuizSessionByUuid :many
+SELECT *
+FROM quiz_session_detail_view
+WHERE session_uuid = ?;

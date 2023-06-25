@@ -546,6 +546,61 @@ func (_c *MockQuizRepository_FindLatestVersionByFilename_Call) RunAndReturn(run 
 	return _c
 }
 
+// FindQuizSessionByUuid provides a mock function with given fields: ctx, sessionUuid
+func (_m *MockQuizRepository) FindQuizSessionByUuid(ctx context.Context, sessionUuid uuid.UUID) (*QuizSessionDetail, error) {
+	ret := _m.Called(ctx, sessionUuid)
+
+	var r0 *QuizSessionDetail
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) (*QuizSessionDetail, error)); ok {
+		return rf(ctx, sessionUuid)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID) *QuizSessionDetail); ok {
+		r0 = rf(ctx, sessionUuid)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*QuizSessionDetail)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, uuid.UUID) error); ok {
+		r1 = rf(ctx, sessionUuid)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockQuizRepository_FindQuizSessionByUuid_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FindQuizSessionByUuid'
+type MockQuizRepository_FindQuizSessionByUuid_Call struct {
+	*mock.Call
+}
+
+// FindQuizSessionByUuid is a helper method to define mock.On call
+//   - ctx context.Context
+//   - sessionUuid uuid.UUID
+func (_e *MockQuizRepository_Expecter) FindQuizSessionByUuid(ctx interface{}, sessionUuid interface{}) *MockQuizRepository_FindQuizSessionByUuid_Call {
+	return &MockQuizRepository_FindQuizSessionByUuid_Call{Call: _e.mock.On("FindQuizSessionByUuid", ctx, sessionUuid)}
+}
+
+func (_c *MockQuizRepository_FindQuizSessionByUuid_Call) Run(run func(ctx context.Context, sessionUuid uuid.UUID)) *MockQuizRepository_FindQuizSessionByUuid_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *MockQuizRepository_FindQuizSessionByUuid_Call) Return(_a0 *QuizSessionDetail, _a1 error) *MockQuizRepository_FindQuizSessionByUuid_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockQuizRepository_FindQuizSessionByUuid_Call) RunAndReturn(run func(context.Context, uuid.UUID) (*QuizSessionDetail, error)) *MockQuizRepository_FindQuizSessionByUuid_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // StartSession provides a mock function with given fields: ctx, userId, quizSha1
 func (_m *MockQuizRepository) StartSession(ctx context.Context, userId string, quizSha1 string) (uuid.UUID, error) {
 	ret := _m.Called(ctx, userId, quizSha1)

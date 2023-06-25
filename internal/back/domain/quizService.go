@@ -185,3 +185,12 @@ func (s *QuizService) FindAllQuizSessions(ctx context.Context, userId string, li
 
 	return quizzes, count, nil
 }
+
+func (s *QuizService) FindQuizSessionByUuid(ctx context.Context, sessionUuid uuid.UUID) (*QuizSessionDetail, error) {
+	sessionDetail, err := s.r.FindQuizSessionByUuid(ctx, sessionUuid)
+	if err != nil {
+		return nil, err
+	}
+
+	return sessionDetail, nil
+}
