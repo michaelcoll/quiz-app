@@ -139,8 +139,8 @@ func (r *QuizDBRepository) Create(ctx context.Context, quiz *domain.Quiz) error 
 		Sha1:      quiz.Sha1,
 		Name:      quiz.Name,
 		Filename:  quiz.Filename,
-		Version:   int64(quiz.Version),
-		Duration:  int64(quiz.Duration),
+		Version:   quiz.Version,
+		Duration:  quiz.Duration,
 		CreatedAt: quiz.CreatedAt,
 	})
 	if err != nil {
@@ -190,51 +190,13 @@ func (r *QuizDBRepository) Create(ctx context.Context, quiz *domain.Quiz) error 
 func (r *QuizDBRepository) ActivateOnlyVersion(ctx context.Context, filename string, version int) error {
 	err := r.q.ActivateOnlyVersion(ctx, sqlc.ActivateOnlyVersionParams{
 		Filename: filename,
-		Version:  int64(version),
+		Version:  version,
 	})
 	if err != nil {
 		return err
 	}
 
 	return nil
-}
-
-func (r *QuizDBRepository) toQuiz(entity sqlc.Quiz) *domain.Quiz {
-	return &domain.Quiz{
-		Sha1:      entity.Sha1,
-		Filename:  entity.Filename,
-		Name:      entity.Name,
-		Version:   int(entity.Version),
-		Duration:  int(entity.Duration),
-		Active:    entity.Active,
-		CreatedAt: entity.CreatedAt,
-	}
-}
-
-func (r *QuizDBRepository) toQuizArray(entities []sqlc.FindAllActiveQuizRow, isAdmin bool) []*domain.Quiz {
-	domains := make([]*domain.Quiz, len(entities))
-
-	for i, entity := range entities {
-		if isAdmin {
-			domains[i] = &domain.Quiz{
-				Sha1:      entity.Sha1,
-				Filename:  entity.Filename,
-				Name:      entity.Name,
-				Version:   int(entity.Version),
-				Duration:  int(entity.Duration),
-				Active:    entity.Active,
-				CreatedAt: entity.CreatedAt,
-			}
-		} else {
-			domains[i] = &domain.Quiz{
-				Sha1:     entity.Sha1,
-				Name:     entity.Name,
-				Duration: int(entity.Duration),
-			}
-		}
-	}
-
-	return domains
 }
 
 func (r *QuizDBRepository) FindAllSessions(ctx context.Context, quizActive bool, userId string, limit uint16, offset uint16) ([]*domain.Session, error) {
@@ -264,32 +226,6 @@ func (r *QuizDBRepository) FindAllSessions(ctx context.Context, quizActive bool,
 	return r.toSessionArray(sessions), nil
 }
 
-func (r *QuizDBRepository) FindAllQuizSessions(ctx context.Context, userId string, limit uint16, offset uint16) ([]*domain.QuizSession, error) {
-
-	if userId == "" {
-		quizSessions, err := r.q.FindAllQuizSessions(ctx, sqlc.FindAllQuizSessionsParams{
-			Limit:  int64(limit),
-			Offset: int64(offset),
-		})
-		if err != nil {
-			return nil, err
-		}
-
-		return r.toQuizSessionArray(quizSessions, true), nil
-	}
-
-	quizSessions, err := r.q.FindAllQuizSessionsForUser(ctx, sqlc.FindAllQuizSessionsForUserParams{
-		UserID: userId,
-		Limit:  int64(limit),
-		Offset: int64(offset),
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return r.toQuizSessionArray(quizSessions, false), nil
-}
-
 func (r *QuizDBRepository) CountAllSessions(ctx context.Context, quizActive bool, userId string) (uint32, error) {
 	if len(userId) > 0 {
 		count, err := r.q.CountAllSessionsForUser(ctx, sqlc.CountAllSessionsForUserParams{
@@ -309,42 +245,6 @@ func (r *QuizDBRepository) CountAllSessions(ctx context.Context, quizActive bool
 	}
 
 	return uint32(count), nil
-}
-
-func (r *QuizDBRepository) toSession(entity sqlc.SessionView) *domain.Session {
-
-	d := domain.Session{
-		Id:           entity.Uuid,
-		QuizSha1:     entity.QuizSha1,
-		QuizName:     entity.QuizName,
-		QuizActive:   entity.QuizActive,
-		UserId:       entity.UserID,
-		UserName:     entity.UserName,
-		RemainingSec: entity.RemainingSec,
-	}
-
-	if entity.RemainingSec == 0 {
-		var goodAnswer int
-		if entity.Results.Valid {
-			goodAnswer = int(entity.Results.Float64)
-		}
-		d.Result = &domain.SessionResult{
-			GoodAnswer:  goodAnswer,
-			TotalAnswer: int(entity.CheckedAnswers),
-		}
-	}
-
-	return &d
-}
-
-func (r *QuizDBRepository) toSessionArray(entities []sqlc.SessionView) []*domain.Session {
-	domains := make([]*domain.Session, len(entities))
-
-	for i, entity := range entities {
-		domains[i] = r.toSession(entity)
-	}
-
-	return domains
 }
 
 func (r *QuizDBRepository) StartSession(ctx context.Context, userId string, quizSha1 string) (uuid.UUID, error) {
@@ -381,59 +281,84 @@ func (r *QuizDBRepository) AddSessionAnswer(ctx context.Context, sessionUuid uui
 	return nil
 }
 
-func (r *QuizDBRepository) toQuizSession(entity sqlc.QuizSessionView, isAdmin bool) *domain.QuizSession {
+func (r *QuizDBRepository) FindAllQuizSessions(ctx context.Context, userId string, limit uint16, offset uint16) ([]*domain.QuizSession, error) {
 
-	d := domain.QuizSession{
-		QuizSha1: entity.QuizSha1,
-		Name:     entity.QuizName,
-		Duration: int(entity.QuizDuration),
-	}
-
-	if isAdmin {
-		d.Filename = entity.QuizFilename
-		d.Version = int(entity.QuizVersion)
-		d.CreatedAt = entity.QuizCreatedAt
-	}
-
-	userSession := domain.UserSession{
-		SessionId:    entity.SessionUuid,
-		UserId:       entity.UserID,
-		UserName:     entity.UserName,
-		RemainingSec: entity.RemainingSec,
-	}
-	if entity.RemainingSec == 0 {
-		userSession.Result = &domain.SessionResult{
-			GoodAnswer:  entity.Results,
-			TotalAnswer: entity.CheckedAnswers,
+	if userId == "" {
+		quizSessions, err := r.q.FindAllQuizSessions(ctx, sqlc.FindAllQuizSessionsParams{
+			Limit:  int64(limit),
+			Offset: int64(offset),
+		})
+		if err != nil {
+			return nil, err
 		}
-	}
-	if userSession.UserId != "" {
-		userSessions := make([]*domain.UserSession, 1)
-		d.UserSessions = userSessions
-		d.UserSessions[0] = &userSession
+
+		return r.toQuizSessionArray(quizSessions, true), nil
 	}
 
-	return &d
+	quizSessions, err := r.q.FindAllQuizSessionsForUser(ctx, sqlc.FindAllQuizSessionsForUserParams{
+		UserID: userId,
+		Limit:  int64(limit),
+		Offset: int64(offset),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return r.toQuizSessionArray(quizSessions, false), nil
 }
 
-func (r *QuizDBRepository) toQuizSessionArray(entities []sqlc.QuizSessionView, isAdmin bool) []*domain.QuizSession {
+func (r *QuizDBRepository) FindQuizSessionByUuid(ctx context.Context, sessionUuid uuid.UUID) (*domain.QuizSessionDetail, error) {
 
-	m := make(map[string]*domain.QuizSession)
-	for _, entity := range entities {
-		quizSession := r.toQuizSession(entity, isAdmin)
-		if existingSession, found := m[quizSession.QuizSha1]; found {
-			existingSession.UserSessions = append(existingSession.UserSessions, quizSession.UserSessions...)
+	details, err := r.q.FindQuizSessionByUuid(ctx, sessionUuid)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(details) == 0 {
+		return nil, pm.Errorf(http.StatusNotFound, "session with uuid: %s was not found.", sessionUuid)
+	}
+
+	sessionDetail := domain.QuizSessionDetail{}
+
+	for _, entity := range details {
+		if sessionDetail.QuizSha1 == "" {
+			sessionDetail.SessionId = entity.SessionUuid
+			sessionDetail.UserId = entity.UserID
+			sessionDetail.RemainingSec = entity.RemainingSec
+			sessionDetail.QuizSha1 = entity.QuizSha1
+			sessionDetail.Name = entity.QuizName
+			sessionDetail.Questions = map[string]domain.QuizQuestion{}
+
+			if sessionDetail.RemainingSec == 0 {
+				sessionDetail.Result = &domain.SessionResult{
+					GoodAnswer:  entity.Results,
+					TotalAnswer: entity.CheckedAnswers,
+				}
+			}
+
+		}
+
+		if _, found := sessionDetail.Questions[entity.QuestionSha1]; !found {
+			newQuestion := domain.QuizQuestion{
+				Sha1:    entity.QuestionSha1,
+				Content: entity.QuestionContent,
+				Answers: map[string]domain.QuizQuestionAnswer{},
+			}
+			sessionDetail.Questions[entity.QuestionSha1] = newQuestion
 		} else {
-			m[quizSession.QuizSha1] = quizSession
+			answerValid := false
+			if sessionDetail.RemainingSec == 0 {
+				answerValid = entity.AnswerValid
+			}
+
+			sessionDetail.Questions[entity.QuestionSha1].Answers[entity.AnswerSha1] = domain.QuizQuestionAnswer{
+				Sha1:    entity.AnswerSha1,
+				Content: entity.AnswerContent,
+				Checked: entity.AnswerChecked,
+				Valid:   answerValid,
+			}
 		}
 	}
 
-	domains := make([]*domain.QuizSession, len(m))
-	i := 0
-	for _, session := range m {
-		domains[i] = session
-		i++
-	}
-
-	return domains
+	return &sessionDetail, nil
 }

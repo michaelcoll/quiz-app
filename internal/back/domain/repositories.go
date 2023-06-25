@@ -37,6 +37,7 @@ type QuizRepository interface {
 	AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUID, userId string, questionSha1 string, answerSha1 string, checked bool) error
 
 	FindAllQuizSessions(ctx context.Context, userId string, limit uint16, offset uint16) ([]*QuizSession, error)
+	FindQuizSessionByUuid(ctx context.Context, sessionUuid uuid.UUID) (*QuizSessionDetail, error)
 }
 
 //go:generate mockery --name AuthRepository

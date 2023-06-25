@@ -25,6 +25,11 @@ import (
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
 )
 
+type QuizInfos interface {
+	setSha1AndName(sha1 string, name string)
+	setQuestions(questions []QuizQuestion)
+}
+
 type Quiz struct {
 	Sha1      string         `json:"sha1"`
 	Filename  string         `json:"filename"`
@@ -36,6 +41,15 @@ type Quiz struct {
 	Questions []QuizQuestion `json:"questions,omitempty"`
 }
 
+func (dto *Quiz) setSha1AndName(sha1 string, name string) {
+	dto.Sha1 = sha1
+	dto.Name = name
+}
+
+func (dto *Quiz) setQuestions(questions []QuizQuestion) {
+	dto.Questions = questions
+}
+
 type QuizQuestion struct {
 	Sha1    string               `json:"sha1"`
 	Content string               `json:"content"`
@@ -45,20 +59,17 @@ type QuizQuestion struct {
 type QuizQuestionAnswer struct {
 	Sha1    string `json:"sha1"`
 	Content string `json:"content"`
+	Checked bool   `json:"checked"`
+	Valid   bool   `json:"valid,omitempty"`
 }
 
-func (q *Quiz) fromDomain(domain *domain.Quiz) *Quiz {
-	q.Sha1 = domain.Sha1
-	q.Filename = domain.Filename
-	q.Name = domain.Name
-	q.Version = domain.Version
-	q.Duration = domain.Duration
-	q.CreatedAt = domain.CreatedAt
-	q.Active = domain.Active
-	q.Questions = make([]QuizQuestion, len(domain.Questions))
+func mapQuizInfos(d domain.QuizInfos, dto QuizInfos) {
+	dto.setSha1AndName(d.GetSha1AndName())
+
+	questions := make([]QuizQuestion, len(d.GetQuestions()))
 
 	i := 0
-	for _, question := range domain.Questions {
+	for _, question := range d.GetQuestions() {
 
 		j := 0
 		answers := make([]QuizQuestionAnswer, len(question.Answers))
@@ -66,11 +77,13 @@ func (q *Quiz) fromDomain(domain *domain.Quiz) *Quiz {
 			answers[j] = QuizQuestionAnswer{
 				Sha1:    a.Sha1,
 				Content: a.Content,
+				Checked: a.Checked,
+				Valid:   a.Valid,
 			}
 			j++
 		}
 
-		q.Questions[i] = QuizQuestion{
+		questions[i] = QuizQuestion{
 			Sha1:    question.Sha1,
 			Content: question.Content,
 			Answers: answers,
@@ -78,7 +91,19 @@ func (q *Quiz) fromDomain(domain *domain.Quiz) *Quiz {
 		i++
 	}
 
-	return q
+	dto.setQuestions(questions)
+}
+
+func (dto *Quiz) fromDomain(d *domain.Quiz) *Quiz {
+	dto.Filename = d.Filename
+	dto.Version = d.Version
+	dto.Duration = d.Duration
+	dto.CreatedAt = d.CreatedAt
+	dto.Active = d.Active
+
+	mapQuizInfos(d, dto)
+
+	return dto
 }
 
 func toQuizDtos(domains []*domain.Quiz) []*Quiz {
@@ -135,15 +160,15 @@ type User struct {
 	Role      Role   `json:"role"`
 }
 
-func (u *User) fromDomain(d *domain.User) *User {
-	u.Id = d.Id
-	u.Email = d.Email
-	u.Firstname = d.Firstname
-	u.Lastname = d.Lastname
-	u.Active = d.Active
-	u.Role = toRoleDto(d.Role)
+func (dto *User) fromDomain(d *domain.User) *User {
+	dto.Id = d.Id
+	dto.Email = d.Email
+	dto.Firstname = d.Firstname
+	dto.Lastname = d.Lastname
+	dto.Active = d.Active
+	dto.Role = toRoleDto(d.Role)
 
-	return u
+	return dto
 }
 
 type SessionResult struct {
@@ -162,22 +187,22 @@ type Session struct {
 	Result       *SessionResult `json:"result,omitempty"`
 }
 
-func (s *Session) fromDomain(d *domain.Session) *Session {
-	s.Id = d.Id
-	s.QuizSha1 = d.QuizSha1
-	s.UserName = d.UserName
-	s.QuizActive = d.QuizActive
-	s.UserId = d.UserId
-	s.UserName = d.UserName
-	s.RemainingSec = d.RemainingSec
+func (dto *Session) fromDomain(d *domain.Session) *Session {
+	dto.Id = d.Id
+	dto.QuizSha1 = d.QuizSha1
+	dto.UserName = d.UserName
+	dto.QuizActive = d.QuizActive
+	dto.UserId = d.UserId
+	dto.UserName = d.UserName
+	dto.RemainingSec = d.RemainingSec
 	if d.Result != nil {
-		s.Result = &SessionResult{
+		dto.Result = &SessionResult{
 			GoodAnswer:  d.Result.GoodAnswer,
 			TotalAnswer: d.Result.TotalAnswer,
 		}
 	}
 
-	return s
+	return dto
 }
 
 func toSessionDtos(domains []*domain.Session) []*Session {
@@ -300,4 +325,42 @@ func toQuizSessionDtos(domains []*domain.QuizSession, userId string) []*QuizSess
 	}
 
 	return dtos
+}
+
+type QuizSessionDetail struct {
+	SessionId    uuid.UUID      `json:"sessionId"`
+	UserId       string         `json:"userId"`
+	RemainingSec int            `json:"remainingSec"`
+	Result       *SessionResult `json:"result,omitempty"`
+	QuizSha1     string         `json:"quizSha1"`
+	Name         string         `json:"name"`
+	Questions    []QuizQuestion `json:"questions"`
+}
+
+func (qd *QuizSessionDetail) setSha1AndName(sha1 string, name string) {
+	qd.QuizSha1 = sha1
+	qd.Name = name
+}
+
+func (qd *QuizSessionDetail) setQuestions(questions []QuizQuestion) {
+	qd.Questions = questions
+}
+
+func toQuizSessionDetail(d *domain.QuizSessionDetail) *QuizSessionDetail {
+	dto := &QuizSessionDetail{
+		SessionId:    d.SessionId,
+		UserId:       d.UserId,
+		RemainingSec: d.RemainingSec,
+	}
+
+	if d.Result != nil {
+		dto.Result = &SessionResult{
+			GoodAnswer:  d.Result.GoodAnswer,
+			TotalAnswer: d.Result.TotalAnswer,
+		}
+	}
+
+	mapQuizInfos(d, dto)
+
+	return dto
 }

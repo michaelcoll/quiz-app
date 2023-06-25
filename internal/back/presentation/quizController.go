@@ -136,7 +136,6 @@ func (c *ApiController) startSession(ctx *gin.Context) {
 
 func (c *ApiController) addSessionAnswer(ctx *gin.Context) {
 	sessionIdStr := ctx.Param("uuid")
-
 	sessionId, err := uuid.Parse(sessionIdStr)
 	if err != nil {
 		handleHttpError(ctx, http.StatusBadRequest, "invalid sessionId")
@@ -194,4 +193,34 @@ func (c *ApiController) quizSessionList(ctx *gin.Context) {
 
 	ctx.Header("Content-Range", fmt.Sprintf("%s %d-%d/%d", unit, start, int(start)+len(sessions), total))
 	ctx.JSON(http.StatusOK, toQuizSessionDtos(sessions, userId))
+}
+
+func (c *ApiController) quizSessionByUuid(ctx *gin.Context) {
+	sessionIdStr := ctx.Param("uuid")
+	sessionId, err := uuid.Parse(sessionIdStr)
+	if err != nil {
+		handleHttpError(ctx, http.StatusBadRequest, "invalid sessionId")
+		return
+	}
+
+	userId := ""
+	if id, found := getUserIdFromContext(ctx); found {
+		userId = id
+	} else {
+		handleHttpError(ctx, http.StatusUnauthorized, "userId not present in context")
+		return
+	}
+
+	sessionDetail, err := c.quizService.FindQuizSessionByUuid(ctx.Request.Context(), sessionId)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	if isStudent(ctx) && userId != sessionDetail.UserId {
+		handleHttpError(ctx, http.StatusNotFound, "session not found")
+		return
+	}
+
+	ctx.JSON(http.StatusOK, toQuizSessionDetail(sessionDetail))
 }

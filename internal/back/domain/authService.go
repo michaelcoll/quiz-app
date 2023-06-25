@@ -86,14 +86,29 @@ func (s *AuthService) parseToken(ctx context.Context, tokenStr string) (*IdToken
 
 	iat := (int64)(payload.Claims["iat"].(float64))
 	exp := (int64)(payload.Claims["exp"].(float64))
+
+	givenName := ""
+	if claim, found := payload.Claims["given_name"]; found {
+		givenName = claim.(string)
+	} else {
+		return nil, Errorf(UnAuthorized, "token is malformed given_name not found")
+	}
+
+	familyName := ""
+	if claim, found := payload.Claims["family_name"]; found {
+		familyName = claim.(string)
+	} else {
+		return nil, Errorf(UnAuthorized, "token is malformed family_name not found")
+	}
+
 	return &IdToken{
 		Aud:         payload.Claims["aud"].(string),
 		Sub:         payload.Claims["sub"].(string),
 		Exp:         time.Unix(exp, 0),
 		ExpiresIn:   (int)(exp - iat),
 		Email:       payload.Claims["email"].(string),
-		FirstName:   payload.Claims["given_name"].(string),
-		LastName:    payload.Claims["family_name"].(string),
+		FirstName:   givenName,
+		LastName:    familyName,
 		Provenance:  Parse,
 		JwtStrToken: tokenStr,
 	}, nil

@@ -5,7 +5,6 @@
 package sqlc
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,10 +14,10 @@ type Quiz struct {
 	Sha1      string `db:"sha1"`
 	Name      string `db:"name"`
 	Filename  string `db:"filename"`
-	Version   int64  `db:"version"`
+	Version   int    `db:"version"`
 	Active    bool   `db:"active"`
 	CreatedAt string `db:"created_at"`
-	Duration  int64  `db:"duration"`
+	Duration  int    `db:"duration"`
 }
 
 type QuizAnswer struct {
@@ -29,7 +28,7 @@ type QuizAnswer struct {
 
 type QuizAnswerCountView struct {
 	QuizSha1       string `db:"quiz_sha1"`
-	CheckedAnswers int64  `db:"checked_answers"`
+	CheckedAnswers int    `db:"checked_answers"`
 }
 
 type QuizClassVisibility struct {
@@ -52,12 +51,28 @@ type QuizQuestionQuiz struct {
 	QuestionSha1 string `db:"question_sha1"`
 }
 
+type QuizSessionDetailView struct {
+	SessionUuid     uuid.UUID `db:"session_uuid"`
+	UserID          string    `db:"user_id"`
+	RemainingSec    int       `db:"remaining_sec"`
+	QuizSha1        string    `db:"quiz_sha1"`
+	QuizName        string    `db:"quiz_name"`
+	CheckedAnswers  int       `db:"checked_answers"`
+	Results         int       `db:"results"`
+	QuestionSha1    string    `db:"question_sha1"`
+	QuestionContent string    `db:"question_content"`
+	AnswerSha1      string    `db:"answer_sha1"`
+	AnswerContent   string    `db:"answer_content"`
+	AnswerChecked   bool      `db:"answer_checked"`
+	AnswerValid     bool      `db:"answer_valid"`
+}
+
 type QuizSessionView struct {
 	QuizSha1       string    `db:"quiz_sha1"`
 	QuizName       string    `db:"quiz_name"`
 	QuizFilename   string    `db:"quiz_filename"`
-	QuizVersion    int64     `db:"quiz_version"`
-	QuizDuration   int64     `db:"quiz_duration"`
+	QuizVersion    int       `db:"quiz_version"`
+	QuizDuration   int       `db:"quiz_duration"`
 	QuizCreatedAt  string    `db:"quiz_created_at"`
 	SessionUuid    uuid.UUID `db:"session_uuid"`
 	UserID         string    `db:"user_id"`
@@ -68,7 +83,7 @@ type QuizSessionView struct {
 }
 
 type Role struct {
-	ID   int64  `db:"id"`
+	ID   int8   `db:"id"`
 	Name string `db:"name"`
 }
 
@@ -98,15 +113,15 @@ type SessionResponseView struct {
 }
 
 type SessionView struct {
-	Uuid           uuid.UUID       `db:"uuid"`
-	QuizSha1       string          `db:"quiz_sha1"`
-	QuizName       string          `db:"quiz_name"`
-	QuizActive     bool            `db:"quiz_active"`
-	UserID         string          `db:"user_id"`
-	UserName       string          `db:"user_name"`
-	RemainingSec   int             `db:"remaining_sec"`
-	CheckedAnswers int64           `db:"checked_answers"`
-	Results        sql.NullFloat64 `db:"results"`
+	Uuid           uuid.UUID `db:"uuid"`
+	QuizSha1       string    `db:"quiz_sha1"`
+	QuizName       string    `db:"quiz_name"`
+	QuizActive     bool      `db:"quiz_active"`
+	UserID         string    `db:"user_id"`
+	UserName       string    `db:"user_name"`
+	RemainingSec   int       `db:"remaining_sec"`
+	CheckedAnswers int       `db:"checked_answers"`
+	Results        int       `db:"results"`
 }
 
 type StudentClass struct {
@@ -120,6 +135,6 @@ type User struct {
 	Firstname string    `db:"firstname"`
 	Lastname  string    `db:"lastname"`
 	Active    bool      `db:"active"`
-	RoleID    int64     `db:"role_id"`
+	RoleID    int8      `db:"role_id"`
 	ClassUuid uuid.UUID `db:"class_uuid"`
 }

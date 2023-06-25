@@ -19,7 +19,7 @@ type CreateOrReplaceUserParams struct {
 	Email     string `db:"email"`
 	Firstname string `db:"firstname"`
 	Lastname  string `db:"lastname"`
-	RoleID    int64  `db:"role_id"`
+	RoleID    int8   `db:"role_id"`
 }
 
 func (q *Queries) CreateOrReplaceUser(ctx context.Context, arg CreateOrReplaceUserParams) error {
@@ -113,7 +113,7 @@ WHERE id = ?
 `
 
 type UpdateUserRoleParams struct {
-	RoleID int64  `db:"role_id"`
+	RoleID int8   `db:"role_id"`
 	ID     string `db:"id"`
 }
 
