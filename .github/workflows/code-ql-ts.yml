@@ -22,7 +22,7 @@ jobs:
 
     - name: Get changed files in the internal/back folder
       id: changed-files-specific
-      uses: tj-actions/changed-files@v36
+      uses: tj-actions/changed-files@v37
       with:
         files: internal/**/*.ts
 
