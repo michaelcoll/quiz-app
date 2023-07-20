@@ -19,7 +19,7 @@
     "eslint": "^8.45.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
-    "nuxt": "^3.6.3",
+    "nuxt": "^3.6.5",
     "prettier": "^2.8.8",
     "typescript": "latest"
   },
