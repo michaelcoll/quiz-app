@@ -35,6 +35,8 @@ sql:
             go_type: "int"
           - column: "main.*.duration"
             go_type: "int"
+          - column: "main.*.question_position"
+            go_type: "int"
           - column: "main.*.quiz_version"
             go_type: "int"
           - column: "main.*.quiz_duration"

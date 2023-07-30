@@ -27,6 +27,12 @@ export interface QuizQuestion {
    */
   sha1?: string;
   /**
+   * The number of the question
+   * @type {number}
+   * @memberof QuizQuestion
+   */
+  position?: number;
+  /**
    * The question content
    * @type {string}
    * @memberof QuizQuestion
@@ -37,5 +43,5 @@ export interface QuizQuestion {
    * @type {Array<QuizQuestionAnswer>}
    * @memberof QuizQuestion
    */
-  questions?: Array<QuizQuestionAnswer>;
+  answers?: Array<QuizQuestionAnswer>;
 }

@@ -1,13 +1,13 @@
 <script setup lang="ts"></script>
 
 <template>
-  <nav class="bg-white shadow sticky top-0 dark:bg-gray-800">
-    <div class="container px-6 py-4 mx-auto">
+  <nav class="sticky top-0 bg-white shadow dark:bg-gray-800">
+    <div class="container mx-auto px-6 py-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center justify-between">
           <NuxtLink to="/">
             <img
-              class="w-auto h-6 sm:h-7"
+              class="h-6 w-auto sm:h-7"
               src="https://merakiui.com/images/full-logo.svg"
               alt="" />
           </NuxtLink>
@@ -15,8 +15,8 @@
 
         <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
         <div
-          class="bg-white dark:bg-gray-800 mt-0 p-0 top-0 relative bg-transparent w-auto opacity-100 translate-x-0 flex items-center">
-          <div class="flex flex-row items-center mx-8">
+          class="relative top-0 mt-0 flex w-auto translate-x-0 items-center bg-transparent p-0 opacity-100 dark:bg-gray-800">
+          <div class="mx-8 flex flex-row items-center">
             <NavBarLink label="Quiz" to="/quiz" logged role="STUDENT" />
           </div>
 

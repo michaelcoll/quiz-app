@@ -10,22 +10,24 @@
     "lint": "eslint . --ext .vue,.ts --fix --ignore-path ../../.gitignore"
   },
   "devDependencies": {
-    "@nuxt/devtools": "latest",
+    "@nuxt/devtools": "^0.7.1",
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@pinia-plugin-persistedstate/nuxt": "^1.1.1",
-    "@types/node": "^20",
-    "@vue/eslint-config-prettier": "^7.1.0",
-    "eslint": "^8.45.0",
-    "eslint-plugin-prettier": "^4.2.1",
+    "@types/node": "^20.4.5",
+    "@vue/eslint-config-prettier": "^8.0.0",
+    "eslint": "^8.46.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-tailwindcss": "^3.13.0",
     "nuxt": "^3.6.5",
-    "prettier": "^2.8.8",
-    "typescript": "latest"
+    "prettier": "^3.0.0",
+    "typescript": "^5.1.6"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
     "axios": "^1.4.0",
+    "flowbite": "^1.8.0",
     "vue3-google-login": "^2.0.18"
   },
   "packageManager": "pnpm@8.6.3",

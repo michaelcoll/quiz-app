@@ -47,8 +47,9 @@ CREATE TABLE quiz
 
 CREATE TABLE quiz_question
 (
-    sha1    TEXT PRIMARY KEY,
-    content TEXT NOT NULL
+    sha1     TEXT PRIMARY KEY,
+    position INTEGER NOT NULL,
+    content  TEXT    NOT NULL
 );
 
 CREATE TABLE quiz_question_quiz
@@ -247,6 +248,7 @@ SELECT qsv.session_uuid                                          AS session_uuid
        qsv.results                                               AS results,
        srv.question_sha1                                         AS question_sha1,
        qq.content                                                AS question_content,
+       qq.position                                               AS question_position,
        srv.answer_sha1                                           AS answer_sha1,
        qa.content                                                AS answer_content,
        CASE WHEN srv.checked IS NULL THEN 0 ELSE srv.checked END AS answer_checked,
@@ -255,6 +257,7 @@ FROM quiz_session_view qsv
          JOIN session_response_view srv ON qsv.session_uuid = srv.session_uuid
          JOIN quiz_question qq ON srv.question_sha1 = qq.sha1
          JOIN quiz_answer qa ON srv.answer_sha1 = qa.sha1
+ORDER BY qq.position
 `
 
 var migrations = map[int]string{

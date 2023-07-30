@@ -17,7 +17,7 @@
 import { defineStore } from "pinia";
 
 import { getApi } from "~/api/common-api";
-import { QuizSession } from "~/api/model";
+import { QuizSession, Session } from "~/api/model";
 
 const pageSize = 8;
 
@@ -27,13 +27,13 @@ export type QuizSessionState = {
   lastPage: number;
   total: number;
 };
-export const useQuizSessionStore = defineStore("quiz-session", {
+export const useQuizSessionsStore = defineStore("quiz-sessions", {
   state: () =>
     ({
       quizSessions: null,
       page: 0,
       total: 0,
-    } as QuizSessionState),
+    }) as QuizSessionState,
 
   getters: {
     getQuizSessions(): QuizSession[] | null {
@@ -69,6 +69,21 @@ export const useQuizSessionStore = defineStore("quiz-session", {
 
           this.quizSessions = res.data;
           this.total = parseInt(split[1]);
+        });
+    },
+    startQuiz(sha1: string): Promise<Session> {
+      return getApi()
+        .post<Session>(
+          `/api/v1/session`,
+          {},
+          {
+            params: {
+              quizSha1: sha1,
+            },
+          },
+        )
+        .then((res) => {
+          return res.data;
         });
     },
     setPage(page: number) {

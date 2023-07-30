@@ -28,4 +28,16 @@ export interface QuizQuestionAnswer {
    * @memberof QuizQuestionAnswer
    */
   content?: string;
+  /**
+   * if the answer is checked or not
+   * @type {boolean}
+   * @memberof QuizQuestionAnswer
+   */
+  checked?: boolean;
+  /**
+   * if this is a valid answer
+   * @type {boolean}
+   * @memberof QuizQuestionAnswer
+   */
+  valid?: boolean | null;
 }

@@ -144,7 +144,7 @@ paths:
       description: Detail of a quizzes sessions by its Uuid
       operationId: quizSessionByUuid
       parameters:
-        - name: sessionId
+        - name: uuid
           in: path
           description: The id of the session
           required: true
@@ -161,15 +161,9 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/QuizSession'
+                  $ref: '#/components/schemas/QuizSessionDetail'
         "401":
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMsg'
-        "416":
-          description: Requested Range Not Satisfiable
           content:
             application/json:
               schema:
@@ -510,12 +504,18 @@ components:
           description: The sha1 of the whole quiz question
           nullable: false
           example: '816e5f98a72707e47a581525b94e860b3a490cbb'
+        position:
+          type: number
+          format: int32
+          description: The number of the question
+          nullable: false
+          example: 2
         content:
           type: string
           description: The question content
           nullable: false
           example: 'Which of the following characters have used the title "Captain America" in the comics? (Select all that apply)'
-        questions:
+        answers:
           type: array
           items:
             $ref: '#/components/schemas/QuizQuestionAnswer'

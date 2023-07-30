@@ -3,8 +3,8 @@ REPLACE INTO quiz (sha1, name, filename, version, duration, created_at)
 VALUES (?, ?, ?, ?, ?, ?);
 
 -- name: CreateOrReplaceQuestion :exec
-REPLACE INTO quiz_question (sha1, content)
-VALUES (?, ?);
+REPLACE INTO quiz_question (sha1, position, content)
+VALUES (?, ?, ?);
 
 -- name: CreateOrReplaceAnswer :exec
 REPLACE INTO quiz_answer (sha1, content, valid)
@@ -34,6 +34,7 @@ SELECT q.sha1       AS quiz_sha1,
        q.active     AS quiz_active,
        qq.sha1      AS question_sha1,
        qq.content   AS question_content,
+       qq.position  AS question_position,
        qa.sha1      AS answer_sha1,
        qa.content   AS answer_content,
        qa.valid     AS answer_valid

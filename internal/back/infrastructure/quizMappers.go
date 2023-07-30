@@ -26,8 +26,8 @@ func (r *QuizDBRepository) toQuiz(entity sqlc.Quiz) *domain.Quiz {
 		Sha1:      entity.Sha1,
 		Filename:  entity.Filename,
 		Name:      entity.Name,
-		Version:   int(entity.Version),
-		Duration:  int(entity.Duration),
+		Version:   entity.Version,
+		Duration:  entity.Duration,
 		Active:    entity.Active,
 		CreatedAt: entity.CreatedAt,
 	}
@@ -42,8 +42,8 @@ func (r *QuizDBRepository) toQuizArray(entities []sqlc.FindAllActiveQuizRow, isA
 				Sha1:      entity.Sha1,
 				Filename:  entity.Filename,
 				Name:      entity.Name,
-				Version:   int(entity.Version),
-				Duration:  int(entity.Duration),
+				Version:   entity.Version,
+				Duration:  entity.Duration,
 				Active:    entity.Active,
 				CreatedAt: entity.CreatedAt,
 			}
@@ -51,7 +51,7 @@ func (r *QuizDBRepository) toQuizArray(entities []sqlc.FindAllActiveQuizRow, isA
 			domains[i] = &domain.Quiz{
 				Sha1:     entity.Sha1,
 				Name:     entity.Name,
-				Duration: int(entity.Duration),
+				Duration: entity.Duration,
 			}
 		}
 	}
@@ -96,12 +96,12 @@ func (r *QuizDBRepository) toQuizSession(entity sqlc.QuizSessionView, isAdmin bo
 	d := domain.QuizSession{
 		QuizSha1: entity.QuizSha1,
 		Name:     entity.QuizName,
-		Duration: int(entity.QuizDuration),
+		Duration: entity.QuizDuration,
 	}
 
 	if isAdmin {
 		d.Filename = entity.QuizFilename
-		d.Version = int(entity.QuizVersion)
+		d.Version = entity.QuizVersion
 		d.CreatedAt = entity.QuizCreatedAt
 	}
 

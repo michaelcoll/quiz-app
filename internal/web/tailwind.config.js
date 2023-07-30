@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: "media",
+
   content: [
     `components/**/*.{vue,js,ts}`,
     `layouts/**/*.vue`,
@@ -18,5 +20,5 @@ module.exports = {
     },
   },
 
-  plugins: [],
+  plugins: [require("flowbite/plugin")],
 };

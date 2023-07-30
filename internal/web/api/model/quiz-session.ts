@@ -60,7 +60,7 @@ export interface QuizSession {
    */
   createdAt?: string | null;
   /**
-   * The date of creation of the quiz
+   * The id of the session
    * @type {string}
    * @memberof QuizSession
    */

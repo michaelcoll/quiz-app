@@ -1,5 +1,5 @@
 -- name: CreateOrReplaceSession :exec
-REPLACE INTO session (uuid, quiz_sha1, user_id)
+INSERT INTO session (uuid, quiz_sha1, user_id)
 VALUES (?, ?, ?);
 
 -- name: CreateOrReplaceSessionAnswer :exec
@@ -23,6 +23,12 @@ LIMIT ? OFFSET ?;
 SELECT COUNT(*)
 FROM session_view
 WHERE quiz_active = ?;
+
+-- name: CountAllSessionsForUser :one
+SELECT COUNT(*)
+FROM session_view
+WHERE quiz_active = ?
+  AND user_id = ?;
 
 -- name: CountAllSessionsForUser :one
 SELECT COUNT(*)

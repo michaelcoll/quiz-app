@@ -20,28 +20,28 @@
 </script>
 
 <template>
-  <div class="flex items-center mt-4 lg:mt-0">
+  <div class="mt-4 flex items-center lg:mt-0">
     <GoogleLogin v-if="!authStore.isLogged" :callback="callback" prompt auto-login>
       <button
-        class="px-4 py-2 text-sm font-medium text-gray-600 transition-colors duration-200 sm:text-base sm:px-6 dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100 rounded-lg rtl:flex-row-reverse dark:bg-gray-900 dark:border-gray-700 dark:divide-gray-700">
+        class="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors duration-200 hover:bg-gray-100 rtl:flex-row-reverse dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 sm:px-6 sm:text-base">
         Login
       </button>
     </GoogleLogin>
     <div v-else class="relative inline-block">
       <!-- Dropdown toggle button -->
       <button
-        class="relative z-10 flex items-center p-2 text-sm text-gray-600 bg-white border border-transparent rounded-md dark:text-white dark:bg-gray-800 focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
+        class="relative z-10 flex items-center rounded-md border border-transparent bg-white p-2 text-sm text-gray-600 hover:bg-gray-100 focus:outline-none dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
         @click="isOpen = !isOpen">
-        <div class="w-8 h-8 overflow-hidden border border-gray-400 rounded-full mx-1">
+        <div class="mx-1 h-8 w-8 overflow-hidden rounded-full border border-gray-400">
           <img
             :src="authStore.getPicture"
-            class="object-cover w-full h-full"
+            class="h-full w-full object-cover"
             referrerpolicy="no-referrer"
             alt="avatar" />
         </div>
         <span class="mx-1">{{ authStore.getUsername }}</span>
         <svg
-          class="w-5 h-5 mx-1"
+          class="mx-1 h-5 w-5"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg">
@@ -55,12 +55,12 @@
       <Transition name="profile">
         <div
           v-if="isOpen"
-          class="absolute right-0 z-20 w-64 py-2 mt-2 overflow-hidden origin-top-right bg-white rounded-md shadow-xl dark:bg-gray-800 transition border border-gray-200 dark:border-gray-700">
+          class="absolute right-0 z-20 mt-2 w-64 origin-top-right overflow-hidden rounded-md border border-gray-200 bg-white py-2 shadow-xl transition dark:border-gray-700 dark:bg-gray-800">
           <a
             href="#"
-            class="flex items-center p-3 -mt-2 text-sm text-gray-600 transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
+            class="-mt-2 flex items-center p-3 text-sm text-gray-600 transition-colors duration-300 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white">
             <img
-              class="flex-shrink-0 object-cover mx-1 rounded-full w-9 h-9"
+              class="mx-1 h-9 w-9 shrink-0 rounded-full object-cover"
               referrerpolicy="no-referrer"
               :src="authStore.getPicture"
               alt="avatar" />
@@ -78,9 +78,9 @@
 
           <a
             href="#"
-            class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
+            class="flex items-center p-3 text-sm capitalize text-gray-600 transition-colors duration-300 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white">
             <svg
-              class="w-5 h-5 mx-1"
+              class="mx-1 h-5 w-5"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg">

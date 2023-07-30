@@ -61,17 +61,18 @@ func (r *QuizDBRepository) FindFullBySha1(ctx context.Context, sha1 string, user
 			quiz.Filename = entity.QuizFilename
 			quiz.Name = entity.QuizName
 			quiz.Active = entity.QuizActive
-			quiz.Version = int(entity.QuizVersion)
-			quiz.Duration = int(entity.QuizDuration)
+			quiz.Version = entity.QuizVersion
+			quiz.Duration = entity.QuizDuration
 			quiz.CreatedAt = entity.QuizCreatedAt
 			quiz.Questions = map[string]domain.QuizQuestion{}
 		}
 
 		if _, found := quiz.Questions[entity.QuestionSha1]; !found {
 			newQuestion := domain.QuizQuestion{
-				Sha1:    entity.QuestionSha1,
-				Content: entity.QuestionContent,
-				Answers: map[string]domain.QuizQuestionAnswer{},
+				Sha1:     entity.QuestionSha1,
+				Position: entity.QuestionPosition,
+				Content:  entity.QuestionContent,
+				Answers:  map[string]domain.QuizQuestionAnswer{},
 			}
 			quiz.Questions[entity.QuestionSha1] = newQuestion
 		} else {
@@ -149,8 +150,9 @@ func (r *QuizDBRepository) Create(ctx context.Context, quiz *domain.Quiz) error 
 
 	for _, question := range quiz.Questions {
 		err := r.q.CreateOrReplaceQuestion(ctx, sqlc.CreateOrReplaceQuestionParams{
-			Sha1:    question.Sha1,
-			Content: question.Content,
+			Sha1:     question.Sha1,
+			Position: int64(question.Position),
+			Content:  question.Content,
 		})
 		if err != nil {
 			return err
@@ -340,9 +342,10 @@ func (r *QuizDBRepository) FindQuizSessionByUuid(ctx context.Context, sessionUui
 
 		if _, found := sessionDetail.Questions[entity.QuestionSha1]; !found {
 			newQuestion := domain.QuizQuestion{
-				Sha1:    entity.QuestionSha1,
-				Content: entity.QuestionContent,
-				Answers: map[string]domain.QuizQuestionAnswer{},
+				Sha1:     entity.QuestionSha1,
+				Content:  entity.QuestionContent,
+				Position: entity.QuestionPosition,
+				Answers:  map[string]domain.QuizQuestionAnswer{},
 			}
 			sessionDetail.Questions[entity.QuestionSha1] = newQuestion
 		} else {
