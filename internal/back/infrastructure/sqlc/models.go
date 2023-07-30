@@ -37,8 +37,9 @@ type QuizClassVisibility struct {
 }
 
 type QuizQuestion struct {
-	Sha1    string `db:"sha1"`
-	Content string `db:"content"`
+	Sha1     string `db:"sha1"`
+	Position int64  `db:"position"`
+	Content  string `db:"content"`
 }
 
 type QuizQuestionAnswer struct {
@@ -52,19 +53,20 @@ type QuizQuestionQuiz struct {
 }
 
 type QuizSessionDetailView struct {
-	SessionUuid     uuid.UUID `db:"session_uuid"`
-	UserID          string    `db:"user_id"`
-	RemainingSec    int       `db:"remaining_sec"`
-	QuizSha1        string    `db:"quiz_sha1"`
-	QuizName        string    `db:"quiz_name"`
-	CheckedAnswers  int       `db:"checked_answers"`
-	Results         int       `db:"results"`
-	QuestionSha1    string    `db:"question_sha1"`
-	QuestionContent string    `db:"question_content"`
-	AnswerSha1      string    `db:"answer_sha1"`
-	AnswerContent   string    `db:"answer_content"`
-	AnswerChecked   bool      `db:"answer_checked"`
-	AnswerValid     bool      `db:"answer_valid"`
+	SessionUuid      uuid.UUID `db:"session_uuid"`
+	UserID           string    `db:"user_id"`
+	RemainingSec     int       `db:"remaining_sec"`
+	QuizSha1         string    `db:"quiz_sha1"`
+	QuizName         string    `db:"quiz_name"`
+	CheckedAnswers   int       `db:"checked_answers"`
+	Results          int       `db:"results"`
+	QuestionSha1     string    `db:"question_sha1"`
+	QuestionContent  string    `db:"question_content"`
+	QuestionPosition int       `db:"question_position"`
+	AnswerSha1       string    `db:"answer_sha1"`
+	AnswerContent    string    `db:"answer_content"`
+	AnswerChecked    bool      `db:"answer_checked"`
+	AnswerValid      bool      `db:"answer_valid"`
 }
 
 type QuizSessionView struct {

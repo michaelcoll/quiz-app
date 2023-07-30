@@ -83,12 +83,13 @@ func extractQuestions(content string) (map[string]QuizQuestion, error) {
 
 	questions := map[string]QuizQuestion{}
 
-	for _, s := range questionsUnParsed {
+	for i, s := range questionsUnParsed {
 		question, err := extractQuestion(s)
 		if err != nil {
 			return nil, err
 		}
 
+		question.Position = i + 1
 		questions[question.Sha1] = question
 	}
 

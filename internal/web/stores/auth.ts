@@ -24,7 +24,7 @@ export type AuthState = {
   userId?: string;
   userName?: string;
   userEmail?: string;
-  exp?: Date;
+  exp: number;
   userRole?: UserRoleEnum;
   picture?: string;
   jwtToken?: string;
@@ -37,37 +37,37 @@ export const useAuthStore = defineStore("auth", {
       userId: undefined,
       userName: undefined,
       userEmail: undefined,
-      exp: undefined,
+      exp: 0,
       userRole: undefined,
       picture: undefined,
       jwtToken: undefined,
       logged: false,
-    } as AuthState),
+    }) as AuthState,
   getters: {
-    isLogged(): boolean {
-      return this.logged && !(new Date() > this.exp);
+    isLogged({ logged, exp }: AuthState): boolean {
+      return logged && !(new Date().getTime() > exp);
     },
-    getPicture(): string | undefined {
-      return this.picture;
+    getPicture({ picture }: AuthState): string | undefined {
+      return picture;
     },
-    getUsername(): string | undefined {
-      return this.userName;
+    getUsername({ userName }: AuthState): string | undefined {
+      return userName;
     },
-    getUserEmail(): string | undefined {
-      return this.userEmail;
+    getUserEmail({ userEmail }: AuthState): string | undefined {
+      return userEmail;
     },
-    getUserRole(): string | undefined {
-      return this.userRole;
+    getUserRole({ userRole }: AuthState): string | undefined {
+      return userRole;
     },
-    hasExpired(): boolean {
-      return new Date() > this.exp;
+    hasExpired({ exp }: AuthState): boolean {
+      return new Date().getTime() > exp;
     },
   },
   actions: {
     login(token: string, picture: string, exp: number) {
       this.jwtToken = token;
       this.picture = picture;
-      this.exp = new Date(exp * 1000);
+      this.exp = exp * 1000;
       getApi()
         .post<User>(`/api/v1/login`)
         .then(({ data }) => {

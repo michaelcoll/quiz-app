@@ -22,10 +22,6 @@ import { useAuthStore } from "@/stores/auth";
 const runtimeConfig = useRuntimeConfig();
 const apiServerUrl = runtimeConfig.public.apiBase;
 
-export class ApiError extends Error {}
-
-export class InternalServerApiError extends ApiError {}
-
 // For Make Log on Develop Mode
 const logOnDev = (message: string) => {
   if (import.meta.env.MODE === "development") {
@@ -38,8 +34,11 @@ const onRequest = (config: InternalAxiosRequestConfig): InternalAxiosRequestConf
   const { method, url } = config;
   // Set Headers Here
   const authStore = useAuthStore();
-  if (config.headers) {
+  if (config.headers && !authStore.hasExpired) {
     config.headers.Authorization = `Bearer ${authStore.jwtToken}`;
+  } else if (authStore.hasExpired) {
+    logOnDev(`🚀 [Token] token expired logging out.`);
+    authStore.logout();
   }
   // Check Authentication Here
   // Set Loading Start Here
@@ -58,6 +57,8 @@ const onErrorResponse = (error: AxiosError | Error): Promise<AxiosError> => {
     switch (status) {
       case 401: {
         // "Login required"
+        const authStore = useAuthStore();
+        authStore.logout();
         break;
       }
       case 403: {
@@ -77,11 +78,6 @@ const onErrorResponse = (error: AxiosError | Error): Promise<AxiosError> => {
         break;
       }
     }
-
-    if (status === 401) {
-      // Delete Token & Go To Login Page if you required.
-      sessionStorage.removeItem("token");
-    }
   } else {
     logOnDev(`🚨 [API] | Error ${error.message}`);
   }
@@ -94,25 +90,9 @@ export function getApi(): AxiosInstance {
     baseURL: `${apiServerUrl}`,
   });
 
-  axiosInstance.interceptors.request.use(onRequest, onErrorResponse);
+  axiosInstance.interceptors.request.use(onRequest);
 
-  axiosInstance.interceptors.response.use(
-    (response) => response,
-    (error) => Promise.reject(handleError(error))
-  );
+  axiosInstance.interceptors.response.use((response) => response, onErrorResponse);
 
   return axiosInstance;
 }
-
-const handleError = (error: unknown) => {
-  if (error && axios.isAxiosError(error) && error.response) {
-    const status = error.response.status;
-    // if (status === 404) {
-    //   return new NotFoundApiError(error.message);
-    // }
-    if (status >= 500) {
-      return new InternalServerApiError(error.message);
-    }
-  }
-  return error;
-};

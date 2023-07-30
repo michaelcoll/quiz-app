@@ -19,6 +19,7 @@ package presentation
 import (
 	"net/http"
 	"regexp"
+	"sort"
 
 	"github.com/google/uuid"
 
@@ -51,9 +52,10 @@ func (dto *Quiz) setQuestions(questions []QuizQuestion) {
 }
 
 type QuizQuestion struct {
-	Sha1    string               `json:"sha1"`
-	Content string               `json:"content"`
-	Answers []QuizQuestionAnswer `json:"answers,omitempty"`
+	Sha1     string               `json:"sha1"`
+	Content  string               `json:"content"`
+	Position int                  `json:"position"`
+	Answers  []QuizQuestionAnswer `json:"answers,omitempty"`
 }
 
 type QuizQuestionAnswer struct {
@@ -84,12 +86,17 @@ func mapQuizInfos(d domain.QuizInfos, dto QuizInfos) {
 		}
 
 		questions[i] = QuizQuestion{
-			Sha1:    question.Sha1,
-			Content: question.Content,
-			Answers: answers,
+			Sha1:     question.Sha1,
+			Content:  question.Content,
+			Position: question.Position,
+			Answers:  answers,
 		}
 		i++
 	}
+
+	sort.SliceStable(questions, func(i, j int) bool {
+		return questions[i].Position < questions[j].Position
+	})
 
 	dto.setQuestions(questions)
 }

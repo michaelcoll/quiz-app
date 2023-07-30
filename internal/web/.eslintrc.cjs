@@ -17,19 +17,26 @@
 /* eslint-env node */
 module.exports = {
   root: true,
-  plugins: [
-    'simple-import-sort'
+  plugins: ["simple-import-sort"],
+  extends: [
+    "@nuxtjs/eslint-config-typescript",
+    "plugin:prettier/recommended",
+    "plugin:tailwindcss/recommended",
   ],
-  extends: ['@nuxtjs/eslint-config-typescript', 'plugin:prettier/recommended'],
-  ignorePatterns: ['api/model/user.ts'],
+  ignorePatterns: ["api/model/user.ts"],
   rules: {
-    'simple-import-sort/imports': 'error',
-    'simple-import-sort/exports': 'error',
-    'vue/multi-word-component-names': ['error', {
-      'ignores': ['Link', 'Profile', 'index', 'quiz']
-    }]
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
   },
+  overrides: [
+    {
+      files: ["components/**", "pages/**"],
+      rules: {
+        "vue/multi-word-component-names": "off",
+      },
+    },
+  ],
   parserOptions: {
-    ecmaVersion: 'latest'
-  }
-}
+    ecmaVersion: "latest",
+  },
+};

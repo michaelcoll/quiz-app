@@ -13,8 +13,9 @@ CREATE TABLE quiz
 
 CREATE TABLE quiz_question
 (
-    sha1    TEXT PRIMARY KEY,
-    content TEXT NOT NULL
+    sha1     TEXT PRIMARY KEY,
+    position INTEGER NOT NULL,
+    content  TEXT    NOT NULL
 );
 
 CREATE TABLE quiz_question_quiz
@@ -192,13 +193,15 @@ SELECT q.sha1                                                                  A
        q.version                                                               AS quiz_version,
        q.duration                                                              AS quiz_duration,
        q.created_at                                                            AS quiz_created_at,
-       CASE WHEN sv.uuid IS NULL THEN '' ELSE sv.uuid END                      AS session_uuid,
-       CASE WHEN sv.user_id IS NULL THEN '' ELSE sv.user_id END                AS user_id,
-       CASE WHEN sv.user_name IS NULL THEN '' ELSE sv.user_name END            AS user_name,
+       CASE WHEN s.uuid IS NULL THEN '' ELSE s.uuid END                        AS session_uuid,
+       CASE WHEN s.user_id IS NULL THEN '' ELSE s.user_id END                  AS user_id,
+       CAST(u.firstname || ' ' || u.lastname AS TEXT)                          AS user_name,
        CASE WHEN sv.remaining_sec IS NULL THEN 0 ELSE sv.remaining_sec END     AS remaining_sec,
        CASE WHEN sv.checked_answers IS NULL THEN 0 ELSE sv.checked_answers END AS checked_answers,
        CASE WHEN sv.results IS NULL THEN 0 ELSE sv.results END                 AS results
 FROM quiz q
+         LEFT JOIN session s ON q.sha1 = s.quiz_sha1
+         JOIN user u ON s.user_id = u.id
          LEFT JOIN session_view sv ON q.sha1 = sv.quiz_sha1
 WHERE q.active = TRUE;
 
@@ -213,6 +216,7 @@ SELECT qsv.session_uuid                                          AS session_uuid
        qsv.results                                               AS results,
        srv.question_sha1                                         AS question_sha1,
        qq.content                                                AS question_content,
+       qq.position                                               AS question_position,
        srv.answer_sha1                                           AS answer_sha1,
        qa.content                                                AS answer_content,
        CASE WHEN srv.checked IS NULL THEN 0 ELSE srv.checked END AS answer_checked,
@@ -221,3 +225,4 @@ FROM quiz_session_view qsv
          JOIN session_response_view srv ON qsv.session_uuid = srv.session_uuid
          JOIN quiz_question qq ON srv.question_sha1 = qq.sha1
          JOIN quiz_answer qa ON srv.answer_sha1 = qa.sha1
+ORDER BY qq.position
