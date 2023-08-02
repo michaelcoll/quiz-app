@@ -27,7 +27,7 @@
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
     "axios": "^1.4.0",
-    "flowbite": "^1.8.0",
+    "flowbite": "^1.8.1",
     "vue3-google-login": "^2.0.18"
   },
   "packageManager": "pnpm@8.6.3",
