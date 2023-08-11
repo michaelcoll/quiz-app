@@ -27,17 +27,11 @@ import (
 )
 
 const (
-	aud             = "aud"
-	sub             = "103275817862301231842"
-	expStr          = "1684494062"
-	expInStr        = "3591"
-	expIn           = 3591
-	exp             = 1684494062
-	firstName       = "Cordell"
-	lastName        = "Walker"
-	userName        = firstName + " " + lastName
-	email           = "cordell.walker@texas-ranger.com"
-	emailVerified   = "true"
+	sub             = 4242424
+	subStr          = "4242424"
+	login           = "cordell.walker"
+	name            = "Cordell Walker"
+	picture         = "https://avatars.githubusercontent.com/u/4242424?v=4"
 	sha1Quiz1       = "c152b2d0a2509a82ea5e8a6ae22fea55c7221002"
 	sha1Quiz2       = "770ef94955911a984e3d4925d2419c44d3aaca28"
 	quizName1       = "Marvel Universe"
@@ -62,7 +56,7 @@ const (
 
 func getDBConnection(t *testing.T, dropBeforeConnect bool) *sql.DB {
 	if dropBeforeConnect {
-		// Deleting previous database
+		// Deleting the previous database
 		if _, err := os.Stat("data"); err == nil {
 			err := os.RemoveAll("data")
 			if err != nil {

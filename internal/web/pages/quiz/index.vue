@@ -15,28 +15,37 @@
   -->
 
 <script setup lang="ts">
+  import { QuizSession } from "~/api/model";
   import { toDurationStr, toPercent } from "~/helpers/quiz";
   import { useAuthStore } from "~/stores/auth";
-  import { useQuizSessionsStore } from "~/stores/quizSessions";
 
-  const quizSessionsStore = useQuizSessionsStore();
-  const authStore = useAuthStore();
+  const apiServerUrl = useRuntimeConfig().public.apiBase;
+  const pageSize = 8;
+  const page = ref(0);
+  const total = ref(0);
+  const quizSessions = ref();
 
-  onMounted(() => {
-    if (authStore.isLogged) {
-      quizSessionsStore.fetchQuizSessions();
-    } else {
-      watch(
-        () => authStore.isLogged,
-        (value) => {
-          if (value) {
-            quizSessionsStore.fetchQuizSessions();
-          }
-        },
-      );
-    }
-    quizSessionsStore.fetchQuizSessions();
-  });
+  const token = await useAuthStore().getToken;
+
+  if (token) {
+    await useFetch<QuizSession[]>(`${apiServerUrl}/api/v1/quiz-session`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Range: `quiz-session=${pageSize * page.value}-${pageSize * (page.value + 1) - 1}`,
+      },
+      onResponse({ response }) {
+        if (response._data) {
+          quizSessions.value = response._data;
+        }
+
+        const contentRangeHeader = response.headers.get("content-range");
+        if (contentRangeHeader != null) {
+          const split = contentRangeHeader.split("/");
+          total.value = parseInt(split[1]);
+        }
+      },
+    });
+  }
 </script>
 
 <template>
@@ -54,7 +63,7 @@
 
             <span
               class="rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-600 dark:bg-gray-800 dark:text-blue-400"
-              >{{ quizSessionsStore.getTotal }} quiz(zes)</span
+              >{{ total }} quiz(zes)</span
             >
           </div>
         </div>
@@ -97,12 +106,14 @@
                     <th
                       scope="col"
                       class="w-8 px-12 py-3.5 text-left text-sm font-normal text-gray-500 rtl:text-right dark:text-gray-400"></th>
+                    <!--
 
                     <th
                       scope="col"
                       class="px-4 py-3.5 text-left text-sm font-normal text-gray-500 rtl:text-right dark:text-gray-400">
                       Users
                     </th>
+-->
 
                     <th
                       scope="col"
@@ -117,9 +128,7 @@
                 </thead>
                 <tbody
                   class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
-                  <tr
-                    v-for="quiz in quizSessionsStore.getQuizSessions"
-                    :key="quiz.quizSha1">
+                  <tr v-for="quiz in quizSessions" :key="quiz.quizSha1">
                     <td class="whitespace-nowrap p-4 text-sm font-medium">
                       <div>
                         <h2 class="font-medium text-gray-800 dark:text-white">
@@ -136,6 +145,8 @@
                         v{{ quiz.version }}
                       </div>
                     </td>
+
+                    <!--
                     <td class="whitespace-nowrap p-4 text-sm">
                       <div class="flex items-center">
                         <p
@@ -144,6 +155,7 @@
                         </p>
                       </div>
                     </td>
+-->
 
                     <td class="whitespace-nowrap p-4 text-sm font-medium">
                       <div>
@@ -178,13 +190,12 @@
       </div>
 
       <div
-        v-if="quizSessionsStore.hasMoreThanOnePage"
+        v-if="total > pageSize"
         class="mt-6 sm:flex sm:items-center sm:justify-between">
         <div class="text-sm text-gray-500 dark:text-gray-400">
           Page
           <span class="font-medium text-gray-700 dark:text-gray-100"
-            >{{ quizSessionsStore.getCurrentPage }} of
-            {{ quizSessionsStore.getLastPage }}</span
+            >{{ page }} of {{ total / pageSize }}</span
           >
         </div>
 

@@ -31,8 +31,8 @@ export function toDurationStr(seconds: number | undefined): string {
 }
 
 export function toPercent(result: SessionResult | null | undefined): number {
-  if (result) {
-    return Math.ceil((result.goodAnswer * 100) / result.totalAnswer);
+  if (result && result.totalAnswer) {
+    return Math.ceil(((result.goodAnswer ?? 0) * 100) / result.totalAnswer);
   }
 
   return 0;

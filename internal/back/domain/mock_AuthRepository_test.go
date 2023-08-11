@@ -18,11 +18,11 @@ func (_m *MockAuthRepository) EXPECT() *MockAuthRepository_Expecter {
 }
 
 // CacheToken provides a mock function with given fields: token
-func (_m *MockAuthRepository) CacheToken(token *IdToken) error {
+func (_m *MockAuthRepository) CacheToken(token *AccessToken) error {
 	ret := _m.Called(token)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*IdToken) error); ok {
+	if rf, ok := ret.Get(0).(func(*AccessToken) error); ok {
 		r0 = rf(token)
 	} else {
 		r0 = ret.Error(0)
@@ -37,14 +37,14 @@ type MockAuthRepository_CacheToken_Call struct {
 }
 
 // CacheToken is a helper method to define mock.On call
-//   - token *IdToken
+//   - token *AccessToken
 func (_e *MockAuthRepository_Expecter) CacheToken(token interface{}) *MockAuthRepository_CacheToken_Call {
 	return &MockAuthRepository_CacheToken_Call{Call: _e.mock.On("CacheToken", token)}
 }
 
-func (_c *MockAuthRepository_CacheToken_Call) Run(run func(token *IdToken)) *MockAuthRepository_CacheToken_Call {
+func (_c *MockAuthRepository_CacheToken_Call) Run(run func(token *AccessToken)) *MockAuthRepository_CacheToken_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*IdToken))
+		run(args[0].(*AccessToken))
 	})
 	return _c
 }
@@ -54,25 +54,25 @@ func (_c *MockAuthRepository_CacheToken_Call) Return(_a0 error) *MockAuthReposit
 	return _c
 }
 
-func (_c *MockAuthRepository_CacheToken_Call) RunAndReturn(run func(*IdToken) error) *MockAuthRepository_CacheToken_Call {
+func (_c *MockAuthRepository_CacheToken_Call) RunAndReturn(run func(*AccessToken) error) *MockAuthRepository_CacheToken_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // FindTokenByTokenStr provides a mock function with given fields: tokenStr
-func (_m *MockAuthRepository) FindTokenByTokenStr(tokenStr string) (*IdToken, error) {
+func (_m *MockAuthRepository) FindTokenByTokenStr(tokenStr string) (*AccessToken, error) {
 	ret := _m.Called(tokenStr)
 
-	var r0 *IdToken
+	var r0 *AccessToken
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*IdToken, error)); ok {
+	if rf, ok := ret.Get(0).(func(string) (*AccessToken, error)); ok {
 		return rf(tokenStr)
 	}
-	if rf, ok := ret.Get(0).(func(string) *IdToken); ok {
+	if rf, ok := ret.Get(0).(func(string) *AccessToken); ok {
 		r0 = rf(tokenStr)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*IdToken)
+			r0 = ret.Get(0).(*AccessToken)
 		}
 	}
 
@@ -103,12 +103,12 @@ func (_c *MockAuthRepository_FindTokenByTokenStr_Call) Run(run func(tokenStr str
 	return _c
 }
 
-func (_c *MockAuthRepository_FindTokenByTokenStr_Call) Return(_a0 *IdToken, _a1 error) *MockAuthRepository_FindTokenByTokenStr_Call {
+func (_c *MockAuthRepository_FindTokenByTokenStr_Call) Return(_a0 *AccessToken, _a1 error) *MockAuthRepository_FindTokenByTokenStr_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAuthRepository_FindTokenByTokenStr_Call) RunAndReturn(run func(string) (*IdToken, error)) *MockAuthRepository_FindTokenByTokenStr_Call {
+func (_c *MockAuthRepository_FindTokenByTokenStr_Call) RunAndReturn(run func(string) (*AccessToken, error)) *MockAuthRepository_FindTokenByTokenStr_Call {
 	_c.Call.Return(run)
 	return _c
 }

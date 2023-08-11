@@ -44,7 +44,7 @@ func (q *Queries) CountAllSessionsForUser(ctx context.Context, arg CountAllSessi
 }
 
 const createOrReplaceSession = `-- name: CreateOrReplaceSession :exec
-REPLACE INTO session (uuid, quiz_sha1, user_id)
+INSERT INTO session (uuid, quiz_sha1, user_id)
 VALUES (?, ?, ?)
 `
 
@@ -84,7 +84,7 @@ func (q *Queries) CreateOrReplaceSessionAnswer(ctx context.Context, arg CreateOr
 }
 
 const findAllSessions = `-- name: FindAllSessions :many
-SELECT uuid, quiz_sha1, quiz_name, quiz_active, user_id, user_name, remaining_sec, checked_answers, results
+SELECT uuid, quiz_sha1, quiz_name, quiz_active, user_id, user_name, user_picture, remaining_sec, checked_answers, results
 FROM session_view
 WHERE quiz_active = ?
 LIMIT ? OFFSET ?
@@ -112,6 +112,7 @@ func (q *Queries) FindAllSessions(ctx context.Context, arg FindAllSessionsParams
 			&i.QuizActive,
 			&i.UserID,
 			&i.UserName,
+			&i.UserPicture,
 			&i.RemainingSec,
 			&i.CheckedAnswers,
 			&i.Results,
@@ -193,7 +194,7 @@ func (q *Queries) FindAllSessionsAnswerForSession(ctx context.Context, arg FindA
 }
 
 const findAllSessionsForUser = `-- name: FindAllSessionsForUser :many
-SELECT uuid, quiz_sha1, quiz_name, quiz_active, user_id, user_name, remaining_sec, checked_answers, results
+SELECT uuid, quiz_sha1, quiz_name, quiz_active, user_id, user_name, user_picture, remaining_sec, checked_answers, results
 FROM session_view
 WHERE quiz_active = ?
   AND user_id = ?
@@ -228,6 +229,7 @@ func (q *Queries) FindAllSessionsForUser(ctx context.Context, arg FindAllSession
 			&i.QuizActive,
 			&i.UserID,
 			&i.UserName,
+			&i.UserPicture,
 			&i.RemainingSec,
 			&i.CheckedAnswers,
 			&i.Results,

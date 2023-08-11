@@ -42,8 +42,8 @@ type QuizRepository interface {
 
 //go:generate mockery --name AuthRepository
 type AuthRepository interface {
-	CacheToken(token *IdToken) error
-	FindTokenByTokenStr(tokenStr string) (*IdToken, error)
+	CacheToken(token *AccessToken) error
+	FindTokenByTokenStr(tokenStr string) (*AccessToken, error)
 }
 
 //go:generate mockery --name UserRepository

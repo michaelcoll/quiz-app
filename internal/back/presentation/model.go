@@ -159,19 +159,19 @@ func toRoleDto(d domain.Role) Role {
 }
 
 type User struct {
-	Id        string `json:"id"`
-	Email     string `json:"email"`
-	Firstname string `json:"firstname"`
-	Lastname  string `json:"lastname"`
-	Active    bool   `json:"active"`
-	Role      Role   `json:"role"`
+	Id      string `json:"id"`
+	Login   string `json:"login"`
+	Name    string `json:"name"`
+	Picture string `json:"picture"`
+	Active  bool   `json:"active"`
+	Role    Role   `json:"role"`
 }
 
 func (dto *User) fromDomain(d *domain.User) *User {
 	dto.Id = d.Id
-	dto.Email = d.Email
-	dto.Firstname = d.Firstname
-	dto.Lastname = d.Lastname
+	dto.Login = d.Login
+	dto.Name = d.Name
+	dto.Picture = d.Picture
 	dto.Active = d.Active
 	dto.Role = toRoleDto(d.Role)
 
@@ -226,7 +226,7 @@ func toSessionDtos(domains []*domain.Session) []*Session {
 type SessionAnswerRequestBody struct {
 	QuestionSha1 string `json:"questionSha1" binding:"required"`
 	AnswerSha1   string `json:"answerSha1" binding:"required"`
-	Checked      bool   `json:"checked" binding:"required"`
+	Checked      bool   `json:"checked"`
 }
 
 type Class struct {

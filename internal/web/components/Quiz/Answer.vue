@@ -15,7 +15,8 @@
   -->
 
 <script setup lang="ts">
-  import { useQuizSessionStore } from "~/stores/quizSession";
+  import { Session } from "~/api/model";
+  import { useAuthStore } from "~/stores/auth";
 
   const props = defineProps({
     sessionUuid: { type: String, required: true },
@@ -27,29 +28,43 @@
     content: { type: String, required: true },
   });
 
-  const isChecked = toRefs(props).checked;
+  const isChecked = ref(false);
   const isSaved = ref(false);
   const errorMessage = ref();
-  const quizSessionStore = useQuizSessionStore();
+  const apiServerUrl = useRuntimeConfig().public.apiBase;
+  const token = await useAuthStore().getToken;
 
-  function checkChange() {
-    quizSessionStore
-      .saveAnswer(
-        props.sessionUuid,
-        props.questionSha1,
-        props.answerSha1,
-        isChecked.value,
-      )
-      .then(() => {
-        isSaved.value = true;
-        setInterval(() => {
-          isSaved.value = false;
-        }, 2000);
-      })
-      .catch(({ response }) => {
-        errorMessage.value = response.data.message;
-        isChecked.value = !isChecked.value;
-      });
+  onMounted(() => {
+    isChecked.value = props.checked;
+  });
+
+  async function checkChange(checked: boolean) {
+    await useFetch<Session>(
+      `${apiServerUrl}/api/v1/session/${props.sessionUuid}/answer`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: {
+          questionSha1: props.questionSha1,
+          answerSha1: props.answerSha1,
+          checked,
+        },
+        onResponse({ response }) {
+          if (response.status === 201) {
+            isSaved.value = true;
+            setInterval(() => {
+              isSaved.value = false;
+            }, 2000);
+          }
+        },
+        onResponseError({ response }) {
+          errorMessage.value = response._data.message;
+          isChecked.value = !isChecked.value;
+        },
+      },
+    );
   }
 </script>
 
@@ -91,13 +106,17 @@
       type="checkbox"
       value=""
       class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-      @change="checkChange" />
+      @change="checkChange(isChecked)" />
     <label
       :for="answerSha1"
       class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
       >{{ props.content }}</label
     >
-    <span v-if="isSaved">Saved !</span>
+    <span
+      v-if="isSaved"
+      class="ml-2 rounded bg-green-500/40 px-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+      >Saved !</span
+    >
     <span v-if="errorMessage" class="ml-2 text-sm font-medium text-red-500">{{
       errorMessage
     }}</span>

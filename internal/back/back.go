@@ -45,7 +45,9 @@ func New() Module {
 	quizRepository := infrastructure.NewQuizRepository(connection)
 	userRepository := infrastructure.NewUserRepository(connection)
 
-	authService := domain.NewAuthService(authRepository, userRepository)
+	githubCaller := infrastructure.NewGithubAccessTokenCaller()
+
+	authService := domain.NewAuthService(authRepository, userRepository, githubCaller)
 	classService := domain.NewClassService(classRepository)
 	quizService := domain.NewQuizService(quizRepository)
 	userService := domain.NewUserService(userRepository)

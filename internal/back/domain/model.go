@@ -17,8 +17,6 @@
 package domain
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 )
 
@@ -80,32 +78,29 @@ const (
 type User struct {
 	Id string
 
-	Email     string
-	Firstname string
-	Lastname  string
-	Active    bool
-	Role      Role
-	Class     *Class
+	Login   string
+	Name    string
+	Picture string
+	Active  bool
+	Role    Role
+	Class   *Class
 }
 
 type TokenProvenance int8
 
 const (
 	Cache = 1
-	Parse = 2
+	Api   = 2
 )
 
-type IdToken struct {
+type AccessToken struct {
 	Sub string
 
-	Aud         string
-	Exp         time.Time
-	ExpiresIn   int
-	Email       string
-	FirstName   string
-	LastName    string
+	Login       string
+	Name        string
+	Picture     string
 	Provenance  TokenProvenance
-	JwtStrToken string
+	OpaqueToken string
 }
 
 type SessionResult struct {

@@ -117,7 +117,7 @@ func (q *Queries) CreateOrReplaceQuiz(ctx context.Context, arg CreateOrReplaceQu
 }
 
 const findAllActiveQuiz = `-- name: FindAllActiveQuiz :many
-SELECT sha1, q.name, filename, version, q.active, created_at, duration, qcv.class_uuid, quiz_sha1, uuid, sc.name, id, email, firstname, lastname, u.active, role_id, u.class_uuid
+SELECT sha1, q.name, filename, version, q.active, created_at, duration, qcv.class_uuid, quiz_sha1, uuid, sc.name, id, login, u.name, picture, u.active, role_id, u.class_uuid
 FROM quiz q
          JOIN quiz_class_visibility qcv ON q.sha1 = qcv.quiz_sha1
          JOIN student_class sc ON sc.uuid = qcv.class_uuid
@@ -147,9 +147,9 @@ type FindAllActiveQuizRow struct {
 	Uuid        uuid.UUID `db:"uuid"`
 	Name_2      string    `db:"name_2"`
 	ID          string    `db:"id"`
-	Email       string    `db:"email"`
-	Firstname   string    `db:"firstname"`
-	Lastname    string    `db:"lastname"`
+	Login       string    `db:"login"`
+	Name_3      string    `db:"name_3"`
+	Picture     string    `db:"picture"`
 	Active_2    bool      `db:"active_2"`
 	RoleID      int8      `db:"role_id"`
 	ClassUuid_2 uuid.UUID `db:"class_uuid_2"`
@@ -177,9 +177,9 @@ func (q *Queries) FindAllActiveQuiz(ctx context.Context, arg FindAllActiveQuizPa
 			&i.Uuid,
 			&i.Name_2,
 			&i.ID,
-			&i.Email,
-			&i.Firstname,
-			&i.Lastname,
+			&i.Login,
+			&i.Name_3,
+			&i.Picture,
 			&i.Active_2,
 			&i.RoleID,
 			&i.ClassUuid_2,
@@ -198,7 +198,7 @@ func (q *Queries) FindAllActiveQuiz(ctx context.Context, arg FindAllActiveQuizPa
 }
 
 const findAllQuizSessions = `-- name: FindAllQuizSessions :many
-SELECT quiz_sha1, quiz_name, quiz_filename, quiz_version, quiz_duration, quiz_created_at, session_uuid, user_id, user_name, remaining_sec, checked_answers, results
+SELECT quiz_sha1, quiz_name, quiz_filename, quiz_version, quiz_duration, quiz_created_at, session_uuid, user_id, user_name, user_picture, remaining_sec, checked_answers, results
 FROM quiz_session_view
 LIMIT ? OFFSET ?
 `
@@ -227,6 +227,7 @@ func (q *Queries) FindAllQuizSessions(ctx context.Context, arg FindAllQuizSessio
 			&i.SessionUuid,
 			&i.UserID,
 			&i.UserName,
+			&i.UserPicture,
 			&i.RemainingSec,
 			&i.CheckedAnswers,
 			&i.Results,
@@ -245,7 +246,7 @@ func (q *Queries) FindAllQuizSessions(ctx context.Context, arg FindAllQuizSessio
 }
 
 const findAllQuizSessionsForUser = `-- name: FindAllQuizSessionsForUser :many
-SELECT qsv.quiz_sha1, qsv.quiz_name, qsv.quiz_filename, qsv.quiz_version, qsv.quiz_duration, qsv.quiz_created_at, qsv.session_uuid, qsv.user_id, qsv.user_name, qsv.remaining_sec, qsv.checked_answers, qsv.results
+SELECT qsv.quiz_sha1, qsv.quiz_name, qsv.quiz_filename, qsv.quiz_version, qsv.quiz_duration, qsv.quiz_created_at, qsv.session_uuid, qsv.user_id, qsv.user_name, qsv.user_picture, qsv.remaining_sec, qsv.checked_answers, qsv.results
 FROM quiz_session_view qsv
          JOIN quiz_class_visibility qcv ON qsv.quiz_sha1 = qcv.quiz_sha1
          JOIN student_class sc ON sc.uuid = qcv.class_uuid
@@ -279,6 +280,7 @@ func (q *Queries) FindAllQuizSessionsForUser(ctx context.Context, arg FindAllQui
 			&i.SessionUuid,
 			&i.UserID,
 			&i.UserName,
+			&i.UserPicture,
 			&i.RemainingSec,
 			&i.CheckedAnswers,
 			&i.Results,
