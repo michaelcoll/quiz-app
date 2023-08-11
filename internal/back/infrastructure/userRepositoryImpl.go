@@ -63,11 +63,11 @@ func (r *UserDBRepository) FindUserById(ctx context.Context, id string) (*domain
 
 func (r *UserDBRepository) CreateOrReplaceUser(ctx context.Context, user *domain.User) error {
 	err := r.q.CreateOrReplaceUser(ctx, sqlc.CreateOrReplaceUserParams{
-		ID:        user.Id,
-		Email:     user.Email,
-		Firstname: user.Firstname,
-		Lastname:  user.Lastname,
-		RoleID:    int8(user.Role),
+		ID:      user.Id,
+		Login:   user.Login,
+		Name:    user.Name,
+		Picture: user.Picture,
+		RoleID:  int8(user.Role),
 	})
 	if err != nil {
 		return err
@@ -121,12 +121,12 @@ func (r *UserDBRepository) AssignUserToClass(ctx context.Context, userId string,
 
 func (r *UserDBRepository) toUser(entity sqlc.User) *domain.User {
 	return &domain.User{
-		Id:        entity.ID,
-		Email:     entity.Email,
-		Firstname: entity.Firstname,
-		Lastname:  entity.Lastname,
-		Active:    entity.Active,
-		Role:      r.toRole(entity.RoleID),
+		Id:      entity.ID,
+		Login:   entity.Login,
+		Name:    entity.Name,
+		Picture: entity.Picture,
+		Active:  entity.Active,
+		Role:    r.toRole(entity.RoleID),
 	}
 }
 

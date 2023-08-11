@@ -14,4 +14,12 @@
  * limitations under the License.
  */
 
-import "./model";
+export async function getCurrentToken(): Promise<string | undefined> {
+  const { getSession } = useAuth();
+  const session = await getSession();
+  if (session != null) {
+    return Promise.resolve(session.access_token);
+  } else {
+    return Promise.reject(new Error("No session data !"));
+  }
+}

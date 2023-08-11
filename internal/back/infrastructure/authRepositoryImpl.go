@@ -38,17 +38,17 @@ func NewAuthRepository(c *sql.DB) *AuthDBRepository {
 	return &AuthDBRepository{q: sqlc.New(c), tc: tokenCache}
 }
 
-func (r *AuthDBRepository) CacheToken(token *domain.IdToken) error {
+func (r *AuthDBRepository) CacheToken(token *domain.AccessToken) error {
 
-	r.tc.Set(token.JwtStrToken, token, time.Duration(token.ExpiresIn)*time.Second)
+	r.tc.Set(token.OpaqueToken, token, 1*time.Hour)
 
 	return nil
 }
 
-func (r *AuthDBRepository) FindTokenByTokenStr(tokenStr string) (*domain.IdToken, error) {
+func (r *AuthDBRepository) FindTokenByTokenStr(tokenStr string) (*domain.AccessToken, error) {
 
 	if t, found := r.tc.Get(tokenStr); found {
-		token := t.(*domain.IdToken)
+		token := t.(*domain.AccessToken)
 		token.Provenance = domain.Cache
 
 		return token, nil

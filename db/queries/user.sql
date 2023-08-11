@@ -8,7 +8,7 @@ SELECT *
 FROM user;
 
 -- name: CreateOrReplaceUser :exec
-REPLACE INTO user (id, email, firstname, lastname, role_id)
+REPLACE INTO user (id, login, name, picture, role_id)
 VALUES (?, ?, ?, ?, ?);
 
 -- name: UpdateUserRole :exec

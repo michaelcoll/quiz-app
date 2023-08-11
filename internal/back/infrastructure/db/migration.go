@@ -100,9 +100,9 @@ CREATE TABLE student_class
 CREATE TABLE user
 (
     id         TEXT PRIMARY KEY,
-    email      TEXT    NOT NULL,
-    firstname  TEXT    NOT NULL,
-    lastname   TEXT    NOT NULL,
+    login      TEXT    NOT NULL,
+    name       TEXT    NOT NULL,
+    picture    TEXT    NOT NULL,
     active     INTEGER NOT NULL DEFAULT 1,
     role_id    INTEGER NOT NULL,
     class_uuid TEXT,
@@ -179,7 +179,8 @@ SELECT s.uuid                                                                   
        q.name                                                                                       AS quiz_name,
        q.active                                                                                     AS quiz_active,
        u.id                                                                                         AS user_id,
-       CAST(u.firstname || ' ' || u.lastname AS TEXT)                                               AS user_name,
+       u.name                                                                                       AS user_name,
+       u.picture                                                                                    AS user_picture,
        CAST(MAX(q.duration - (STRFTIME('%s', 'now') - STRFTIME('%s', s.created_at)), 0) AS INTEGER) AS remaining_sec,
        checked_answers,
        SUM(srv.result)                                                                              AS results
@@ -227,13 +228,16 @@ SELECT q.sha1                                                                  A
        q.version                                                               AS quiz_version,
        q.duration                                                              AS quiz_duration,
        q.created_at                                                            AS quiz_created_at,
-       CASE WHEN sv.uuid IS NULL THEN '' ELSE sv.uuid END                      AS session_uuid,
-       CASE WHEN sv.user_id IS NULL THEN '' ELSE sv.user_id END                AS user_id,
-       CASE WHEN sv.user_name IS NULL THEN '' ELSE sv.user_name END            AS user_name,
+       CASE WHEN s.uuid IS NULL THEN '' ELSE s.uuid END                        AS session_uuid,
+       CASE WHEN s.user_id IS NULL THEN '' ELSE s.user_id END                  AS user_id,
+       CASE WHEN u.name IS NULL THEN '' ELSE u.name END                        AS user_name,
+       CASE WHEN u.picture IS NULL THEN '' ELSE u.picture END                  AS user_picture,
        CASE WHEN sv.remaining_sec IS NULL THEN 0 ELSE sv.remaining_sec END     AS remaining_sec,
        CASE WHEN sv.checked_answers IS NULL THEN 0 ELSE sv.checked_answers END AS checked_answers,
        CASE WHEN sv.results IS NULL THEN 0 ELSE sv.results END                 AS results
 FROM quiz q
+         LEFT JOIN session s ON q.sha1 = s.quiz_sha1
+         LEFT JOIN user u ON s.user_id = u.id
          LEFT JOIN session_view sv ON q.sha1 = sv.quiz_sha1
 WHERE q.active = TRUE;
 

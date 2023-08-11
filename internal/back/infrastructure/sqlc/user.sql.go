@@ -10,31 +10,31 @@ import (
 )
 
 const createOrReplaceUser = `-- name: CreateOrReplaceUser :exec
-REPLACE INTO user (id, email, firstname, lastname, role_id)
+REPLACE INTO user (id, login, name, picture, role_id)
 VALUES (?, ?, ?, ?, ?)
 `
 
 type CreateOrReplaceUserParams struct {
-	ID        string `db:"id"`
-	Email     string `db:"email"`
-	Firstname string `db:"firstname"`
-	Lastname  string `db:"lastname"`
-	RoleID    int8   `db:"role_id"`
+	ID      string `db:"id"`
+	Login   string `db:"login"`
+	Name    string `db:"name"`
+	Picture string `db:"picture"`
+	RoleID  int8   `db:"role_id"`
 }
 
 func (q *Queries) CreateOrReplaceUser(ctx context.Context, arg CreateOrReplaceUserParams) error {
 	_, err := q.db.ExecContext(ctx, createOrReplaceUser,
 		arg.ID,
-		arg.Email,
-		arg.Firstname,
-		arg.Lastname,
+		arg.Login,
+		arg.Name,
+		arg.Picture,
 		arg.RoleID,
 	)
 	return err
 }
 
 const findAllUser = `-- name: FindAllUser :many
-SELECT id, email, firstname, lastname, active, role_id, class_uuid
+SELECT id, login, name, picture, active, role_id, class_uuid
 FROM user
 `
 
@@ -49,9 +49,9 @@ func (q *Queries) FindAllUser(ctx context.Context) ([]User, error) {
 		var i User
 		if err := rows.Scan(
 			&i.ID,
-			&i.Email,
-			&i.Firstname,
-			&i.Lastname,
+			&i.Login,
+			&i.Name,
+			&i.Picture,
 			&i.Active,
 			&i.RoleID,
 			&i.ClassUuid,
@@ -70,7 +70,7 @@ func (q *Queries) FindAllUser(ctx context.Context) ([]User, error) {
 }
 
 const findUserById = `-- name: FindUserById :one
-SELECT id, email, firstname, lastname, active, role_id, class_uuid
+SELECT id, login, name, picture, active, role_id, class_uuid
 FROM user
 WHERE id = ?
 `
@@ -80,9 +80,9 @@ func (q *Queries) FindUserById(ctx context.Context, id string) (User, error) {
 	var i User
 	err := row.Scan(
 		&i.ID,
-		&i.Email,
-		&i.Firstname,
-		&i.Lastname,
+		&i.Login,
+		&i.Name,
+		&i.Picture,
 		&i.Active,
 		&i.RoleID,
 		&i.ClassUuid,

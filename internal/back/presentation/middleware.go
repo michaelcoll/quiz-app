@@ -38,7 +38,7 @@ const (
 func addCommonMiddlewares(group *gin.Engine) {
 	// CORS middleware
 	group.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:4040", "http://localhost:3000"},
+		AllowOrigins:     []string{"http://localhost:3000"},
 		AllowMethods:     []string{"GET", "POST"},
 		AllowHeaders:     []string{"Content-Type", "Content-Length", "Accept-Encoding", "Authorization", "Cache-Control", "Range"},
 		ExposeHeaders:    []string{"Content-Length", "Content-Range"},
@@ -89,6 +89,10 @@ func getBearerToken(ctx *gin.Context) (string, error) {
 	token := strings.TrimPrefix(authHeader, "Bearer ")
 	if token == authHeader {
 		return "", Errorf(http.StatusUnauthorized, "authorization header is not a Bearer type")
+	}
+
+	if !strings.HasPrefix(token, "gho_") {
+		return "", Errorf(http.StatusUnauthorized, "token has not a valid format, token=%s", token)
 	}
 
 	return token, nil

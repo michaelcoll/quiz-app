@@ -19,51 +19,43 @@ package domain
 import (
 	"context"
 	"fmt"
-	"strings"
-	"time"
 
 	"github.com/fatih/color"
 	"github.com/spf13/viper"
-	"google.golang.org/api/idtoken"
 )
 
 type AuthService struct {
 	authRepository AuthRepository
 	userRepository UserRepository
+	c              AccessTokenCaller
 }
 
-func NewAuthService(authRepository AuthRepository, userRepository UserRepository) AuthService {
-	adminEmail := viper.GetString("default-admin-email")
+func NewAuthService(authRepository AuthRepository, userRepository UserRepository, c AccessTokenCaller) AuthService {
+	adminUsername := viper.GetString("default-admin-username")
 
-	if len(adminEmail) > 0 {
-		fmt.Printf("%s Default admin email set to %s\n", color.HiYellowString("i"), color.BlueString(adminEmail))
+	if len(adminUsername) > 0 {
+		fmt.Printf("%s Default admin username set to %s\n", color.HiYellowString("i"), color.BlueString(adminUsername))
 	}
 
-	return AuthService{authRepository: authRepository, userRepository: userRepository}
+	return AuthService{authRepository: authRepository, userRepository: userRepository, c: c}
 }
 
-func (s *AuthService) Login(ctx context.Context, idToken string) (*User, error) {
-	token, err := s.validateToken(ctx, idToken)
+func (s *AuthService) Login(ctx context.Context, accessToken string) (*User, error) {
+	token, err := s.validateAndGetToken(ctx, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	emailDomain := strings.Split(token.Email, "@")[1]
-	restrictedDomainName := viper.GetString("restrict-email-domain")
-	if len(restrictedDomainName) > 0 && emailDomain != restrictedDomainName {
-		return nil, Errorf(InvalidArgument, "user is not in a valid domain (%s not in domain %s)", token.Email, restrictedDomainName)
-	}
-
 	user := &User{
-		Id:        token.Sub,
-		Email:     token.Email,
-		Firstname: token.FirstName,
-		Lastname:  token.LastName,
-		Active:    true,
+		Id:      token.Sub,
+		Login:   token.Login,
+		Name:    token.Name,
+		Picture: token.Picture,
+		Active:  true,
 	}
 
-	adminEmail := viper.GetString("default-admin-email")
-	if token.Email == adminEmail {
+	adminUsername := viper.GetString("default-admin-username")
+	if token.Login == adminUsername {
 		user.Role = Admin
 	} else {
 		user.Role = Student
@@ -77,65 +69,27 @@ func (s *AuthService) Login(ctx context.Context, idToken string) (*User, error) 
 	return user, nil
 }
 
-func (s *AuthService) parseToken(ctx context.Context, tokenStr string) (*IdToken, error) {
-	aud := viper.GetString("auth0-audience")
-	payload, err := idtoken.Validate(ctx, tokenStr, aud)
+func (s *AuthService) validateAndGetToken(ctx context.Context, tokenStr string) (*AccessToken, error) {
+
+	// Try to get the token from the cache
+	token, err := s.authRepository.FindTokenByTokenStr(tokenStr)
 	if err != nil {
 		return nil, err
 	}
 
-	iat := (int64)(payload.Claims["iat"].(float64))
-	exp := (int64)(payload.Claims["exp"].(float64))
-
-	givenName := ""
-	if claim, found := payload.Claims["given_name"]; found {
-		givenName = claim.(string)
-	} else {
-		return nil, Errorf(UnAuthorized, "token is malformed given_name not found")
-	}
-
-	familyName := ""
-	if claim, found := payload.Claims["family_name"]; found {
-		familyName = claim.(string)
-	} else {
-		return nil, Errorf(UnAuthorized, "token is malformed family_name not found")
-	}
-
-	return &IdToken{
-		Aud:         payload.Claims["aud"].(string),
-		Sub:         payload.Claims["sub"].(string),
-		Exp:         time.Unix(exp, 0),
-		ExpiresIn:   (int)(exp - iat),
-		Email:       payload.Claims["email"].(string),
-		FirstName:   givenName,
-		LastName:    familyName,
-		Provenance:  Parse,
-		JwtStrToken: tokenStr,
-	}, nil
-}
-
-func (s *AuthService) validateToken(ctx context.Context, tokenStr string) (*IdToken, error) {
-
-	// parse token
-	token, err := s.parseToken(ctx, tokenStr)
-	if err != nil {
-		return nil, Errorf(UnAuthorized, "error while parsing token : %v", err)
-	}
-
-	aud := viper.GetString("auth0-audience")
-	if len(aud) > 0 && token.Aud != aud {
-		return nil, Errorf(UnAuthorized, "token is using a different audience than the one specified in config (%s != %s)", token.Aud, aud)
-	}
-
-	if token.Exp.Before(time.Now()) {
-		return nil, Errorf(UnAuthorized, "token is expired (%s)", token.Exp.Format(time.RFC3339))
+	// If it's not in cache, then get it from API
+	if token == nil {
+		token, err = s.c.Get(ctx, tokenStr)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return token, nil
 }
 
 func (s *AuthService) ValidateTokenAndGetUser(ctx context.Context, accessToken string) (*User, error) {
-	token, err := s.validateToken(ctx, accessToken)
+	token, err := s.validateAndGetToken(ctx, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +103,7 @@ func (s *AuthService) ValidateTokenAndGetUser(ctx context.Context, accessToken s
 		return nil, Errorf(UnAuthorized, "unknown user '%s'", token.Sub)
 	}
 
-	if token.Provenance == Parse {
+	if token.Provenance == Api {
 		err := s.authRepository.CacheToken(token)
 		if err != nil {
 			return nil, err

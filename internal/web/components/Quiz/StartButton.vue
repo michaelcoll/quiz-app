@@ -1,24 +1,30 @@
 <script setup lang="ts">
-  import { useQuizSessionsStore } from "~/stores/quizSessions";
+  import { Session } from "~/api/model";
+  import { useAuthStore } from "~/stores/auth";
 
   const props = defineProps({
     quizSha1: { type: String, required: false, default: "" },
   });
-  const loading = ref(false);
+  let loading = ref(false);
+  const apiServerUrl = useRuntimeConfig().public.apiBase;
 
-  const quizSessionsStore = useQuizSessionsStore();
   const router = useRouter();
+  const token = await useAuthStore().getToken;
 
   function startSession() {
-    loading.value = true;
-    quizSessionsStore.startQuiz(props.quizSha1).then((session) => {
-      loading.value = false;
-      if (session.id) {
-        router.push({ path: `quiz/${session.id}` });
-      } else {
-        // TODO Handle error
-      }
+    const { pending } = useFetch<Session>(`${apiServerUrl}/api/v1/session`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        quizSha1: props.quizSha1,
+      },
+      onResponse({ response }) {
+        router.push({ path: `quiz/${response._data.id}` });
+      },
     });
+    loading = pending;
   }
 </script>
 

@@ -15,30 +15,30 @@
   -->
 
 <script setup lang="ts">
+  import { QuizSessionDetail } from "~/api/model";
   import { useAuthStore } from "~/stores/auth";
-  import { useQuizSessionStore } from "~/stores/quizSession";
-
-  const quizSessionStore = useQuizSessionStore();
-  const authStore = useAuthStore();
 
   const route = useRoute();
-
   const sessionUuid = route.params.uuid as string;
+  const apiServerUrl = useRuntimeConfig().public.apiBase;
+  const quizSession = ref();
+  const token = await useAuthStore().getToken;
 
-  onMounted(() => {
-    if (authStore.isLogged) {
-      quizSessionStore.fetchQuizSession(sessionUuid);
-    } else {
-      watch(
-        () => authStore.isLogged,
-        (value) => {
-          if (value) {
-            quizSessionStore.fetchQuizSession(sessionUuid);
+  if (token) {
+    await useFetch<QuizSessionDetail>(
+      `${apiServerUrl}/api/v1/quiz-session/${sessionUuid}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        onResponse({ response }) {
+          if (response._data) {
+            quizSession.value = response._data;
           }
         },
-      );
-    }
-  });
+      },
+    );
+  }
 </script>
 
 <template>
@@ -46,29 +46,26 @@
     <NuxtLoadingIndicator />
     <NavBar />
 
-    <section class="container mx-auto mt-10 px-4">
+    <section v-if="quizSession" class="container mx-auto mt-10 px-4">
       <div class="sm:flex sm:items-center sm:justify-between">
         <div>
           <div class="flex items-center gap-x-3">
             <h2 class="text-lg font-medium text-gray-800 dark:text-white">
-              {{ quizSessionStore.getQuizSession?.name }}
+              {{ quizSession.name }}
             </h2>
           </div>
         </div>
       </div>
 
       <div class="grid grid-cols-1 divide-y divide-gray-200 dark:divide-gray-700">
-        <div
-          v-for="question in quizSessionStore.getQuizSession?.questions"
-          :key="question.sha1"
-          class="mb-8">
+        <div v-for="question in quizSession.questions" :key="question.sha1" class="mb-8">
           <QuizQuestion :pos="question.position ?? 0" :content="question.content ?? ''" />
           <div v-for="answer in question.answers" :key="answer.sha1">
             <QuizAnswer
               :session-uuid="sessionUuid"
               :question-sha1="question.sha1 ?? ''"
               :answer-sha1="answer.sha1 ?? ''"
-              :display-result="quizSessionStore.getQuizSession?.remainingSec == 0"
+              :display-result="quizSession.remainingSec == 0"
               :checked="answer.checked ?? false"
               :valid="answer.valid ?? false"
               :content="answer.content ?? ''" />

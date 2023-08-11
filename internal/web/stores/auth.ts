@@ -15,75 +15,43 @@
  */
 
 import { defineStore } from "pinia";
-import { googleLogout } from "vue3-google-login";
 
-import { getApi } from "~/api/common-api";
-import { User, UserRoleEnum } from "~/api/model";
+import { UserRoleEnum } from "~/api/model";
 
 export type AuthState = {
-  userId?: string;
-  userName?: string;
-  userEmail?: string;
   exp: number;
   userRole?: UserRoleEnum;
-  picture?: string;
-  jwtToken?: string;
-  logged: boolean;
+  token?: string;
 };
 
 export const useAuthStore = defineStore("auth", {
   state: () =>
     ({
-      userId: undefined,
-      userName: undefined,
-      userEmail: undefined,
-      exp: 0,
       userRole: undefined,
-      picture: undefined,
-      jwtToken: undefined,
-      logged: false,
+      token: undefined,
     }) as AuthState,
   getters: {
-    isLogged({ logged, exp }: AuthState): boolean {
-      return logged && !(new Date().getTime() > exp);
-    },
-    getPicture({ picture }: AuthState): string | undefined {
-      return picture;
-    },
-    getUsername({ userName }: AuthState): string | undefined {
-      return userName;
-    },
-    getUserEmail({ userEmail }: AuthState): string | undefined {
-      return userEmail;
+    isLogged(): boolean {
+      return useAuth().status.value === "authenticated";
     },
     getUserRole({ userRole }: AuthState): string | undefined {
       return userRole;
     },
-    hasExpired({ exp }: AuthState): boolean {
-      return new Date().getTime() > exp;
+    async getToken({ token }: AuthState): Promise<string | undefined> {
+      if (!token) {
+        const { getSession } = useAuth();
+        const session = await getSession();
+        if (session != null) {
+          this.token = session.access_token;
+          this.exp = session.exp;
+          return Promise.resolve(session.access_token);
+        } else {
+          await useAuth().signOut();
+          return Promise.reject(new Error("No session data !"));
+        }
+      }
+
+      return Promise.resolve(token);
     },
-  },
-  actions: {
-    login(token: string, picture: string, exp: number) {
-      this.jwtToken = token;
-      this.picture = picture;
-      this.exp = exp * 1000;
-      getApi()
-        .post<User>(`/api/v1/login`)
-        .then(({ data }) => {
-          this.logged = true;
-          this.userId = data.id;
-          this.userName = data.firstname + " " + data.lastname;
-          this.userEmail = data.email;
-          this.userRole = data.role;
-        });
-    },
-    logout() {
-      googleLogout();
-      this.logged = false;
-    },
-  },
-  persist: {
-    storage: sessionStorage,
   },
 });

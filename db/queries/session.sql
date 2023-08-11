@@ -30,12 +30,6 @@ FROM session_view
 WHERE quiz_active = ?
   AND user_id = ?;
 
--- name: CountAllSessionsForUser :one
-SELECT COUNT(*)
-FROM session_view
-WHERE quiz_active = ?
-  AND user_id = ?;
-
 -- name: FindAllSessionsAnswerForSession :many
 SELECT srv.quiz_sha1,
        srv.question_sha1,

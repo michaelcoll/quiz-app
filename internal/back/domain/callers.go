@@ -14,4 +14,11 @@
  * limitations under the License.
  */
 
-import "./model";
+package domain
+
+import "context"
+
+//go:generate mockery --name AccessTokenCaller
+type AccessTokenCaller interface {
+	Get(ctx context.Context, token string) (*AccessToken, error)
+}

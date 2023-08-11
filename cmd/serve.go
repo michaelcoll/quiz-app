@@ -54,14 +54,11 @@ func serve(_ *cobra.Command, _ []string) {
 func init() {
 	serveCmd.Flags().StringP("repository-url", "r", "", "The url of the repository containing the quizzes.")
 	serveCmd.Flags().StringP("token", "t", "", "The P.A.T. used to access the repository.")
-	serveCmd.Flags().String("auth0-audience", "", "The Auth0 audience used in the clientId.")
-	serveCmd.Flags().String("restrict-email-domain", "", "New users will have to be in this domain to be created.")
-	serveCmd.Flags().String("default-admin-email", "",
-		"The default admin email. If specified when the user with the given email registers, it will be created with admin role automatically.")
+	serveCmd.Flags().String("default-admin-username", "",
+		"The default admin username. If specified when the user with the given username registers, it will be created with admin role automatically.")
 
 	_ = viper.BindPFlag("repository-url", serveCmd.Flags().Lookup("repository-url"))
 	_ = viper.BindPFlag("token", serveCmd.Flags().Lookup("token"))
-	_ = viper.BindPFlag("auth0-audience", serveCmd.Flags().Lookup("auth0-audience"))
 
 	viper.SetDefault("repository-url", "https://github.com/michaelcoll/quiz-app.git")
 

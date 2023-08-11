@@ -39,36 +39,36 @@ func TestUserDBRepository_FindUserById(t *testing.T) {
 	assert.Nil(t, user)
 
 	err = r.CreateOrReplaceUser(context.Background(), &domain.User{
-		Id:        sub,
-		Email:     email,
-		Firstname: firstName,
-		Lastname:  lastName,
-		Role:      domain.Admin,
+		Id:      subStr,
+		Login:   login,
+		Name:    name,
+		Picture: picture,
+		Role:    domain.Admin,
 	})
 	if err != nil {
 		assert.Failf(t, "Fail to create user", "%v", err)
 	}
 
-	user, err = r.FindUserById(context.Background(), sub)
+	user, err = r.FindUserById(context.Background(), subStr)
 	if err != nil {
 		assert.Failf(t, "Fail to get user", "%v", err)
 	}
 
-	assert.Equal(t, sub, user.Id)
-	assert.Equal(t, email, user.Email)
-	assert.Equal(t, firstName, user.Firstname)
-	assert.Equal(t, lastName, user.Lastname)
+	assert.Equal(t, subStr, user.Id)
+	assert.Equal(t, login, user.Login)
+	assert.Equal(t, name, user.Name)
+	assert.Equal(t, picture, user.Picture)
 	assert.True(t, user.Active)
 
-	user, err = r.FindUserById(context.Background(), sub)
+	user, err = r.FindUserById(context.Background(), subStr)
 	if err != nil {
 		assert.Failf(t, "Fail to get user", "%v", err)
 	}
 
-	assert.Equal(t, sub, user.Id)
-	assert.Equal(t, email, user.Email)
-	assert.Equal(t, firstName, user.Firstname)
-	assert.Equal(t, lastName, user.Lastname)
+	assert.Equal(t, subStr, user.Id)
+	assert.Equal(t, login, user.Login)
+	assert.Equal(t, name, user.Name)
+	assert.Equal(t, picture, user.Picture)
 	assert.True(t, user.Active)
 	assert.Equal(t, user.Role, domain.Admin)
 }
