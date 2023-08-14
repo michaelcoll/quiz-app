@@ -27,7 +27,7 @@ import (
 )
 
 type QuizInfos interface {
-	setSha1AndName(sha1 string, name string)
+	setSha1NameAndDuration(sha1 string, name string, duration int)
 	setQuestions(questions []QuizQuestion)
 }
 
@@ -42,9 +42,10 @@ type Quiz struct {
 	Questions []QuizQuestion `json:"questions,omitempty"`
 }
 
-func (dto *Quiz) setSha1AndName(sha1 string, name string) {
+func (dto *Quiz) setSha1NameAndDuration(sha1 string, name string, duration int) {
 	dto.Sha1 = sha1
 	dto.Name = name
+	dto.Duration = duration
 }
 
 func (dto *Quiz) setQuestions(questions []QuizQuestion) {
@@ -66,7 +67,7 @@ type QuizQuestionAnswer struct {
 }
 
 func mapQuizInfos(d domain.QuizInfos, dto QuizInfos) {
-	dto.setSha1AndName(d.GetSha1AndName())
+	dto.setSha1NameAndDuration(d.GetSha1NameAndDuration())
 
 	questions := make([]QuizQuestion, len(d.GetQuestions()))
 
@@ -341,12 +342,14 @@ type QuizSessionDetail struct {
 	Result       *SessionResult `json:"result,omitempty"`
 	QuizSha1     string         `json:"quizSha1"`
 	Name         string         `json:"name"`
+	QuizDuration int            `json:"quizDuration"`
 	Questions    []QuizQuestion `json:"questions"`
 }
 
-func (qd *QuizSessionDetail) setSha1AndName(sha1 string, name string) {
+func (qd *QuizSessionDetail) setSha1NameAndDuration(sha1 string, name string, duration int) {
 	qd.QuizSha1 = sha1
 	qd.Name = name
+	qd.QuizDuration = duration
 }
 
 func (qd *QuizSessionDetail) setQuestions(questions []QuizQuestion) {

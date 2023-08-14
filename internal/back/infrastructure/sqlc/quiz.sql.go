@@ -407,7 +407,7 @@ func (q *Queries) FindQuizFullBySha1(ctx context.Context, arg FindQuizFullBySha1
 }
 
 const findQuizSessionByUuid = `-- name: FindQuizSessionByUuid :many
-SELECT session_uuid, user_id, remaining_sec, quiz_sha1, quiz_name, checked_answers, results, question_sha1, question_content, question_position, answer_sha1, answer_content, answer_checked, answer_valid
+SELECT session_uuid, user_id, remaining_sec, quiz_sha1, quiz_name, quiz_duration, checked_answers, results, question_sha1, question_content, question_position, answer_sha1, answer_content, answer_checked, answer_valid
 FROM quiz_session_detail_view
 WHERE session_uuid = ?
 `
@@ -427,6 +427,7 @@ func (q *Queries) FindQuizSessionByUuid(ctx context.Context, sessionUuid uuid.UU
 			&i.RemainingSec,
 			&i.QuizSha1,
 			&i.QuizName,
+			&i.QuizDuration,
 			&i.CheckedAnswers,
 			&i.Results,
 			&i.QuestionSha1,

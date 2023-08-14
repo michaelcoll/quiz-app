@@ -1,4 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  const props = defineProps<{
+    remainingSec?: number | null;
+    quizDuration?: number | null;
+  }>();
+</script>
 
 <template>
   <nav class="sticky top-0 bg-white shadow dark:bg-gray-800">
@@ -13,7 +18,10 @@
           </NuxtLink>
         </div>
 
-        <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
+        <NavBarSessionProgress
+          :quiz-duration="props.quizDuration"
+          :remaining-sec="props.remainingSec" />
+
         <div
           class="relative top-0 mt-0 flex w-auto translate-x-0 items-center bg-transparent p-0 opacity-100 dark:bg-gray-800">
           <div class="mx-8 flex flex-row items-center">

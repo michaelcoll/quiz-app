@@ -769,6 +769,11 @@ components:
           type: integer
           description: The remaining seconds before the end of the session
           nullable: true
+          example: 42
+        quizDuration:
+          type: integer
+          description: The duration in seconds of the quiz
+          nullable: true
           example: 840
         result:
           $ref: '#/components/schemas/SessionResult'
