@@ -329,6 +329,7 @@ func (r *QuizDBRepository) FindQuizSessionByUuid(ctx context.Context, sessionUui
 			sessionDetail.RemainingSec = entity.RemainingSec
 			sessionDetail.QuizSha1 = entity.QuizSha1
 			sessionDetail.Name = entity.QuizName
+			sessionDetail.QuizDuration = entity.QuizDuration
 			sessionDetail.Questions = map[string]domain.QuizQuestion{}
 
 			if sessionDetail.RemainingSec == 0 {

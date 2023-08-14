@@ -21,7 +21,7 @@
   const route = useRoute();
   const sessionUuid = route.params.uuid as string;
   const apiServerUrl = useRuntimeConfig().public.apiBase;
-  const quizSession = ref();
+  const quizSession = ref<QuizSessionDetail>();
   const token = await useAuthStore().getToken;
 
   if (token) {
@@ -44,7 +44,9 @@
 <template>
   <div>
     <NuxtLoadingIndicator />
-    <NavBar />
+    <NavBar
+      :remaining-sec="quizSession?.remainingSec"
+      :quiz-duration="quizSession?.quizDuration" />
 
     <section v-if="quizSession" class="container mx-auto mt-10 px-4">
       <div class="sm:flex sm:items-center sm:justify-between">

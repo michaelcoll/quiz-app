@@ -58,6 +58,7 @@ type QuizSessionDetailView struct {
 	RemainingSec     int       `db:"remaining_sec"`
 	QuizSha1         string    `db:"quiz_sha1"`
 	QuizName         string    `db:"quiz_name"`
+	QuizDuration     int       `db:"quiz_duration"`
 	CheckedAnswers   int       `db:"checked_answers"`
 	Results          int       `db:"results"`
 	QuestionSha1     string    `db:"question_sha1"`

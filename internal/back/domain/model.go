@@ -21,7 +21,7 @@ import (
 )
 
 type QuizInfos interface {
-	GetSha1AndName() (string, string)
+	GetSha1NameAndDuration() (string, string, int)
 	GetQuestions() map[string]QuizQuestion
 }
 
@@ -37,8 +37,8 @@ type Quiz struct {
 	Questions map[string]QuizQuestion
 }
 
-func (q *Quiz) GetSha1AndName() (string, string) {
-	return q.Sha1, q.Name
+func (q *Quiz) GetSha1NameAndDuration() (string, string, int) {
+	return q.Sha1, q.Name, q.Duration
 }
 
 func (q *Quiz) GetQuestions() map[string]QuizQuestion {
@@ -154,11 +154,12 @@ type QuizSessionDetail struct {
 	Result       *SessionResult
 	QuizSha1     string
 	Name         string
+	QuizDuration int
 	Questions    map[string]QuizQuestion
 }
 
-func (qd *QuizSessionDetail) GetSha1AndName() (string, string) {
-	return qd.QuizSha1, qd.Name
+func (qd *QuizSessionDetail) GetSha1NameAndDuration() (string, string, int) {
+	return qd.QuizSha1, qd.Name, qd.QuizDuration
 }
 
 func (qd *QuizSessionDetail) GetQuestions() map[string]QuizQuestion {

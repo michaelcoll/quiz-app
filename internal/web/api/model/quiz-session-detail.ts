@@ -42,6 +42,12 @@ export interface QuizSessionDetail {
    */
   remainingSec?: number | null;
   /**
+   * The duration in seconds of the quiz
+   * @type {number}
+   * @memberof QuizSessionDetail
+   */
+  quizDuration?: number | null;
+  /**
    *
    * @type {SessionResult}
    * @memberof QuizSessionDetail

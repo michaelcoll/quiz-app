@@ -2,6 +2,7 @@
 
 <template>
   <div>
+    <NuxtLoadingIndicator />
     <NavBar />
   </div>
 </template>

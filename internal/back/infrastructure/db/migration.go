@@ -248,6 +248,7 @@ SELECT qsv.session_uuid                                          AS session_uuid
        qsv.remaining_sec                                         AS remaining_sec,
        qsv.quiz_sha1                                             AS quiz_sha1,
        qsv.quiz_name                                             AS quiz_name,
+       qsv.quiz_duration                                         AS quiz_duration,
        qsv.checked_answers                                       AS checked_answers,
        qsv.results                                               AS results,
        srv.question_sha1                                         AS question_sha1,
