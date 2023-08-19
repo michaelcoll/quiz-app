@@ -11,8 +11,8 @@
   const router = useRouter();
   const token = await useAuthStore().getToken;
 
-  function startSession() {
-    const { pending } = useFetch<Session>(`${apiServerUrl}/api/v1/session`, {
+  async function startSession() {
+    const { pending } = await useFetch<Session>(`${apiServerUrl}/api/v1/session`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

@@ -141,9 +141,9 @@ type Role string
 
 const (
 	NoRole  Role = "NO_ROLE"
-	Admin   Role = "ADMIN"
-	Teacher Role = "TEACHER"
-	Student Role = "STUDENT"
+	Admin        = "ADMIN"
+	Teacher      = "TEACHER"
+	Student      = "STUDENT"
 )
 
 func toRoleDto(d domain.Role) Role {
@@ -157,6 +157,19 @@ func toRoleDto(d domain.Role) Role {
 		dto = Student
 	}
 	return dto
+}
+
+func toRoleDomain(dto Role) domain.Role {
+	d := domain.NoRole
+	switch dto {
+	case Admin:
+		d = domain.Admin
+	case Teacher:
+		d = domain.Teacher
+	case Student:
+		d = domain.Student
+	}
+	return d
 }
 
 type User struct {

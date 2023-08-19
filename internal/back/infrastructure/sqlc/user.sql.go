@@ -33,6 +33,28 @@ func (q *Queries) CreateOrReplaceUser(ctx context.Context, arg CreateOrReplaceUs
 	return err
 }
 
+const findActiveUserById = `-- name: FindActiveUserById :one
+SELECT id, login, name, picture, active, role_id, class_uuid
+FROM user
+WHERE id = ?
+  AND active = 1
+`
+
+func (q *Queries) FindActiveUserById(ctx context.Context, id string) (User, error) {
+	row := q.db.QueryRowContext(ctx, findActiveUserById, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Login,
+		&i.Name,
+		&i.Picture,
+		&i.Active,
+		&i.RoleID,
+		&i.ClassUuid,
+	)
+	return i, err
+}
+
 const findAllUser = `-- name: FindAllUser :many
 SELECT id, login, name, picture, active, role_id, class_uuid
 FROM user
@@ -69,7 +91,7 @@ func (q *Queries) FindAllUser(ctx context.Context) ([]User, error) {
 	return items, nil
 }
 
-const findUserById = `-- name: FindUserById :one
+const findUserById = `-- name: FindActiveUserById :one
 SELECT id, login, name, picture, active, role_id, class_uuid
 FROM user
 WHERE id = ?

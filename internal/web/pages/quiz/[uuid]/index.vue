@@ -18,6 +18,8 @@
   import { QuizSessionDetail } from "~/api/model";
   import { useAuthStore } from "~/stores/auth";
 
+  definePageMeta({ middleware: "auth" });
+
   const route = useRoute();
   const sessionUuid = route.params.uuid as string;
   const apiServerUrl = useRuntimeConfig().public.apiBase;

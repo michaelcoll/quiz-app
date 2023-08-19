@@ -27,23 +27,23 @@ export interface User {
      */
     'id'?: string;
     /**
-     * The email of the user
+     * The username of the user
      * @type {string}
      * @memberof User
      */
-    'email'?: string;
+    'login'?: string;
     /**
-     * The firstname of the user
+     * The full name of the user
      * @type {string}
      * @memberof User
      */
-    'firstname'?: string;
+    'name'?: string;
     /**
-     * The lastname of the user
+     * The avatar of the user
      * @type {string}
      * @memberof User
      */
-    'lastname'?: string;
+    'picture'?: string;
     /**
      * If the user is active or not
      * @type {boolean}

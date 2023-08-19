@@ -8,6 +8,8 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@pinia-plugin-persistedstate/nuxt",
     "@sidebase/nuxt-auth",
+    "@tailvue/nuxt",
+    "nuxt-icon",
   ],
 
   runtimeConfig: {

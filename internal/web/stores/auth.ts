@@ -16,37 +16,56 @@
 
 import { defineStore } from "pinia";
 
-import { UserRoleEnum } from "~/api/model";
+import { User } from "~/api/model";
 
 export type AuthState = {
   exp: number;
-  userRole?: UserRoleEnum;
+  user?: User;
   token?: string;
 };
+
+const apiServerUrl = useRuntimeConfig().public.apiBase;
+const { getSession, status } = useAuth();
 
 export const useAuthStore = defineStore("auth", {
   state: () =>
     ({
-      userRole: undefined,
+      exp: 0,
+      user: undefined,
       token: undefined,
     }) as AuthState,
   getters: {
     isLogged(): boolean {
-      return useAuth().status.value === "authenticated";
+      return status.value === "authenticated";
     },
-    getUserRole({ userRole }: AuthState): string | undefined {
-      return userRole;
+    async getUser({ user }: AuthState): Promise<User> {
+      if (user) {
+        return Promise.resolve(user!);
+      } else {
+        const token = await this.getToken;
+        const { data } = await useFetch<User>(`${apiServerUrl}/api/v1/user/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (data.value != null) {
+          user = data.value;
+
+          return Promise.resolve(data.value!);
+        } else {
+          return Promise.reject(new Error("Fail to get current user !"));
+        }
+      }
     },
-    async getToken({ token }: AuthState): Promise<string | undefined> {
+    async getToken({ token }: AuthState): Promise<string> {
       if (!token) {
-        const { getSession } = useAuth();
         const session = await getSession();
-        if (session != null) {
+        if (session != null && session.access_token) {
           this.token = session.access_token;
           this.exp = session.exp;
           return Promise.resolve(session.access_token);
         } else {
-          await useAuth().signOut();
           return Promise.reject(new Error("No session data !"));
         }
       }

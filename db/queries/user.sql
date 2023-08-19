@@ -1,3 +1,9 @@
+-- name: FindActiveUserById :one
+SELECT *
+FROM user
+WHERE id = ?
+  AND active = 1;
+
 -- name: FindUserById :one
 SELECT *
 FROM user
