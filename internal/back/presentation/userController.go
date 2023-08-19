@@ -21,7 +21,21 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+
+	"github.com/michaelcoll/quiz-app/internal/back/domain"
 )
+
+func (c *ApiController) me(ctx *gin.Context) {
+	if user, found := ctx.Get(userCtxKey); found {
+		dto := User{}
+		dto.fromDomain(user.(*domain.User))
+
+		ctx.JSON(http.StatusOK, dto)
+	} else {
+		handleHttpError(ctx, http.StatusUnauthorized, "user not logged in")
+		return
+	}
+}
 
 func (c *ApiController) userList(ctx *gin.Context) {
 	users, err := c.userService.FindAllUser(ctx)
@@ -82,4 +96,25 @@ func (c *ApiController) assignUserToClass(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "user assigned"})
+}
+
+func (c *ApiController) updateUserRole(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	roleName := ctx.Param("roleName")
+	role := toRoleDomain(Role(roleName))
+	userRole, _ := getRoleFromContext(ctx)
+
+	if role < userRole {
+		handleHttpError(ctx, http.StatusBadRequest, "user does not have the sufficient role to affect the given role")
+		return
+	}
+
+	err := c.userService.UpdateUserRole(ctx, id, role)
+	if err != nil {
+		handleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "role updated"})
 }

@@ -41,13 +41,13 @@ func NewUserRepository(c *sql.DB) *UserDBRepository {
 	return &UserDBRepository{q: sqlc.New(c), uc: userCache}
 }
 
-func (r *UserDBRepository) FindUserById(ctx context.Context, id string) (*domain.User, error) {
+func (r *UserDBRepository) FindActiveUserById(ctx context.Context, id string) (*domain.User, error) {
 
 	if user, found := r.uc.Get(id); found {
 		return user.(*domain.User), nil
 	}
 
-	entity, err := r.q.FindUserById(ctx, id)
+	entity, err := r.q.FindActiveUserById(ctx, id)
 	if err != nil && errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
 	} else if err != nil {
@@ -57,6 +57,20 @@ func (r *UserDBRepository) FindUserById(ctx context.Context, id string) (*domain
 	user := r.toUser(entity)
 
 	r.uc.Set(id, user, cache.DefaultExpiration)
+
+	return user, nil
+}
+
+func (r *UserDBRepository) FindUserById(ctx context.Context, id string) (*domain.User, error) {
+
+	entity, err := r.q.FindUserById(ctx, id)
+	if err != nil && errors.Is(err, sql.ErrNoRows) {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+
+	user := r.toUser(entity)
 
 	return user, nil
 }

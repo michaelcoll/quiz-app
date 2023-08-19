@@ -47,7 +47,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMsg'
       security:
-        - google: [ ]
+        - github: [ ]
   /quiz:
     get:
       tags:
@@ -91,7 +91,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMsg'
       security:
-        - google: [ ]
+        - github: [ ]
   /quiz-session:
     get:
       tags:
@@ -135,7 +135,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMsg'
       security:
-        - google: [ ]
+        - github: [ ]
   /quiz-session/{uuid}:
     get:
       tags:
@@ -159,9 +159,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/QuizSessionDetail'
+                $ref: '#/components/schemas/QuizSessionDetail'
         "401":
           description: Unauthorized
           content:
@@ -169,7 +167,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMsg'
       security:
-        - google: [ ]
+        - github: [ ]
   /quiz/{sha1}:
     get:
       tags:
@@ -192,9 +190,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/QuizDetail'
+                $ref: '#/components/schemas/QuizDetail'
         "401":
           description: Unauthorized
           content:
@@ -208,13 +204,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMsg'
       security:
-        - google: [ ]
+        - github: [ ]
   /user:
     get:
       tags:
         - user
       summary: v1/user
-      description: 'List all users <br /> ⚠️ Required role : **ADMIN**'
+      description: 'List all users <br /> ⚠️ Required role : **TEACHER**'
       operationId: userList
       responses:
         "200":
@@ -232,7 +228,29 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMsg'
       security:
-        - google: [ ]
+        - github: [ ]
+  /user/me:
+    get:
+      tags:
+        - user
+      summary: v1/user/me
+      description: 'Return the current connected user'
+      operationId: me
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+      security:
+        - github: [ ]
   /user/{id}:
     delete:
       tags:
@@ -263,7 +281,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMsg'
       security:
-        - google: [ ]
+        - github: [ ]
     post:
       tags:
         - user
@@ -293,7 +311,51 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMsg'
       security:
-        - google: [ ]
+        - github: [ ]
+  /user/{id}/role/{roleName}:
+    put:
+      tags:
+        - user
+      summary: v1/user/{id}/role/{roleName}
+      description: 'Activate user by id <br /> ⚠️ Required role : **TEACHER**'
+      operationId: updateUserRole
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user to activate
+          required: true
+          schema:
+            type: string
+            nullable: false
+            example: '424242424242424224242'
+        - name: roleName
+          in: path
+          description: The name of the role to chnage
+          required: true
+          schema:
+            type: string
+            nullable: false
+            enum:
+              - 'NO_ROLE'
+              - 'STUDENT'
+              - 'TEACHER'
+              - 'ADMIN'
+            example: 'STUDENT'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMsg'
+      security:
+        - github: [ ]
   /session:
     get:
       tags:
@@ -331,7 +393,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMsg'
       security:
-        - google: [ ]
+        - github: [ ]
     post:
       tags:
         - session
@@ -361,7 +423,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMsg'
       security:
-        - google: [ ]
+        - github: [ ]
   /session/{sessionId}/answer:
     post:
       tags:
@@ -409,22 +471,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMsg'
       security:
-        - google: [ ]
+        - github: [ ]
 components:
   securitySchemes:
-    google:
+    github:
       type: oauth2
-      name: google
+      name: github
       scheme: bearer
       bearerFormat: jwt
       flows:
         authorizationCode:
           scopes: {
-            https://www.googleapis.com/auth/userinfo.email: 'read email',
-            https://www.googleapis.com/auth/userinfo.profile: 'read profile info'
+            'user'
           }
-          authorizationUrl: https://accounts.google.com/o/oauth2/v2/auth?access_type=offline
-          tokenUrl: https://oauth2.googleapis.com/token
+          authorizationUrl: https://github.com/login/oauth/authorize
+          tokenUrl: https://github.com/login/oauth/access_token
   schemas:
     Quiz:
       type: object
@@ -550,21 +611,21 @@ components:
           description: The id of the user
           nullable: false
           example: '424242424242424224242'
-        email:
+        login:
           type: string
-          description: The email of the user
+          description: The username of the user
           nullable: false
-          example: 'darth.vador@sith.org'
-        firstname:
+          example: 'darth.vador'
+        name:
           type: string
-          description: The firstname of the user
+          description: The full name of the user
           nullable: false
-          example: 'Anakin'
-        lastname:
+          example: 'Anakin Skywalker'
+        picture:
           type: string
-          description: The lastname of the user
+          description: The avatar of the user
           nullable: false
-          example: 'Skywalker'
+          example: 'https://avatars.githubusercontent.com/u/424242424242424224242?v=4'
         active:
           type: boolean
           description: If the user is active or not

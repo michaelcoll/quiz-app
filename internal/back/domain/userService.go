@@ -31,7 +31,7 @@ func NewUserService(userRepository UserRepository) UserService {
 }
 
 func (s *UserService) FindUserById(ctx context.Context, id string) (*User, error) {
-	user, err := s.r.FindUserById(ctx, id)
+	user, err := s.r.FindActiveUserById(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -57,4 +57,13 @@ func (s *UserService) ActivateUser(ctx context.Context, id string) error {
 
 func (s *UserService) AssignUserToClass(ctx context.Context, userId string, classId uuid.UUID) error {
 	return s.r.AssignUserToClass(ctx, userId, classId)
+}
+
+func (s *UserService) UpdateUserRole(ctx context.Context, userId string, role Role) error {
+	err := s.r.UpdateUserRole(ctx, userId, role)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

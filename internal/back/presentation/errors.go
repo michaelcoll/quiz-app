@@ -75,7 +75,25 @@ func handleError(ctx *gin.Context, err error) {
 	handleHttpError(ctx, status, err.Error())
 }
 
+func buildErrorMessageFromContext(ctx *gin.Context, message string) string {
+	userId, userFound := getUserIdFromContext(ctx)
+	role, roleFound := getRoleFromContext(ctx)
+
+	userMessage := ""
+	roleMessage := ""
+
+	if userFound {
+		userMessage = fmt.Sprintf("user %s", userId)
+	}
+
+	if roleFound {
+		roleMessage = fmt.Sprintf("role %s", toRoleDto(role))
+	}
+
+	return fmt.Sprintf("%s %s | %s", userMessage, roleMessage, message)
+}
+
 func handleHttpError(ctx *gin.Context, st int, message string) {
-	fmt.Printf("%s Error : %s\n", color.RedString("✗"), message)
+	fmt.Printf("%s Error : %s\n", color.RedString("✗"), buildErrorMessageFromContext(ctx, message))
 	ctx.AbortWithStatusJSON(st, gin.H{"message": message})
 }

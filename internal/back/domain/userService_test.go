@@ -27,7 +27,7 @@ func TestUserService_FindUserById(t *testing.T) {
 	mockUserRepository := NewMockUserRepository(t)
 	service := NewUserService(mockUserRepository)
 
-	mockUserRepository.On("FindUserById", context.Background(), sub).Return(nil, nil)
+	mockUserRepository.On("FindActiveUserById", context.Background(), sub).Return(nil, nil)
 
 	_, err := service.FindUserById(context.Background(), sub)
 	if err != nil {

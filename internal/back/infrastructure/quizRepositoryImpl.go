@@ -20,7 +20,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -103,8 +102,6 @@ func (r *QuizDBRepository) FindAllActive(ctx context.Context, userId string, lim
 func (r *QuizDBRepository) CountAllActive(ctx context.Context, userId string) (uint32, error) {
 
 	if len(userId) > 0 {
-		fmt.Printf("filtering for userId : '%v'", userId)
-
 		count, err := r.q.CountAllActiveQuizForUser(ctx, userId)
 		if err != nil {
 			return 0, err

@@ -15,6 +15,7 @@
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@pinia-plugin-persistedstate/nuxt": "^1.1.1",
     "@sidebase/nuxt-auth": "0.6.0-beta.4",
+    "@tailvue/nuxt": "^1.0.0",
     "@types/node": "^20.5.0",
     "@vue/eslint-config-prettier": "^8.0.0",
     "eslint": "^8.47.0",
@@ -22,12 +23,14 @@
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-tailwindcss": "^3.13.0",
     "nuxt": "^3.6.5",
+    "nuxt-icon": "^0.5.0",
     "prettier": "^3.0.2",
     "typescript": "^5.1.6"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
-    "flowbite": "^1.8.1"
+    "flowbite": "^1.8.1",
+    "tailvue": "^1.0.0"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

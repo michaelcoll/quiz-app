@@ -39,7 +39,7 @@ func addCommonMiddlewares(group *gin.Engine) {
 	// CORS middleware
 	group.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000"},
-		AllowMethods:     []string{"GET", "POST"},
+		AllowMethods:     []string{"GET", "PUT", "POST", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "Content-Length", "Accept-Encoding", "Authorization", "Cache-Control", "Range"},
 		ExposeHeaders:    []string{"Content-Length", "Content-Range"},
 		AllowCredentials: true,
@@ -102,7 +102,7 @@ func enforceRoles(ctx *gin.Context) {
 
 	role := findRoleMatchingEndpointDef(ctx)
 	if role == 0 {
-		handleHttpError(ctx, http.StatusForbidden, "forbidden access (path undefined)")
+		handleHttpError(ctx, http.StatusForbidden, fmt.Sprintf("forbidden access (path %s undefined)", ctx.Request.URL.Path))
 		return
 	}
 
@@ -110,7 +110,7 @@ func enforceRoles(ctx *gin.Context) {
 		if !userRole.CanAccess(role) {
 			handleHttpError(ctx,
 				http.StatusForbidden,
-				fmt.Sprintf("forbidden access (userRole %s, required role %s)", toRoleDto(userRole), toRoleDto(role)))
+				fmt.Sprintf("forbidden access (path %s, userRole %s, required role %s)", ctx.Request.URL.Path, toRoleDto(userRole), toRoleDto(role)))
 			return
 		}
 

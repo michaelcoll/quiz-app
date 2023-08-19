@@ -31,7 +31,7 @@ func TestUserDBRepository_FindUserById(t *testing.T) {
 
 	r := NewUserRepository(connection)
 
-	user, err := r.FindUserById(context.Background(), "42")
+	user, err := r.FindActiveUserById(context.Background(), "42")
 	if err != nil {
 		assert.Failf(t, "Fail to get user", "%v", err)
 	}
@@ -49,7 +49,7 @@ func TestUserDBRepository_FindUserById(t *testing.T) {
 		assert.Failf(t, "Fail to create user", "%v", err)
 	}
 
-	user, err = r.FindUserById(context.Background(), subStr)
+	user, err = r.FindActiveUserById(context.Background(), subStr)
 	if err != nil {
 		assert.Failf(t, "Fail to get user", "%v", err)
 	}
@@ -60,7 +60,7 @@ func TestUserDBRepository_FindUserById(t *testing.T) {
 	assert.Equal(t, picture, user.Picture)
 	assert.True(t, user.Active)
 
-	user, err = r.FindUserById(context.Background(), subStr)
+	user, err = r.FindActiveUserById(context.Background(), subStr)
 	if err != nil {
 		assert.Failf(t, "Fail to get user", "%v", err)
 	}

@@ -48,6 +48,7 @@ type AuthRepository interface {
 
 //go:generate mockery --name UserRepository
 type UserRepository interface {
+	FindActiveUserById(ctx context.Context, id string) (*User, error)
 	FindUserById(ctx context.Context, id string) (*User, error)
 	FindAllUser(ctx context.Context) ([]*User, error)
 	CreateOrReplaceUser(ctx context.Context, user *User) error
