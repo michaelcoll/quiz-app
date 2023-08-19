@@ -6,6 +6,7 @@
   }>();
 
   const isOpen = ref(false);
+  const loginPending = ref(false);
   const router = useRouter();
   const { signIn, signOut } = useAuth();
 
@@ -17,6 +18,7 @@
   };
 
   const logIn = async () => {
+    loginPending.value = true;
     await signIn("github");
   };
 </script>
@@ -78,6 +80,10 @@
       <button
         class="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors duration-200 hover:bg-gray-100 rtl:flex-row-reverse dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 sm:px-6 sm:text-base"
         @click="logIn">
+        <Icon
+          v-if="loginPending"
+          class="mx-1 mr-4 h-5 w-5"
+          name="svg-spinners:180-ring-with-bg" />
         Login
       </button>
     </div>
