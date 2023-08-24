@@ -16,7 +16,7 @@
     "@pinia-plugin-persistedstate/nuxt": "^1.1.1",
     "@sidebase/nuxt-auth": "0.6.0-beta.4",
     "@tailvue/nuxt": "^1.0.0",
-    "@types/node": "^20.5.3",
+    "@types/node": "^20.5.4",
     "@vue/eslint-config-prettier": "^8.0.0",
     "eslint": "^8.47.0",
     "eslint-plugin-prettier": "^5.0.0",
