@@ -228,4 +228,17 @@ FROM quiz_session_view qsv
          JOIN session_response_view srv ON qsv.session_uuid = srv.session_uuid
          JOIN quiz_question qq ON srv.question_sha1 = qq.sha1
          JOIN quiz_answer qa ON srv.answer_sha1 = qa.sha1
-ORDER BY qq.position
+ORDER BY qq.position;
+
+CREATE VIEW user_class_view
+AS
+SELECT u.id,
+       u.login,
+       u.name,
+       u.picture,
+       u.active,
+       u.role_id,
+       CASE WHEN u.class_uuid IS NULL THEN '' ELSE u.class_uuid END AS class_uuid,
+       CASE WHEN sc.name IS NULL THEN '' ELSE sc.name END           AS class_name
+FROM user u
+         LEFT JOIN student_class sc ON u.class_uuid = sc.uuid

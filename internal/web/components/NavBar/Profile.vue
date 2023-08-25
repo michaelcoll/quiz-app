@@ -46,14 +46,28 @@
         <div
           v-if="isOpen"
           class="absolute right-0 z-20 mt-2 w-64 origin-top-right overflow-hidden rounded-md border border-gray-200 bg-white py-2 shadow-xl transition dark:border-gray-700 dark:bg-gray-800">
-          <a
-            href="#"
-            class="-mt-2 flex items-center p-3 text-sm text-gray-600 transition-colors duration-300 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white">
-            <img
-              class="mx-1 h-9 w-9 shrink-0 rounded-full object-cover"
-              referrerpolicy="no-referrer"
-              :src="props.user?.picture"
-              alt="avatar" />
+          <div
+            class="-mt-2 flex items-center p-3 text-sm text-gray-600 duration-300 dark:text-gray-300">
+            <div class="relative">
+              <img
+                :class="{
+                  'ring-emerald-500': props.user.role === 'STUDENT',
+                  'ring-amber-500': props.user.role === 'TEACHER',
+                  'ring-orange-500': props.user.role === 'ADMIN',
+                }"
+                class="mx-1 h-11 w-11 rounded-full object-cover p-0.5 ring-2"
+                referrerpolicy="no-referrer"
+                :src="props.user?.picture"
+                alt="avatar" />
+              <Icon
+                v-if="props.user.role === 'ADMIN'"
+                class="absolute -bottom-1 -right-1 h-6 w-6 text-orange-400"
+                name="solar:crown-bold" />
+              <Icon
+                v-if="props.user.role === 'TEACHER'"
+                class="absolute -bottom-1 -right-1 h-6 w-6 text-amber-400"
+                name="solar:square-academic-cap-bold" />
+            </div>
             <div class="mx-1">
               <h1 class="text-sm font-semibold text-gray-700 dark:text-gray-200">
                 {{ props.user?.name }}
@@ -62,7 +76,20 @@
                 {{ props.user?.login }}
               </p>
             </div>
-          </a>
+          </div>
+
+          <hr
+            v-if="props.user.role === 'STUDENT'"
+            class="border-gray-200 dark:border-gray-700" />
+
+          <div v-if="props.user.role === 'STUDENT'" class="mx-1 p-3">
+            <h1 class="text-sm font-semibold text-gray-700 dark:text-gray-200">
+              Student of
+            </h1>
+            <h1 class="text-sm text-gray-500 dark:text-gray-400">
+              {{ props.user?.class?.name }}
+            </h1>
+          </div>
 
           <hr class="border-gray-200 dark:border-gray-700" />
 

@@ -8,22 +8,22 @@ info:
     Quiz App backend
   version: v1
 servers:
-  - url: https://localhost:8080/api/v1
-    description: Local Backend
+- url: https://localhost:8080/api/v1
+  description: Local Backend
 tags:
-  - name: auth
-    description: The operations used to interact with the authentication
-  - name: quiz
-    description: The operations used to interact with the quizzes
-  - name: user
-    description: The operations used to interact with the users
-  - name: session
-    description: The operations used to interact with the quiz sessions
+- name: auth
+  description: The operations used to interact with the authentication
+- name: quiz
+  description: The operations used to interact with the quizzes
+- name: user
+  description: The operations used to interact with the users
+- name: session
+  description: The operations used to interact with the quiz sessions
 paths:
   /login:
     post:
       tags:
-        - auth
+      - auth
       summary: v1/login
       description: Login
       operationId: login
@@ -39,30 +39,30 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
         "400":
           description: User is not in a valid domain
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
       security:
-        - github: [ ]
+      - github: [ ]
   /quiz:
     get:
       tags:
-        - quiz
+      - quiz
       summary: v1/quiz
       description: List all quizzes
       operationId: list
       parameters:
-        - name: Range
-          in: header
-          description: The range header that specify the element to return
-          schema:
-            type: string
-            nullable: false
-            example: 'quiz=0-25'
+      - name: Range
+        in: header
+        description: The range header that specify the element to return
+        schema:
+          type: string
+          nullable: false
+          example: 'quiz=0-25'
       responses:
         "200":
           description: Success
@@ -83,30 +83,30 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
         "416":
           description: Requested Range Not Satisfiable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
       security:
-        - github: [ ]
+      - github: [ ]
   /quiz-session:
     get:
       tags:
-        - quiz
+      - quiz
       summary: v1/quiz-session
       description: List all quizzes sessions
       operationId: listQuizSession
       parameters:
-        - name: Range
-          in: header
-          description: The range header that specify the element to return
-          schema:
-            type: string
-            nullable: false
-            example: 'quiz-session=0-25'
+      - name: Range
+        in: header
+        description: The range header that specify the element to return
+        schema:
+          type: string
+          nullable: false
+          example: 'quiz-session=0-25'
       responses:
         "200":
           description: Success
@@ -127,32 +127,32 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
         "416":
           description: Requested Range Not Satisfiable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
       security:
-        - github: [ ]
+      - github: [ ]
   /quiz-session/{uuid}:
     get:
       tags:
-        - quiz
+      - quiz
       summary: v1/quiz-session/{uuid}
       description: Detail of a quizzes sessions by its Uuid
       operationId: quizSessionByUuid
       parameters:
-        - name: uuid
-          in: path
-          description: The id of the session
-          required: true
-          schema:
-            type: string
-            format: uuid
-            nullable: false
-            example: '497f6eca-6276-4993-bfeb-53cbbbba6f08'
+      - name: uuid
+        in: path
+        description: The id of the session
+        required: true
+        schema:
+          type: string
+          format: uuid
+          nullable: false
+          example: '497f6eca-6276-4993-bfeb-53cbbbba6f08'
       responses:
         "200":
           description: Success
@@ -165,25 +165,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
       security:
-        - github: [ ]
+      - github: [ ]
   /quiz/{sha1}:
     get:
       tags:
-        - quiz
+      - quiz
       summary: v1/quiz/{sha1}
       description: Find quiz by sha1
       operationId: quizBySha1
       parameters:
-        - name: sha1
-          in: path
-          description: The sha1 of the quiz to return
-          required: true
-          schema:
-            type: string
-            nullable: false
-            example: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
+      - name: sha1
+        in: path
+        description: The sha1 of the quiz to return
+        required: true
+        schema:
+          type: string
+          nullable: false
+          example: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
       responses:
         "200":
           description: Success
@@ -196,19 +196,114 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
         "404":
           description: Quiz was not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
       security:
-        - github: [ ]
+      - github: [ ]
+  /quiz/{sha1}/class/{classId}:
+    post:
+      tags:
+      - quiz
+      summary: v1/quiz/{sha1}/class/{classId}
+      description: Grant visibility to the given class
+      operationId: createQuizClassVisibility
+      parameters:
+      - name: sha1
+        in: path
+        description: The sha1 of a quiz
+        required: true
+        schema:
+          type: string
+          nullable: false
+          example: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
+      - name: classId
+        in: path
+        description: The id of a class
+        required: true
+        schema:
+          type: string
+          format: uuid
+          nullable: false
+          example: "f6567dd8-e069-418e-8893-7d22fcf12459"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+              example:
+                message: "the class can access the quiz"
+        "400":
+          description: Quiz or class were not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+      security:
+      - github: [ ]
+    delete:
+      tags:
+      - quiz
+      summary: v1/quiz/{sha1}/class/{classId}
+      description: Remove visibility to the given class
+      operationId: deleteQuizClassVisibility
+      parameters:
+      - name: sha1
+        in: path
+        description: The sha1 of a quiz
+        required: true
+        schema:
+          type: string
+          nullable: false
+          example: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
+      - name: classId
+        in: path
+        description: The id of a class
+        required: true
+        schema:
+          type: string
+          format: uuid
+          nullable: false
+          example: "f6567dd8-e069-418e-8893-7d22fcf12459"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+              example:
+                message: "the class can no longer access the quiz"
+        "400":
+          description: Quiz or class were not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+      security:
+      - github: [ ]
   /user:
     get:
       tags:
-        - user
+      - user
       summary: v1/user
       description: 'List all users <br /> ⚠️ Required role : **TEACHER**'
       operationId: userList
@@ -226,13 +321,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
       security:
-        - github: [ ]
+      - github: [ ]
   /user/me:
     get:
       tags:
-        - user
+      - user
       summary: v1/user/me
       description: 'Return the current connected user'
       operationId: me
@@ -248,25 +343,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
       security:
-        - github: [ ]
+      - github: [ ]
   /user/{id}:
     delete:
       tags:
-        - user
+      - user
       summary: v1/user/{id}
       description: 'Deactivate user by id <br/> ⚠️ Required role : **ADMIN**'
       operationId: deactivateUser
       parameters:
-        - name: id
-          in: path
-          description: The id of the user to deactivate
-          required: true
-          schema:
-            type: string
-            nullable: false
-            example: '424242424242424224242'
+      - name: id
+        in: path
+        description: The id of the user to deactivate
+        required: true
+        schema:
+          type: string
+          nullable: false
+          example: '424242424242424224242'
       responses:
         "200":
           description: Success
@@ -279,24 +374,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
       security:
-        - github: [ ]
+      - github: [ ]
     post:
       tags:
-        - user
+      - user
       summary: v1/user/{id}
       description: 'Activate user by id <br /> ⚠️ Required role : **ADMIN**'
       operationId: activateUser
       parameters:
-        - name: id
-          in: path
-          description: The id of the user to activate
-          required: true
-          schema:
-            type: string
-            nullable: false
-            example: '424242424242424224242'
+      - name: id
+        in: path
+        description: The id of the user to activate
+        required: true
+        schema:
+          type: string
+          nullable: false
+          example: '424242424242424224242'
       responses:
         "200":
           description: Success
@@ -309,38 +404,38 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
       security:
-        - github: [ ]
+      - github: [ ]
   /user/{id}/role/{roleName}:
     put:
       tags:
-        - user
+      - user
       summary: v1/user/{id}/role/{roleName}
       description: 'Activate user by id <br /> ⚠️ Required role : **TEACHER**'
       operationId: updateUserRole
       parameters:
-        - name: id
-          in: path
-          description: The id of the user to activate
-          required: true
-          schema:
-            type: string
-            nullable: false
-            example: '424242424242424224242'
-        - name: roleName
-          in: path
-          description: The name of the role to chnage
-          required: true
-          schema:
-            type: string
-            nullable: false
-            enum:
-              - 'NO_ROLE'
-              - 'STUDENT'
-              - 'TEACHER'
-              - 'ADMIN'
-            example: 'STUDENT'
+      - name: id
+        in: path
+        description: The id of the user to activate
+        required: true
+        schema:
+          type: string
+          nullable: false
+          example: '424242424242424224242'
+      - name: roleName
+        in: path
+        description: The name of the role to chnage
+        required: true
+        schema:
+          type: string
+          nullable: false
+          enum:
+          - 'NO_ROLE'
+          - 'STUDENT'
+          - 'TEACHER'
+          - 'ADMIN'
+          example: 'STUDENT'
       responses:
         "200":
           description: Success
@@ -353,24 +448,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
       security:
-        - github: [ ]
+      - github: [ ]
   /session:
     get:
       tags:
-        - session
+      - session
       summary: v1/session
       description: List all sessions
       operationId: sessionList
       parameters:
-        - name: Range
-          in: header
-          description: The range header that specify the element to return
-          schema:
-            type: string
-            nullable: false
-            example: 'session=0-25'
+      - name: Range
+        in: header
+        description: The range header that specify the element to return
+        schema:
+          type: string
+          nullable: false
+          example: 'session=0-25'
       responses:
         "200":
           description: Success
@@ -391,24 +486,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
       security:
-        - github: [ ]
+      - github: [ ]
     post:
       tags:
-        - session
+      - session
       summary: v1/session
       description: Start a new session
       operationId: startSession
       parameters:
-        - name: quizSha1
-          in: query
-          description: The sha1 of the quiz to start
-          required: true
-          schema:
-            type: string
-            nullable: false
-            example: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
+      - name: quizSha1
+        in: query
+        description: The sha1 of the quiz to start
+        required: true
+        schema:
+          type: string
+          nullable: false
+          example: 'c152b2d0a2509a82ea5e8a6ae22fea55c7221002'
       responses:
         "200":
           description: Success
@@ -421,26 +516,26 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
       security:
-        - github: [ ]
+      - github: [ ]
   /session/{sessionId}/answer:
     post:
       tags:
-        - session
+      - session
       summary: v1/session/{sessionId}/answer
       description: Add a session answer
       operationId: addSessionAnswer
       parameters:
-        - name: sessionId
-          in: path
-          description: The id of the session
-          required: true
-          schema:
-            type: string
-            format: uuid
-            nullable: false
-            example: '497f6eca-6276-4993-bfeb-53cbbbba6f08'
+      - name: sessionId
+        in: path
+        description: The id of the session
+        required: true
+        schema:
+          type: string
+          format: uuid
+          nullable: false
+          example: '497f6eca-6276-4993-bfeb-53cbbbba6f08'
       requestBody:
         required: true
         content:
@@ -463,15 +558,171 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
         "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMsg'
+                $ref: '#/components/schemas/Message'
       security:
-        - github: [ ]
+      - github: [ ]
+  /class:
+    get:
+      tags:
+      - class
+      summary: v1/class
+      description: 'The list of the classes <br /> ⚠️ Required role : **TEACHER**'
+      operationId: classList
+      parameters:
+      - name: Range
+        in: header
+        description: The range header that specify the element to return
+        schema:
+          type: string
+          nullable: false
+          example: 'class=0-25'
+      responses:
+        "200":
+          description: Success
+          headers:
+            Content-Range:
+              description: The header specifying how much elements are return and in total
+              schema:
+                type: string
+                example: "class 0-2/2"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Class'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+      security:
+      - github: [ ]
+    post:
+      tags:
+      - class
+      summary: v1/class
+      description: 'Add a classes <br /> ⚠️ Required role : **TEACHER**'
+      operationId: classCreate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassRequestBody'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+              example:
+                message: "class created"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+      security:
+      - github: [ ]
+  /class/{classId}:
+    put:
+      tags:
+      - class
+      summary: v1/class/{classId}
+      description: 'Update a classes <br /> ⚠️ Required role : **TEACHER**'
+      operationId: classUpdate
+      parameters:
+      - name: classId
+        in: path
+        description: The id of the class
+        required: true
+        schema:
+          type: string
+          format: uuid
+          nullable: false
+          example: '497f6eca-6276-4993-bfeb-53cbbbba6f08'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassRequestBody'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+              example:
+                message: "class updated"
+        "400":
+          description: the class id is malformed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+              example:
+                message: "invalid classId"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+      security:
+      - github: [ ]
+    delete:
+      tags:
+      - class
+      summary: v1/class/{classId}
+      description: 'Delete a classes <br /> ⚠️ Required role : **ADMIN**'
+      operationId: classDelete
+      parameters:
+      - name: classId
+        in: path
+        description: The id of the class
+        required: true
+        schema:
+          type: string
+          format: uuid
+          nullable: false
+          example: '497f6eca-6276-4993-bfeb-53cbbbba6f08'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+              example:
+                message: "class deleted"
+        "400":
+          description: the class id is malformed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+              example:
+                message: "invalid classId"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+      security:
+      - github: [ ]
 components:
   securitySchemes:
     github:
@@ -482,7 +733,7 @@ components:
       flows:
         authorizationCode:
           scopes: {
-            'user'
+                    'user'
           }
           authorizationUrl: https://github.com/login/oauth/authorize
           tokenUrl: https://github.com/login/oauth/access_token
@@ -636,19 +887,13 @@ components:
           description: The role of the user
           nullable: false
           enum:
-            - 'NO_ROLE'
-            - 'STUDENT'
-            - 'TEACHER'
-            - 'ADMIN'
+          - 'NO_ROLE'
+          - 'STUDENT'
+          - 'TEACHER'
+          - 'ADMIN'
           example: 'STUDENT'
-    ErrorMsg:
-      type: object
-      properties:
-        message:
-          type: string
-          description: The error message
-          nullable: false
-          example: 'error message'
+        class:
+          $ref: '#/components/schemas/Class'
     Message:
       type: object
       properties:
@@ -852,3 +1097,24 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/QuizQuestion'
+    Class:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The id of the class
+          nullable: false
+        name:
+          type: string
+          description: The name of the class
+          nullable: false
+          example: 'Promotion 2023-2024'
+    ClassRequestBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the class
+          nullable: false
+          example: 'Promotion 2023-2024'

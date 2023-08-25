@@ -79,15 +79,16 @@ func (c *ApiController) Serve() {
 	addDeleteEndpoint(private, "/user/:id", domain.Admin, c.deactivateUser)
 	addPostEndpoint(private, "/user/:id/activate", domain.Admin, c.activateUser)
 	addPutEndpoint(private, "/user/:id/role/:roleName", domain.Admin, c.updateUserRole)
+	addPutEndpoint(private, "/user/:id/class/:uuid", domain.Teacher, c.assignUserToClass)
 
 	addGetEndpoint(private, "/session", domain.Student, c.sessionList)
 	addPostEndpoint(private, "/session", domain.Student, c.startSession)
 	addPostEndpoint(private, "/session/:uuid/answer", domain.Student, c.addSessionAnswer)
 
 	addGetEndpoint(private, "/class", domain.Teacher, c.classList)
-	addPostEndpoint(private, "/class", domain.Teacher, c.classCreate)
-	addPutEndpoint(private, "/class/:uuid", domain.Teacher, c.classUpdate)
-	addDeleteEndpoint(private, "/class/:uuid", domain.Teacher, c.classDelete)
+	addPostEndpoint(private, "/class", domain.Admin, c.classCreate)
+	addPutEndpoint(private, "/class/:uuid", domain.Admin, c.classUpdate)
+	addDeleteEndpoint(private, "/class/:uuid", domain.Admin, c.classDelete)
 
 	addGetEndpoint(private, "/quiz-session", domain.Student, c.quizSessionList)
 	addGetEndpoint(private, "/quiz-session/:uuid", domain.Student, c.quizSessionByUuid)

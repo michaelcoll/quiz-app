@@ -179,6 +179,7 @@ type User struct {
 	Picture string `json:"picture"`
 	Active  bool   `json:"active"`
 	Role    Role   `json:"role"`
+	Class   *Class `json:"class"`
 }
 
 func (dto *User) fromDomain(d *domain.User) *User {
@@ -188,6 +189,9 @@ func (dto *User) fromDomain(d *domain.User) *User {
 	dto.Picture = d.Picture
 	dto.Active = d.Active
 	dto.Role = toRoleDto(d.Role)
+	if d.Class != nil {
+		dto.Class = toClassDto(d.Class)
+	}
 
 	return dto
 }
@@ -265,7 +269,7 @@ func toClassDtos(domains []*domain.Class) []*Class {
 	return dtos
 }
 
-type ClassCreateRequestBody struct {
+type ClassRequestBody struct {
 	Name string `json:"name" binding:"required"`
 }
 

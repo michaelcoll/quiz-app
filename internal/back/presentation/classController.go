@@ -46,7 +46,7 @@ func (c *ApiController) classList(ctx *gin.Context) {
 
 func (c *ApiController) classCreate(ctx *gin.Context) {
 
-	var r ClassCreateRequestBody
+	var r ClassRequestBody
 	if err := ctx.BindJSON(&r); err != nil {
 		handleError(ctx, err)
 		return
@@ -70,7 +70,7 @@ func (c *ApiController) classUpdate(ctx *gin.Context) {
 		return
 	}
 
-	var r ClassCreateRequestBody
+	var r ClassRequestBody
 	if err := ctx.BindJSON(&r); err != nil {
 		handleError(ctx, err)
 		return

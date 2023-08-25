@@ -133,8 +133,8 @@ func (r *UserDBRepository) AssignUserToClass(ctx context.Context, userId string,
 	})
 }
 
-func (r *UserDBRepository) toUser(entity sqlc.User) *domain.User {
-	return &domain.User{
+func (r *UserDBRepository) toUser(entity sqlc.UserClassView) *domain.User {
+	d := &domain.User{
 		Id:      entity.ID,
 		Login:   entity.Login,
 		Name:    entity.Name,
@@ -142,6 +142,12 @@ func (r *UserDBRepository) toUser(entity sqlc.User) *domain.User {
 		Active:  entity.Active,
 		Role:    r.toRole(entity.RoleID),
 	}
+
+	if entity.ClassName != "" {
+		d.Class = r.toClass(entity.ClassUuid, entity.ClassName)
+	}
+
+	return d
 }
 
 func (r *UserDBRepository) toRole(entity int8) domain.Role {
@@ -155,4 +161,11 @@ func (r *UserDBRepository) toRole(entity int8) domain.Role {
 	}
 
 	return 0
+}
+
+func (r *UserDBRepository) toClass(classId uuid.UUID, className string) *domain.Class {
+	return &domain.Class{
+		Id:   classId,
+		Name: className,
+	}
 }

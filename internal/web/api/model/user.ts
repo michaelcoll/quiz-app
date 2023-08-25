@@ -13,6 +13,9 @@
  */
 
 
+// May contain unused imports in some cases
+// @ts-ignore
+import { Class } from './class';
 
 /**
  * 
@@ -56,6 +59,12 @@ export interface User {
      * @memberof User
      */
     'role'?: UserRoleEnum;
+    /**
+     * 
+     * @type {Class}
+     * @memberof User
+     */
+    'class'?: Class;
 }
 
 export const UserRoleEnum = {

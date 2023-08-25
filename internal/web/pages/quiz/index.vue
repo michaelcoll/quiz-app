@@ -16,6 +16,7 @@
 
 <script setup lang="ts">
   import { QuizSession } from "~/api/model";
+  import { extractTotalFromHeader } from "~/helpers/pageable";
   import { toDurationStr, toPercent } from "~/helpers/quiz";
   import { useAuthStore } from "~/stores/auth";
 
@@ -23,7 +24,7 @@
   const pageSize = 8;
   const page = ref(0);
   const total = ref(0);
-  const quizSessions = ref();
+  const quizSessions = ref<QuizSession[]>();
 
   const token = await useAuthStore().getToken;
 
@@ -38,11 +39,7 @@
           quizSessions.value = response._data;
         }
 
-        const contentRangeHeader = response.headers.get("content-range");
-        if (contentRangeHeader != null) {
-          const split = contentRangeHeader.split("/");
-          total.value = parseInt(split[1]);
-        }
+        total.value = extractTotalFromHeader(response);
       },
     });
   }

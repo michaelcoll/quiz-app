@@ -13,13 +13,19 @@
 /**
  *
  * @export
- * @interface ErrorMsg
+ * @interface Class
  */
-export interface ErrorMsg {
+export interface Class {
   /**
-   * The error message
+   * The id of the class
    * @type {string}
-   * @memberof ErrorMsg
+   * @memberof Class
    */
-  message?: string;
+  id?: string;
+  /**
+   * The name of the class
+   * @type {string}
+   * @memberof Class
+   */
+  name?: string;
 }

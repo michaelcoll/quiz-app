@@ -15,61 +15,48 @@
   -->
 
 <script setup lang="ts">
+  import { useToast } from "tailvue";
+
   import { Session, User } from "~/api/model";
   import { useAuthStore } from "~/stores/auth";
 
-  definePageMeta({ middleware: "auth" });
-
-  const apiServerUrl = useRuntimeConfig().public.apiBase;
-  let users = ref<User[] | null>();
-
-  const token = await useAuthStore().getToken;
+  const userEditMap = ref<Map<string, boolean>>(new Map<string, boolean>());
   const loggedUser = await useAuthStore().getUser;
 
-  if (token) {
-    const { data } = await useFetch<User[]>(`${apiServerUrl}/api/v1/user`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    users = data;
-  }
-
-  function getRole(user: User): string {
-    switch (user.role) {
-      case "ADMIN":
-        return "Administrator";
-      case "TEACHER":
-        return "Teacher";
-      case "STUDENT":
-        return "Student";
-      default:
-        return "No role";
-    }
-  }
+  const { data: users, refresh } = await useApi<User[]>(`/api/v1/user`);
 
   async function deactivateUser(user: User) {
-    await useFetch<Session>(`${apiServerUrl}/api/v1/user/${user.id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      onResponse() {
-        user.active = false;
+    await useDeleteApi<Session>(`/api/v1/user/${user.id}`, {
+      onResponse({ response }) {
+        if (response.status === 200) {
+          useToast().success(response._data.message);
+          refresh();
+        }
       },
     });
   }
 
   async function activateUser(user: User) {
-    await useFetch<Session>(`${apiServerUrl}/api/v1/user/${user.id}/activate`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      onResponse() {
-        user.active = true;
+    await usePostApi<Session>(`/api/v1/user/${user.id}/activate`, {
+      onResponse({ response }) {
+        if (response.status === 200) {
+          useToast().success(response._data.message);
+          refresh();
+        }
       },
     });
+  }
+
+  function editUser(user: User) {
+    if (userEditMap && userEditMap.value && user.id && userEditMap.value.get(user.id)) {
+      userEditMap &&
+        userEditMap.value &&
+        user.id &&
+        userEditMap.value.set(user.id, false);
+    } else {
+      userEditMap && userEditMap.value && user.id && userEditMap.value.set(user.id, true);
+    }
+    refresh();
   }
 </script>
 
@@ -78,13 +65,16 @@
     <NuxtLoadingIndicator />
     <NavBar />
 
-    <section class="container mx-auto mt-10 px-4">
-      <Tabs>
-        <TabsItem name="User" icon-name="solar:user-hands-bold-duotone" active />
-        <TabsItem name="Classes" icon-name="solar:users-group-two-rounded-bold-duotone" />
-        <TabsItem name="Quizzes" icon-name="solar:checklist-line-duotone" />
-      </Tabs>
+    <Tabs>
+      <TabsItem name="User" icon-name="solar:user-hands-bold-duotone" active />
+      <TabsItem
+        name="Classes"
+        icon-name="solar:users-group-two-rounded-bold-duotone"
+        to="/admin/classes" />
+      <TabsItem name="Quizzes" icon-name="solar:checklist-line-duotone" />
+    </Tabs>
 
+    <section class="container mx-auto mt-10 px-4">
       <div class="mt-6 flex flex-col">
         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -105,21 +95,15 @@
 
                     <th
                       scope="col"
-                      class="w-40 px-4 py-3.5 text-left text-sm font-normal text-gray-500 dark:text-gray-400">
-                      Role
-                    </th>
+                      class="w-40 px-4 py-3.5 text-left text-sm font-normal text-gray-500 dark:text-gray-400"></th>
 
                     <th
                       scope="col"
-                      class="w-8 px-4 py-3.5 text-left text-sm font-normal text-gray-500 dark:text-gray-400">
-                      Class
-                    </th>
+                      class="w-8 px-4 py-3.5 text-left text-sm font-normal text-gray-500 dark:text-gray-400"></th>
 
                     <th
                       scope="col"
-                      class="w-8 px-4 py-3.5 text-left text-sm font-normal text-gray-500 dark:text-gray-400">
-                      Active
-                    </th>
+                      class="w-8 px-4 py-3.5 text-left text-sm font-normal text-gray-500 dark:text-gray-400"></th>
 
                     <th
                       scope="col"
@@ -151,32 +135,49 @@
                     </td>
 
                     <td class="w-40 p-4 text-sm font-medium">
-                      <RoleUpdaterCombo v-if="loggedUser.role == 'ADMIN'" :user="user" />
+                      <RoleUpdaterCombo
+                        v-if="
+                          loggedUser.role == 'ADMIN' &&
+                          userEditMap &&
+                          user.id &&
+                          userEditMap.get(user.id)
+                        "
+                        :user="user" />
+                      <div v-else>
+                        <RoleBadge :user="user" />
+                      </div>
+                    </td>
+
+                    <td class="whitespace-nowrap p-4 text-sm font-medium">
+                      <ClassUpdaterCombo
+                        v-if="
+                          loggedUser.role == 'ADMIN' &&
+                          userEditMap &&
+                          user.id &&
+                          userEditMap.get(user.id)
+                        "
+                        :user="user" />
                       <h2 v-else class="font-medium text-gray-800 dark:text-white">
-                        {{ getRole(user) }}
+                        {{ user.class?.name }}
                       </h2>
                     </td>
 
                     <td class="whitespace-nowrap p-4 text-sm font-medium">
-                      <!-- class -->
-                    </td>
-
-                    <td class="whitespace-nowrap p-4 text-sm font-medium">
                       <div>
-                        <h2
+                        <div
                           v-if="user.active"
-                          class="text-center font-medium text-green-800 dark:text-green-500">
-                          <Icon
-                            class="mx-1 h-5 w-5"
-                            name="solar:check-read-line-duotone" />
-                        </h2>
-                        <h2
+                          class="inline-flex items-center gap-x-2 rounded-full bg-emerald-100/60 px-3 py-1 dark:bg-gray-800">
+                          <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+
+                          <h2 class="text-sm font-normal text-emerald-500">Active</h2>
+                        </div>
+                        <div
                           v-else
-                          class="text-center font-medium text-red-800 dark:text-red-500">
-                          <Icon
-                            class="mx-1 h-5 w-5"
-                            name="solar:forbidden-line-duotone" />
-                        </h2>
+                          class="inline-flex items-center gap-x-2 rounded-full bg-red-100/60 px-3 py-1 dark:bg-gray-800">
+                          <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+
+                          <h2 class="text-sm font-normal text-red-500">Deactivated</h2>
+                        </div>
                       </div>
                     </td>
 
@@ -188,14 +189,19 @@
                           loggedUser.role == 'ADMIN'
                         ">
                         <button
+                          class="mr-2 justify-center gap-x-2 rounded-lg bg-blue-500 px-3 py-2 text-sm tracking-wide text-white transition-colors duration-200 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500 sm:w-auto"
+                          @click="editUser(user)">
+                          <Icon class="h-4 w-4" name="solar:pen-bold" />
+                        </button>
+                        <button
                           v-if="user.active"
-                          class="flex w-1/2 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-red-500 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500 sm:w-auto"
+                          class="items-center justify-center gap-x-2 rounded-lg bg-red-500 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500 sm:w-auto"
                           @click="deactivateUser(user)">
                           Deactivate
                         </button>
                         <button
                           v-else
-                          class="flex w-1/2 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-blue-500 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500 sm:w-auto"
+                          class="items-center justify-center gap-x-2 rounded-lg bg-blue-500 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500 sm:w-auto"
                           @click="activateUser(user)">
                           Activate
                         </button>
