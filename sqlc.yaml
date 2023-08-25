@@ -23,6 +23,8 @@ sql:
             go_type: "int"
           - column: "main.*.user_id"
             go_type: "string"
+          - column: "main.*.class_name"
+            go_type: "string"
           - column: "main.quiz_session_view.user_name"
             go_type: "string"
           - column: "main.quiz_session_view.remaining_sec"

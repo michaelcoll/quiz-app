@@ -1,4 +1,5 @@
-export * from "./error-msg";
+export * from "./class";
+export * from "./class-request-body";
 export * from "./message";
 export * from "./quiz";
 export * from "./quiz-detail";
