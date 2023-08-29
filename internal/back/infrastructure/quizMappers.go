@@ -33,32 +33,6 @@ func (r *QuizDBRepository) toQuiz(entity sqlc.Quiz) *domain.Quiz {
 	}
 }
 
-func (r *QuizDBRepository) toQuizArray(entities []sqlc.FindAllActiveQuizRow, isAdmin bool) []*domain.Quiz {
-	domains := make([]*domain.Quiz, len(entities))
-
-	for i, entity := range entities {
-		if isAdmin {
-			domains[i] = &domain.Quiz{
-				Sha1:      entity.Sha1,
-				Filename:  entity.Filename,
-				Name:      entity.Name,
-				Version:   entity.Version,
-				Duration:  entity.Duration,
-				Active:    entity.Active,
-				CreatedAt: entity.CreatedAt,
-			}
-		} else {
-			domains[i] = &domain.Quiz{
-				Sha1:     entity.Sha1,
-				Name:     entity.Name,
-				Duration: entity.Duration,
-			}
-		}
-	}
-
-	return domains
-}
-
 func (r *QuizDBRepository) toSession(entity sqlc.SessionView) *domain.Session {
 
 	d := domain.Session{

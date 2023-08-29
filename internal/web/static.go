@@ -22,6 +22,8 @@ import "embed"
 //go:embed .output/public/quiz/index.html
 //go:embed .output/public/200.html
 //go:embed .output/public/404.html
-//go:embed .output/public/favicon.ico
+//go:embed .output/public/favicon-16x16.png
+//go:embed .output/public/favicon-32x32.png
+//go:embed .output/public/quiz-logo.svg
 //go:embed .output/public/index.html
 var Static embed.FS

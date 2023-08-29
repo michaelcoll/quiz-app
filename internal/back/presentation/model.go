@@ -40,6 +40,7 @@ type Quiz struct {
 	Duration  int            `json:"duration"`
 	Active    bool           `json:"active"`
 	Questions []QuizQuestion `json:"questions,omitempty"`
+	Classes   []Class        `json:"classes,omitempty"`
 }
 
 func (dto *Quiz) setSha1NameAndDuration(sha1 string, name string, duration int) {
@@ -108,6 +109,13 @@ func (dto *Quiz) fromDomain(d *domain.Quiz) *Quiz {
 	dto.Duration = d.Duration
 	dto.CreatedAt = d.CreatedAt
 	dto.Active = d.Active
+
+	for id, name := range d.Classes {
+		dto.Classes = append(dto.Classes, Class{
+			Id:   id,
+			Name: name,
+		})
+	}
 
 	mapQuizInfos(d, dto)
 

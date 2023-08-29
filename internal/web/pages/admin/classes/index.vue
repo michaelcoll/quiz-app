@@ -96,7 +96,10 @@
         name="Classes"
         icon-name="solar:users-group-two-rounded-bold-duotone"
         active />
-      <TabsItem name="Quizzes" icon-name="solar:checklist-line-duotone" />
+      <TabsItem
+        name="Quizzes"
+        icon-name="solar:checklist-line-duotone"
+        to="/admin/quiz" />
     </Tabs>
 
     <section class="container mx-auto mt-10 px-4">

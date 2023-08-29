@@ -28,10 +28,7 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center justify-between">
           <NuxtLink to="/">
-            <img
-              class="h-6 w-auto sm:h-7"
-              src="https://merakiui.com/images/full-logo.svg"
-              alt="" />
+            <img class="h-6 w-auto sm:h-7" src="/quiz-logo.svg" alt="Logo" />
           </NuxtLink>
         </div>
 
