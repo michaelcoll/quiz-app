@@ -764,13 +764,17 @@ components:
         createdAt:
           type: string
           format: date-time
-          description: The date of creation of the quiz
+          description: The creation date of the quiz
           nullable: false
         duration:
           type: integer
           description: The duration of the quiz in seconds
           nullable: false
           example: 840
+        classes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Class'
     QuizDetail:
       type: object
       properties:

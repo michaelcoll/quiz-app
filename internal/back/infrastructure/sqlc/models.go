@@ -47,6 +47,18 @@ type QuizAnswerCountView struct {
 	CheckedAnswers int    `db:"checked_answers"`
 }
 
+type QuizClassView struct {
+	Sha1      string    `db:"sha1"`
+	Name      string    `db:"name"`
+	Filename  string    `db:"filename"`
+	Version   int       `db:"version"`
+	Active    bool      `db:"active"`
+	CreatedAt string    `db:"created_at"`
+	Duration  int       `db:"duration"`
+	ClassUuid uuid.UUID `db:"class_uuid"`
+	ClassName string    `db:"class_name"`
+}
+
 type QuizClassVisibility struct {
 	ClassUuid uuid.UUID `db:"class_uuid"`
 	QuizSha1  string    `db:"quiz_sha1"`

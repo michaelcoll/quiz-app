@@ -10,6 +10,10 @@
  * Do not edit the class manually.
  */
 
+// May contain unused imports in some cases
+// @ts-ignore
+import { Class } from "./class";
+
 /**
  *
  * @export
@@ -41,7 +45,7 @@ export interface Quiz {
    */
   version?: number;
   /**
-   * The date of creation of the quiz
+   * The creation date of the quiz
    * @type {string}
    * @memberof Quiz
    */
@@ -52,4 +56,10 @@ export interface Quiz {
    * @memberof Quiz
    */
   duration?: number;
+  /**
+   *
+   * @type {Array<Class>}
+   * @memberof Quiz
+   */
+  classes?: Array<Class>;
 }

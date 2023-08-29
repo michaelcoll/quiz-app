@@ -16,7 +16,6 @@
 
 <script setup lang="ts">
   import { Session } from "~/api/model";
-  import { useAuthStore } from "~/stores/auth";
 
   const props = defineProps({
     sessionUuid: { type: String, required: true },
@@ -30,41 +29,27 @@
 
   const isChecked = ref(false);
   const isSaved = ref(false);
-  const errorMessage = ref();
-  const apiServerUrl = useRuntimeConfig().public.apiBase;
-  const token = await useAuthStore().getToken;
 
   onMounted(() => {
     isChecked.value = props.checked;
   });
 
   async function checkChange(checked: boolean) {
-    await useFetch<Session>(
-      `${apiServerUrl}/api/v1/session/${props.sessionUuid}/answer`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: {
-          questionSha1: props.questionSha1,
-          answerSha1: props.answerSha1,
-          checked,
-        },
-        onResponse({ response }) {
-          if (response.status === 201) {
-            isSaved.value = true;
-            setInterval(() => {
-              isSaved.value = false;
-            }, 2000);
-          }
-        },
-        onResponseError({ response }) {
-          errorMessage.value = response._data.message;
-          isChecked.value = !isChecked.value;
-        },
+    await usePostApi<Session>(`/api/v1/session/${props.sessionUuid}/answer`, {
+      body: {
+        questionSha1: props.questionSha1,
+        answerSha1: props.answerSha1,
+        checked,
       },
-    );
+      onResponse({ response }) {
+        if (response.status === 201) {
+          isSaved.value = true;
+          setInterval(() => {
+            isSaved.value = false;
+          }, 2000);
+        }
+      },
+    });
   }
 </script>
 
@@ -117,9 +102,6 @@
       class="ml-2 rounded bg-green-500/40 px-2 text-sm font-medium text-gray-900 dark:text-gray-300"
       >Saved !</span
     >
-    <span v-if="errorMessage" class="ml-2 text-sm font-medium text-red-500">{{
-      errorMessage
-    }}</span>
   </div>
 </template>
 

@@ -35,6 +35,7 @@ type Quiz struct {
 	Active    bool
 	Duration  int
 	Questions map[string]QuizQuestion
+	Classes   map[uuid.UUID]string
 }
 
 func (q *Quiz) GetSha1NameAndDuration() (string, string, int) {

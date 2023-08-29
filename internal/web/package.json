@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
+    "dayjs": "^1.11.9",
     "flowbite": "^1.8.1",
     "tailvue": "^1.0.0"
   },

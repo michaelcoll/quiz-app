@@ -291,7 +291,16 @@ SELECT u.id,
        CASE WHEN u.class_uuid IS NULL THEN '' ELSE u.class_uuid END AS class_uuid,
        CASE WHEN sc.name IS NULL THEN '' ELSE sc.name END           AS class_name
 FROM user u
-         LEFT JOIN student_class sc ON u.class_uuid = sc.uuid
+         LEFT JOIN student_class sc ON u.class_uuid = sc.uuid;
+
+CREATE VIEW quiz_class_view
+AS
+SELECT q.*,
+       CASE WHEN sc.uuid IS NULL THEN '' ELSE sc.uuid END AS class_uuid,
+       CASE WHEN sc.name IS NULL THEN '' ELSE sc.name END AS class_name
+FROM quiz q
+         LEFT JOIN quiz_class_visibility qcv ON q.sha1 = qcv.quiz_sha1
+         LEFT JOIN student_class sc ON sc.uuid = qcv.class_uuid
 `
 
 var migrations = map[int]string{

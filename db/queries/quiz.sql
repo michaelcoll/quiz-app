@@ -59,13 +59,8 @@ LIMIT 1;
 
 -- name: FindAllActiveQuiz :many
 SELECT *
-FROM quiz q
-         JOIN quiz_class_visibility qcv ON q.sha1 = qcv.quiz_sha1
-         JOIN student_class sc ON sc.uuid = qcv.class_uuid
-         JOIN user u ON sc.uuid = u.class_uuid
-WHERE q.active = 1
-    AND u.id = ''
-   OR u.id = ?
+FROM quiz_class_view qcv
+WHERE qcv.active = 1
 LIMIT ? OFFSET ?;
 
 -- name: CountAllActiveQuiz :one
@@ -92,8 +87,8 @@ SELECT qsv.*
 FROM quiz_session_view qsv
          JOIN quiz_class_visibility qcv ON qsv.quiz_sha1 = qcv.quiz_sha1
          JOIN student_class sc ON sc.uuid = qcv.class_uuid
-         JOIN user u ON sc.uuid = u.class_uuid AND qsv.user_id = u.id
-WHERE user_id = ?
+         JOIN user u ON sc.uuid = u.class_uuid
+WHERE u.id = ?
 LIMIT ? OFFSET ?;
 
 -- name: FindQuizSessionByUuid :many
