@@ -1,8 +1,12 @@
 .github
+.husky
 .idea
+data
 db
 doc
-internal/web/node_modules
+helm
+internal/web
+tools
 .editorconfig
 .gitignore
 quiz-app
@@ -12,3 +16,4 @@ marvel-universe.quiz.md
 README.md
 sqlc.yaml
 sqlc-addon.yaml
+video-games.quiz.md

@@ -1,0 +1,17 @@
+services:
+  back:
+    build: .
+    environment:
+      QUIZ_DEFAULT_ADMIN_USERNAME: "michaelcoll"
+    networks:
+    - back
+
+  front:
+    build: ./internal/web
+    ports:
+    - 3000:3000
+    networks:
+    - back
+
+networks:
+  back:

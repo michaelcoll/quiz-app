@@ -16,29 +16,13 @@
 
 <script setup lang="ts">
   import { QuizSessionDetail } from "~/api/model";
-  import { useAuthStore } from "~/stores/auth";
 
   const route = useRoute();
   const sessionUuid = route.params.uuid as string;
-  const apiServerUrl = useRuntimeConfig().public.apiBase;
-  const quizSession = ref<QuizSessionDetail>();
-  const token = await useAuthStore().getToken;
 
-  if (token) {
-    await useFetch<QuizSessionDetail>(
-      `${apiServerUrl}/api/v1/quiz-session/${sessionUuid}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        onResponse({ response }) {
-          if (response._data) {
-            quizSession.value = response._data;
-          }
-        },
-      },
-    );
-  }
+  const { data: quizSession } = await useApi<QuizSessionDetail>(
+    `/api/v1/quiz-session/${sessionUuid}`,
+  );
 </script>
 
 <template>

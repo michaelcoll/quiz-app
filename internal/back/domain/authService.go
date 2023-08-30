@@ -61,14 +61,11 @@ func (s *AuthService) Login(ctx context.Context, accessToken string) (*User, err
 		user.Role = Student
 	}
 
-	fmt.Printf("login user %v\n", user)
-
 	if dbUser, err := s.userRepository.FindUserById(ctx, token.Sub); dbUser != nil && err == nil {
 		fmt.Printf("dbUser %v\n", dbUser)
 		return dbUser, nil
 	}
 
-	fmt.Printf("replace user %v\n", user)
 	err = s.userRepository.CreateOrReplaceUser(ctx, user)
 	if err != nil {
 		return nil, err

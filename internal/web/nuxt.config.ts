@@ -27,4 +27,14 @@ export default defineNuxtConfig({
       apiBase: process.env.API_BASE || "http://localhost:8080",
     },
   },
+
+  nitro: {
+    routeRules: {
+      "api/v1/**": {
+        proxy: {
+          to: (process.env.API_BASE || "http://localhost:8080") + "/**",
+        },
+      },
+    },
+  },
 });

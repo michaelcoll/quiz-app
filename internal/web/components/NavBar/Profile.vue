@@ -82,12 +82,12 @@
             v-if="props.user.role === 'STUDENT'"
             class="border-gray-200 dark:border-gray-700" />
 
-          <div v-if="props.user.role === 'STUDENT'" class="mx-1 p-3">
+          <div v-if="props.user.role === 'STUDENT' && props.user.class" class="mx-1 p-3">
             <h1 class="text-sm font-semibold text-gray-700 dark:text-gray-200">
               Student of
             </h1>
             <h1 class="text-sm text-gray-500 dark:text-gray-400">
-              {{ props.user?.class?.name }}
+              {{ props.user.class?.name }}
             </h1>
           </div>
 
