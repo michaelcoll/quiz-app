@@ -1,13 +1,15 @@
 services:
   back:
     build: .
-    environment:
-      QUIZ_DEFAULT_ADMIN_USERNAME: "michaelcoll"
+    env_file:
+    - .env
     networks:
     - back
 
   front:
     build: ./internal/web
+    environment:
+    - AUTH_ORIGIN=http://localhost:3000
     ports:
     - 3000:3000
     networks:
