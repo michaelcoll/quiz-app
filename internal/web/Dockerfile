@@ -22,7 +22,5 @@ FROM node:20-alpine AS production
 
 COPY --from=production-base /app/.output /app/.output
 
-ENV AUTH_ORIGIN="back:8080"
-
 # start the app
 CMD [ "node", "/app/.output/server/index.mjs" ]
