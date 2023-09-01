@@ -1,22 +1,16 @@
 <script setup lang="ts">
   import { Session } from "~/api/model";
-  import { useAuthStore } from "~/stores/auth";
+
+  const router = useRouter();
 
   const props = defineProps({
     quizSha1: { type: String, required: false, default: "" },
   });
-  let loading = ref(false);
-  const apiServerUrl = useRuntimeConfig().public.apiBase;
 
-  const router = useRouter();
-  const token = await useAuthStore().getToken;
+  let loading = ref(false);
 
   async function startSession() {
-    const { pending } = await useFetch<Session>(`${apiServerUrl}/api/v1/session`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const { pending } = await usePostApi<Session>(`/api/v1/session`, {
       params: {
         quizSha1: props.quizSha1,
       },

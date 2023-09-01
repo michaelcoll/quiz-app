@@ -15,7 +15,8 @@ dep-upgrade-go:
 	@go mod tidy
 
 dep-upgrade-node:
-	cd internal/web \
+	pnpm update --latest \
+		&& cd internal/web \
   		&& pnpm update --latest
 
 build-go:

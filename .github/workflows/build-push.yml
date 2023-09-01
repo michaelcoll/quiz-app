@@ -28,36 +28,50 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
+      - name: Back Extract metadata (tags, labels) for Docker
+        id: meta-back
         uses: docker/metadata-action@v4
         with:
-          images: ghcr.io/michaelcoll/quiz-app
+          images: ghcr.io/michaelcoll/quiz-app-back
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      - name: Prepare Vue App
-        run: |
-          make prepare
-
-      - name: Build Vue App
-        run: |
-          make build-web
-
-      - name: Build and push Docker image
+      - name: Build and push Docker back image
         uses: docker/build-push-action@v4
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           pull: true
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          tags: ${{ steps.meta-back.outputs.tags }}
+          labels: ${{ steps.meta-back.outputs.labels }}
           build-args: |
-            BUILDTIME=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
-            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
-            REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
+            BUILDTIME=${{ fromJSON(steps.meta-back.outputs.json).labels['org.opencontainers.image.created'] }}
+            VERSION=${{ fromJSON(steps.meta-back.outputs.json).labels['org.opencontainers.image.version'] }}
+            REVISION=${{ fromJSON(steps.meta-back.outputs.json).labels['org.opencontainers.image.revision'] }}
+
+      - name: Front Extract metadata (tags, labels) for Docker
+        id: meta-front
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/michaelcoll/quiz-app-front
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Build and push Docker front image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./internal/web
+          platforms: linux/amd64
+          pull: true
+          push: true
+          tags: ${{ steps.meta-front.outputs.tags }}
+          labels: ${{ steps.meta-front.outputs.labels }}
+          build-args: |
+            BUILDTIME=${{ fromJSON(steps.meta-front.outputs.json).labels['org.opencontainers.image.created'] }}
+            VERSION=${{ fromJSON(steps.meta-front.outputs.json).labels['org.opencontainers.image.version'] }}
+            REVISION=${{ fromJSON(steps.meta-front.outputs.json).labels['org.opencontainers.image.revision'] }}

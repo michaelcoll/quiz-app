@@ -58,7 +58,6 @@ func (c *ApiController) Serve() {
 	router := gin.Default()
 	router.Use(injectTokenIfPresent)
 
-	serveStatic(router)
 	addCommonMiddlewares(router)
 
 	public := router.Group("/api/v1")

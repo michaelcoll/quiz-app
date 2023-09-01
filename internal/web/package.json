@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "quiz-app",
   "private": true,
   "scripts": {
     "build": "nuxt build",
@@ -33,8 +33,8 @@
     "flowbite": "^1.8.1",
     "tailvue": "^1.0.0"
   },
-  "packageManager": "pnpm@8.6.12",
+  "packageManager": "pnpm@8.7.0",
   "engines": {
-    "node": ">=20.3.0"
+    "node": ">=20.5.0"
   }
 }

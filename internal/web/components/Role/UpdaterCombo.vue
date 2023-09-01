@@ -2,7 +2,6 @@
   import { useToast } from "tailvue";
 
   import { Session, User } from "~/api/model";
-  import { useAuthStore } from "~/stores/auth";
 
   const props = defineProps<{
     user: User;
@@ -12,31 +11,20 @@
   const isSaved = ref(false);
   const errorMessage = ref();
 
-  const apiServerUrl = useRuntimeConfig().public.apiBase;
-  const token = await useAuthStore().getToken;
-
   onMounted(() => {
     roleSelect.value = props.user.role;
   });
 
-  async function selectChange(roleName: string) {
-    await useFetch<Session>(
-      `${apiServerUrl}/api/v1/user/${props.user.id}/role/${roleName}`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+  async function selectChange(roleName: string | undefined) {
+    if (roleSelect) {
+      await usePutApi<Session>(`/api/v1/user/${props.user.id}/role/${roleName}`, {
         onResponse({ response }) {
           if (response.status === 200) {
             useToast().success("Role updated");
           }
         },
-        onResponseError({ response }) {
-          errorMessage.value = response._data.message;
-        },
-      },
-    );
+      });
+    }
   }
 </script>
 

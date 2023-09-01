@@ -24,7 +24,6 @@ export type AuthState = {
   token?: string;
 };
 
-const apiServerUrl = useRuntimeConfig().public.apiBase;
 const { getSession, status } = useAuth();
 
 export const useAuthStore = defineStore("auth", {
@@ -42,12 +41,7 @@ export const useAuthStore = defineStore("auth", {
       if (user) {
         return Promise.resolve(user!);
       } else {
-        const token = await this.getToken;
-        const { data } = await useFetch<User>(`${apiServerUrl}/api/v1/user/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const { data } = await useApi<User>(`/api/v1/user/me`);
 
         if (data.value != null) {
           user = data.value;

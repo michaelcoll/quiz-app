@@ -10,12 +10,10 @@ export async function useApi<
   request: Parameters<typeof useFetch<T, R>>[0],
   options?: Partial<Parameters<typeof useFetch<T, R>>[1]>,
 ) {
-  const config = useRuntimeConfig();
   const token = await useAuthStore().getToken;
 
   return useFetch<T, R>(request, {
     ...options,
-    baseURL: config.public.apiBase,
 
     headers: {
       Authorization: `Bearer ${token}`,

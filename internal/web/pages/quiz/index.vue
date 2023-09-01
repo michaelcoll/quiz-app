@@ -169,7 +169,7 @@
                     </td>
 
                     <td class="whitespace-nowrap p-4 text-sm">
-                      <span v-if="!quiz.sessionId && !quiz.userSessions">
+                      <span v-if="!quiz.sessionId">
                         <QuizStartButton :quiz-sha1="quiz.quizSha1" />
                       </span>
                       <QuizResult
