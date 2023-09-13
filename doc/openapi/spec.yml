@@ -831,6 +831,16 @@ components:
           description: The question content
           nullable: false
           example: 'Which of the following characters have used the title "Captain America" in the comics? (Select all that apply)'
+        code:
+          type: string
+          description: The question code of the content
+          nullable: true
+          example: 'some commands'
+        codeLanguage:
+          type: string
+          description: The question code language of the content
+          nullable: true
+          example: 'shell'
         answers:
           type: array
           items:

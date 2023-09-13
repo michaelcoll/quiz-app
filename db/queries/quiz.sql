@@ -3,8 +3,8 @@ REPLACE INTO quiz (sha1, name, filename, version, duration, created_at)
 VALUES (?, ?, ?, ?, ?, ?);
 
 -- name: CreateOrReplaceQuestion :exec
-REPLACE INTO quiz_question (sha1, position, content)
-VALUES (?, ?, ?);
+REPLACE INTO quiz_question (sha1, position, content, code, code_language)
+VALUES (?, ?, ?, ?, ?);
 
 -- name: CreateOrReplaceAnswer :exec
 REPLACE INTO quiz_answer (sha1, content, valid)
@@ -25,19 +25,21 @@ WHERE filename = ?
   AND version <> ?;
 
 -- name: FindQuizFullBySha1 :many
-SELECT q.sha1       AS quiz_sha1,
-       q.filename   AS quiz_filename,
-       q.name       AS quiz_name,
-       q.version    AS quiz_version,
-       q.created_at AS quiz_created_at,
-       q.duration   AS quiz_duration,
-       q.active     AS quiz_active,
-       qq.sha1      AS question_sha1,
-       qq.content   AS question_content,
-       qq.position  AS question_position,
-       qa.sha1      AS answer_sha1,
-       qa.content   AS answer_content,
-       qa.valid     AS answer_valid
+SELECT q.sha1           AS quiz_sha1,
+       q.filename       AS quiz_filename,
+       q.name           AS quiz_name,
+       q.version        AS quiz_version,
+       q.created_at     AS quiz_created_at,
+       q.duration       AS quiz_duration,
+       q.active         AS quiz_active,
+       qq.sha1          AS question_sha1,
+       qq.content       AS question_content,
+       qq.position      AS question_position,
+       qq.code          AS question_code,
+       qq.code_language AS question_code_language,
+       qa.sha1          AS answer_sha1,
+       qa.content       AS answer_content,
+       qa.valid         AS answer_valid
 FROM quiz q
          JOIN quiz_question_quiz qqq ON q.sha1 = qqq.quiz_sha1
          JOIN quiz_question qq ON qq.sha1 = qqq.question_sha1

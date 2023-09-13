@@ -13,9 +13,11 @@ CREATE TABLE quiz
 
 CREATE TABLE quiz_question
 (
-    sha1     TEXT PRIMARY KEY,
-    position INTEGER NOT NULL,
-    content  TEXT    NOT NULL
+    sha1          TEXT PRIMARY KEY,
+    position      INTEGER NOT NULL,
+    content       TEXT    NOT NULL,
+    code          TEXT,
+    code_language TEXT
 );
 
 CREATE TABLE quiz_question_quiz
@@ -218,8 +220,10 @@ SELECT qsv.session_uuid                                          AS session_uuid
        qsv.checked_answers                                       AS checked_answers,
        qsv.results                                               AS results,
        srv.question_sha1                                         AS question_sha1,
-       qq.content                                                AS question_content,
        qq.position                                               AS question_position,
+       qq.content                                                AS question_content,
+       qq.code                                                   AS question_code,
+       qq.code_language                                          AS question_code_language,
        srv.answer_sha1                                           AS answer_sha1,
        qa.content                                                AS answer_content,
        CASE WHEN srv.checked IS NULL THEN 0 ELSE srv.checked END AS answer_checked,

@@ -21,6 +21,7 @@
 package sqlc
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -65,9 +66,11 @@ type QuizClassVisibility struct {
 }
 
 type QuizQuestion struct {
-	Sha1     string `db:"sha1"`
-	Position int64  `db:"position"`
-	Content  string `db:"content"`
+	Sha1         string         `db:"sha1"`
+	Position     int64          `db:"position"`
+	Content      string         `db:"content"`
+	Code         sql.NullString `db:"code"`
+	CodeLanguage sql.NullString `db:"code_language"`
 }
 
 type QuizQuestionAnswer struct {
@@ -81,21 +84,23 @@ type QuizQuestionQuiz struct {
 }
 
 type QuizSessionDetailView struct {
-	SessionUuid      uuid.UUID `db:"session_uuid"`
-	UserID           string    `db:"user_id"`
-	RemainingSec     int       `db:"remaining_sec"`
-	QuizSha1         string    `db:"quiz_sha1"`
-	QuizName         string    `db:"quiz_name"`
-	QuizDuration     int       `db:"quiz_duration"`
-	CheckedAnswers   int       `db:"checked_answers"`
-	Results          int       `db:"results"`
-	QuestionSha1     string    `db:"question_sha1"`
-	QuestionContent  string    `db:"question_content"`
-	QuestionPosition int       `db:"question_position"`
-	AnswerSha1       string    `db:"answer_sha1"`
-	AnswerContent    string    `db:"answer_content"`
-	AnswerChecked    bool      `db:"answer_checked"`
-	AnswerValid      bool      `db:"answer_valid"`
+	SessionUuid          uuid.UUID      `db:"session_uuid"`
+	UserID               string         `db:"user_id"`
+	RemainingSec         int            `db:"remaining_sec"`
+	QuizSha1             string         `db:"quiz_sha1"`
+	QuizName             string         `db:"quiz_name"`
+	QuizDuration         int            `db:"quiz_duration"`
+	CheckedAnswers       int            `db:"checked_answers"`
+	Results              int            `db:"results"`
+	QuestionSha1         string         `db:"question_sha1"`
+	QuestionPosition     int            `db:"question_position"`
+	QuestionContent      string         `db:"question_content"`
+	QuestionCode         sql.NullString `db:"question_code"`
+	QuestionCodeLanguage sql.NullString `db:"question_code_language"`
+	AnswerSha1           string         `db:"answer_sha1"`
+	AnswerContent        string         `db:"answer_content"`
+	AnswerChecked        bool           `db:"answer_checked"`
+	AnswerValid          bool           `db:"answer_valid"`
 }
 
 type QuizSessionView struct {

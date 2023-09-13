@@ -49,9 +49,11 @@ func (q *Quiz) GetQuestions() map[string]QuizQuestion {
 type QuizQuestion struct {
 	Sha1 string
 
-	Content  string
-	Position int
-	Answers  map[string]QuizQuestionAnswer
+	Content      string
+	Code         string
+	CodeLanguage string
+	Position     int
+	Answers      map[string]QuizQuestionAnswer
 }
 
 type QuizQuestionAnswer struct {

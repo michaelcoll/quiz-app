@@ -26,6 +26,13 @@ import (
 	"time"
 )
 
+var quizNameRegexp = regexp.MustCompile(`^# (?P<quizName>.*) \(duration: (?P<duration>[0-9]+)min\)`)
+var quizQuestionRegexp = regexp.MustCompile(`^# .*\n`)
+var quizquestionCodeRegexp = regexp.MustCompile("```(?P<language>.*)\\n(?s)(?P<code>.*?)\\n```")
+var quizAnswersRegexp = regexp.MustCompile(`(- \[[ xX]] .*\n)+`)
+var quizAnswerRegexp = regexp.MustCompile(`- \[[ xX]] .*`)
+var quizValidAnswerRegexp = regexp.MustCompile(`- \[[xX]] .*`)
+
 // Parse parse the content of a quiz file
 func (s *QuizService) Parse(filename string, content string) (*Quiz, error) {
 
@@ -57,9 +64,7 @@ func getSha1(content string) string {
 }
 
 func extractQuizNameAndDuration(content string) (string, int, error) {
-	r := regexp.MustCompile(`^# (?P<quizName>.*) \(duration: (?P<duration>[0-9]+)min\)`)
-
-	subMatch := r.FindStringSubmatch(content)
+	subMatch := quizNameRegexp.FindStringSubmatch(content)
 
 	if len(subMatch) < 3 {
 		return "", 0, fmt.Errorf("quiz name or quiz duration not found. The first line must be '# <Name> (duration: <duration>min)")
@@ -75,9 +80,7 @@ func extractQuizNameAndDuration(content string) (string, int, error) {
 }
 
 func extractQuestions(content string) (map[string]QuizQuestion, error) {
-	r := regexp.MustCompile(`^# .*\n`)
-
-	quizName := r.FindString(content)
+	quizName := quizQuestionRegexp.FindString(content)
 	questionsStr := strings.ReplaceAll(content, quizName, "")
 	questionsUnParsed := strings.Split(questionsStr, "---\n")
 
@@ -98,10 +101,9 @@ func extractQuestions(content string) (map[string]QuizQuestion, error) {
 
 func extractQuestion(content string) (QuizQuestion, error) {
 
-	r := regexp.MustCompile(`(- \[[ xX]] .*\n)+`)
-	answersStr := r.FindString(content)
+	answersStr := quizAnswersRegexp.FindString(content)
 
-	questionContent := strings.ReplaceAll(content, answersStr, "")
+	questionContent, code, language := extractQuestionCode(strings.ReplaceAll(content, answersStr, ""))
 
 	answers, err := extractAnswers(answersStr)
 	if err != nil {
@@ -109,22 +111,36 @@ func extractQuestion(content string) (QuizQuestion, error) {
 	}
 
 	return QuizQuestion{
-		Sha1:    getSha1(content),
-		Content: strings.Trim(questionContent, " \n"),
-		Answers: answers,
+		Sha1:         getSha1(content),
+		Content:      strings.Trim(questionContent, " \n"),
+		Code:         code,
+		CodeLanguage: language,
+		Answers:      answers,
 	}, nil
+}
+
+func extractQuestionCode(questionContent string) (content string, code string, language string) {
+	subMatch := quizquestionCodeRegexp.FindStringSubmatch(questionContent)
+
+	if len(subMatch) < 3 {
+		return questionContent, "", ""
+	}
+
+	language = subMatch[1]
+	code = subMatch[2]
+	content = strings.ReplaceAll(questionContent, subMatch[0], "")
+
+	return content, code, language
 }
 
 func extractAnswers(answersStr string) (map[string]QuizQuestionAnswer, error) {
 
-	r := regexp.MustCompile(`- \[[ xX]] .*`)
-	validTestRegex := regexp.MustCompile(`- \[[xX]] .*`)
-	answersStrSplit := r.FindAllString(answersStr, 10)
+	answersStrSplit := quizAnswerRegexp.FindAllString(answersStr, 10)
 
 	answers := map[string]QuizQuestionAnswer{}
 
 	for _, s := range answersStrSplit {
-		valid := validTestRegex.MatchString(s)
+		valid := quizValidAnswerRegexp.MatchString(s)
 		sha1Str := getSha1(s)
 
 		answers[sha1Str] = QuizQuestionAnswer{

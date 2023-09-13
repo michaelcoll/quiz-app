@@ -23,6 +23,7 @@ package sqlc
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -91,18 +92,26 @@ func (q *Queries) CreateOrReplaceAnswer(ctx context.Context, arg CreateOrReplace
 }
 
 const createOrReplaceQuestion = `-- name: CreateOrReplaceQuestion :exec
-REPLACE INTO quiz_question (sha1, position, content)
-VALUES (?, ?, ?)
+REPLACE INTO quiz_question (sha1, position, content, code, code_language)
+VALUES (?, ?, ?, ?, ?)
 `
 
 type CreateOrReplaceQuestionParams struct {
-	Sha1     string `db:"sha1"`
-	Position int64  `db:"position"`
-	Content  string `db:"content"`
+	Sha1         string         `db:"sha1"`
+	Position     int64          `db:"position"`
+	Content      string         `db:"content"`
+	Code         sql.NullString `db:"code"`
+	CodeLanguage sql.NullString `db:"code_language"`
 }
 
 func (q *Queries) CreateOrReplaceQuestion(ctx context.Context, arg CreateOrReplaceQuestionParams) error {
-	_, err := q.db.ExecContext(ctx, createOrReplaceQuestion, arg.Sha1, arg.Position, arg.Content)
+	_, err := q.db.ExecContext(ctx, createOrReplaceQuestion,
+		arg.Sha1,
+		arg.Position,
+		arg.Content,
+		arg.Code,
+		arg.CodeLanguage,
+	)
 	return err
 }
 
@@ -302,19 +311,21 @@ func (q *Queries) FindQuizByFilenameAndLatestVersion(ctx context.Context, filena
 }
 
 const findQuizFullBySha1 = `-- name: FindQuizFullBySha1 :many
-SELECT q.sha1       AS quiz_sha1,
-       q.filename   AS quiz_filename,
-       q.name       AS quiz_name,
-       q.version    AS quiz_version,
-       q.created_at AS quiz_created_at,
-       q.duration   AS quiz_duration,
-       q.active     AS quiz_active,
-       qq.sha1      AS question_sha1,
-       qq.content   AS question_content,
-       qq.position  AS question_position,
-       qa.sha1      AS answer_sha1,
-       qa.content   AS answer_content,
-       qa.valid     AS answer_valid
+SELECT q.sha1           AS quiz_sha1,
+       q.filename       AS quiz_filename,
+       q.name           AS quiz_name,
+       q.version        AS quiz_version,
+       q.created_at     AS quiz_created_at,
+       q.duration       AS quiz_duration,
+       q.active         AS quiz_active,
+       qq.sha1          AS question_sha1,
+       qq.content       AS question_content,
+       qq.position      AS question_position,
+       qq.code          AS question_code,
+       qq.code_language AS question_code_language,
+       qa.sha1          AS answer_sha1,
+       qa.content       AS answer_content,
+       qa.valid         AS answer_valid
 FROM quiz q
          JOIN quiz_question_quiz qqq ON q.sha1 = qqq.quiz_sha1
          JOIN quiz_question qq ON qq.sha1 = qqq.question_sha1
@@ -334,19 +345,21 @@ type FindQuizFullBySha1Params struct {
 }
 
 type FindQuizFullBySha1Row struct {
-	QuizSha1         string `db:"quiz_sha1"`
-	QuizFilename     string `db:"quiz_filename"`
-	QuizName         string `db:"quiz_name"`
-	QuizVersion      int    `db:"quiz_version"`
-	QuizCreatedAt    string `db:"quiz_created_at"`
-	QuizDuration     int    `db:"quiz_duration"`
-	QuizActive       bool   `db:"quiz_active"`
-	QuestionSha1     string `db:"question_sha1"`
-	QuestionContent  string `db:"question_content"`
-	QuestionPosition int    `db:"question_position"`
-	AnswerSha1       string `db:"answer_sha1"`
-	AnswerContent    string `db:"answer_content"`
-	AnswerValid      bool   `db:"answer_valid"`
+	QuizSha1             string         `db:"quiz_sha1"`
+	QuizFilename         string         `db:"quiz_filename"`
+	QuizName             string         `db:"quiz_name"`
+	QuizVersion          int            `db:"quiz_version"`
+	QuizCreatedAt        string         `db:"quiz_created_at"`
+	QuizDuration         int            `db:"quiz_duration"`
+	QuizActive           bool           `db:"quiz_active"`
+	QuestionSha1         string         `db:"question_sha1"`
+	QuestionContent      string         `db:"question_content"`
+	QuestionPosition     int            `db:"question_position"`
+	QuestionCode         sql.NullString `db:"question_code"`
+	QuestionCodeLanguage sql.NullString `db:"question_code_language"`
+	AnswerSha1           string         `db:"answer_sha1"`
+	AnswerContent        string         `db:"answer_content"`
+	AnswerValid          bool           `db:"answer_valid"`
 }
 
 func (q *Queries) FindQuizFullBySha1(ctx context.Context, arg FindQuizFullBySha1Params) ([]FindQuizFullBySha1Row, error) {
@@ -369,6 +382,8 @@ func (q *Queries) FindQuizFullBySha1(ctx context.Context, arg FindQuizFullBySha1
 			&i.QuestionSha1,
 			&i.QuestionContent,
 			&i.QuestionPosition,
+			&i.QuestionCode,
+			&i.QuestionCodeLanguage,
 			&i.AnswerSha1,
 			&i.AnswerContent,
 			&i.AnswerValid,
@@ -387,7 +402,7 @@ func (q *Queries) FindQuizFullBySha1(ctx context.Context, arg FindQuizFullBySha1
 }
 
 const findQuizSessionByUuid = `-- name: FindQuizSessionByUuid :many
-SELECT session_uuid, user_id, remaining_sec, quiz_sha1, quiz_name, quiz_duration, checked_answers, results, question_sha1, question_content, question_position, answer_sha1, answer_content, answer_checked, answer_valid
+SELECT session_uuid, user_id, remaining_sec, quiz_sha1, quiz_name, quiz_duration, checked_answers, results, question_sha1, question_position, question_content, question_code, question_code_language, answer_sha1, answer_content, answer_checked, answer_valid
 FROM quiz_session_detail_view
 WHERE session_uuid = ?
 `
@@ -411,8 +426,10 @@ func (q *Queries) FindQuizSessionByUuid(ctx context.Context, sessionUuid uuid.UU
 			&i.CheckedAnswers,
 			&i.Results,
 			&i.QuestionSha1,
-			&i.QuestionContent,
 			&i.QuestionPosition,
+			&i.QuestionContent,
+			&i.QuestionCode,
+			&i.QuestionCodeLanguage,
 			&i.AnswerSha1,
 			&i.AnswerContent,
 			&i.AnswerChecked,

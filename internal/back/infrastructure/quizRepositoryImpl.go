@@ -72,18 +72,20 @@ func (r *QuizDBRepository) FindFullBySha1(ctx context.Context, sha1 string, user
 
 		if _, found := quiz.Questions[entity.QuestionSha1]; !found {
 			newQuestion := domain.QuizQuestion{
-				Sha1:     entity.QuestionSha1,
-				Position: entity.QuestionPosition,
-				Content:  entity.QuestionContent,
-				Answers:  map[string]domain.QuizQuestionAnswer{},
+				Sha1:         entity.QuestionSha1,
+				Position:     entity.QuestionPosition,
+				Content:      entity.QuestionContent,
+				Code:         entity.QuestionCode.String,
+				CodeLanguage: entity.QuestionCodeLanguage.String,
+				Answers:      map[string]domain.QuizQuestionAnswer{},
 			}
 			quiz.Questions[entity.QuestionSha1] = newQuestion
-		} else {
-			quiz.Questions[entity.QuestionSha1].Answers[entity.AnswerSha1] = domain.QuizQuestionAnswer{
-				Sha1:    entity.AnswerSha1,
-				Content: entity.AnswerContent,
-				Valid:   entity.AnswerValid,
-			}
+		}
+
+		quiz.Questions[entity.QuestionSha1].Answers[entity.AnswerSha1] = domain.QuizQuestionAnswer{
+			Sha1:    entity.AnswerSha1,
+			Content: entity.AnswerContent,
+			Valid:   entity.AnswerValid,
 		}
 	}
 
@@ -180,9 +182,11 @@ func (r *QuizDBRepository) Create(ctx context.Context, quiz *domain.Quiz) error 
 
 	for _, question := range quiz.Questions {
 		err := r.q.CreateOrReplaceQuestion(ctx, sqlc.CreateOrReplaceQuestionParams{
-			Sha1:     question.Sha1,
-			Position: int64(question.Position),
-			Content:  question.Content,
+			Sha1:         question.Sha1,
+			Position:     int64(question.Position),
+			Content:      question.Content,
+			Code:         sql.NullString{String: question.Code, Valid: true},
+			CodeLanguage: sql.NullString{String: question.CodeLanguage, Valid: true},
 		})
 		if err != nil {
 			return err
@@ -373,24 +377,26 @@ func (r *QuizDBRepository) FindQuizSessionByUuid(ctx context.Context, sessionUui
 
 		if _, found := sessionDetail.Questions[entity.QuestionSha1]; !found {
 			newQuestion := domain.QuizQuestion{
-				Sha1:     entity.QuestionSha1,
-				Content:  entity.QuestionContent,
-				Position: entity.QuestionPosition,
-				Answers:  map[string]domain.QuizQuestionAnswer{},
+				Sha1:         entity.QuestionSha1,
+				Position:     entity.QuestionPosition,
+				Content:      entity.QuestionContent,
+				Code:         entity.QuestionCode.String,
+				CodeLanguage: entity.QuestionCodeLanguage.String,
+				Answers:      map[string]domain.QuizQuestionAnswer{},
 			}
 			sessionDetail.Questions[entity.QuestionSha1] = newQuestion
-		} else {
-			answerValid := false
-			if sessionDetail.RemainingSec == 0 {
-				answerValid = entity.AnswerValid
-			}
+		}
 
-			sessionDetail.Questions[entity.QuestionSha1].Answers[entity.AnswerSha1] = domain.QuizQuestionAnswer{
-				Sha1:    entity.AnswerSha1,
-				Content: entity.AnswerContent,
-				Checked: entity.AnswerChecked,
-				Valid:   answerValid,
-			}
+		answerValid := false
+		if sessionDetail.RemainingSec == 0 {
+			answerValid = entity.AnswerValid
+		}
+
+		sessionDetail.Questions[entity.QuestionSha1].Answers[entity.AnswerSha1] = domain.QuizQuestionAnswer{
+			Sha1:    entity.AnswerSha1,
+			Content: entity.AnswerContent,
+			Checked: entity.AnswerChecked,
+			Valid:   answerValid,
 		}
 	}
 
