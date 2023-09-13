@@ -45,7 +45,12 @@
 
       <div class="grid grid-cols-1 divide-y divide-gray-200 dark:divide-gray-700">
         <div v-for="question in quizSession.questions" :key="question.sha1" class="mb-8">
-          <QuizQuestion :pos="question.position ?? 0" :content="question.content ?? ''" />
+          <QuizQuestion
+            v-if="question.position && question.content"
+            :pos="question.position"
+            :content="question.content"
+            :code="question.code"
+            :code-language="question.codeLanguage" />
           <div v-for="answer in question.answers" :key="answer.sha1">
             <QuizAnswer
               :session-uuid="sessionUuid"

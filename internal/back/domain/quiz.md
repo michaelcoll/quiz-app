@@ -12,7 +12,8 @@ Parmi les choix, donner les VCS
 ---
 Question with a `command` ?
 ```shell
-command 
+command1
+command2
 ```
 - [x] Answer 1
 - [X] Answer 2

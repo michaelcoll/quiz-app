@@ -39,6 +39,18 @@ export interface QuizQuestion {
    */
   content?: string;
   /**
+   * The question code of the content
+   * @type {string}
+   * @memberof QuizQuestion
+   */
+  code?: string | null;
+  /**
+   * The question code language of the content
+   * @type {string}
+   * @memberof QuizQuestion
+   */
+  codeLanguage?: string | null;
+  /**
    *
    * @type {Array<QuizQuestionAnswer>}
    * @memberof QuizQuestion

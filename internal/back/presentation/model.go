@@ -54,10 +54,12 @@ func (dto *Quiz) setQuestions(questions []QuizQuestion) {
 }
 
 type QuizQuestion struct {
-	Sha1     string               `json:"sha1"`
-	Content  string               `json:"content"`
-	Position int                  `json:"position"`
-	Answers  []QuizQuestionAnswer `json:"answers,omitempty"`
+	Sha1         string               `json:"sha1"`
+	Position     int                  `json:"position"`
+	Content      string               `json:"content"`
+	Code         string               `json:"code,omitempty"`
+	CodeLanguage string               `json:"codeLanguage,omitempty"`
+	Answers      []QuizQuestionAnswer `json:"answers,omitempty"`
 }
 
 type QuizQuestionAnswer struct {
@@ -88,10 +90,12 @@ func mapQuizInfos(d domain.QuizInfos, dto QuizInfos) {
 		}
 
 		questions[i] = QuizQuestion{
-			Sha1:     question.Sha1,
-			Content:  question.Content,
-			Position: question.Position,
-			Answers:  answers,
+			Sha1:         question.Sha1,
+			Position:     question.Position,
+			Content:      question.Content,
+			Code:         question.Code,
+			CodeLanguage: question.CodeLanguage,
+			Answers:      answers,
 		}
 		i++
 	}

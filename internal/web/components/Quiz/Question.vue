@@ -15,10 +15,12 @@
   -->
 
 <script setup lang="ts">
-  const props = defineProps({
-    pos: { type: Number, required: true },
-    content: { type: String, required: true },
-  });
+  const props = defineProps<{
+    pos: Number;
+    content: string;
+    code: string | undefined;
+    codeLanguage: string | undefined;
+  }>();
 </script>
 
 <template>
@@ -27,6 +29,9 @@
       {{ props.pos }}.
     </span>
     {{ props.content }}
+    <ClientOnly v-if="props.code">
+      <highlightjs :language="props.codeLanguage" :code="props.code" />
+    </ClientOnly>
   </h2>
 </template>
 
