@@ -30,7 +30,7 @@ jobs:
 
       - name: Back Extract metadata (tags, labels) for Docker
         id: meta-back
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ghcr.io/michaelcoll/quiz-app-back
           tags: |
@@ -54,7 +54,7 @@ jobs:
 
       - name: Front Extract metadata (tags, labels) for Docker
         id: meta-front
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ghcr.io/michaelcoll/quiz-app-front
           tags: |
