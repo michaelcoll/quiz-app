@@ -18,8 +18,8 @@ dependencies:
     specifier: 1.8.1
     version: 1.8.1
   next-auth:
-    specifier: 4.23.1
-    version: 4.23.1(next@13.4.19)(react-dom@18.2.0)(react@18.2.0)
+    specifier: 4.22.5
+    version: 4.22.5(next@13.4.19)(react-dom@18.2.0)(react@18.2.0)
   tailvue:
     specifier: 1.0.0
     version: 1.0.0(vue@3.3.4)
@@ -39,7 +39,7 @@ devDependencies:
     version: 1.1.1(@pinia/nuxt@0.4.11)(pinia@2.1.6)
   '@sidebase/nuxt-auth':
     specifier: 0.6.0-beta.5
-    version: 0.6.0-beta.5(next-auth@4.23.1)(vue@3.3.4)
+    version: 0.6.0-beta.5(next-auth@4.22.5)(vue@3.3.4)
   '@tailvue/nuxt':
     specifier: 1.0.0
     version: 1.0.0(tailvue@1.0.0)
@@ -1330,11 +1330,11 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@nuxt/kit-edge@3.7.4-28244537.e7294068:
-    resolution: {integrity: sha512-vvwOuPGX/JHiys/O3rRMig00F9YopcoRwpHW5qFjVjFOS3vz3V++BcM7SPo2klWrh31JsnxBUdvGu3uJkXkY/Q==}
+  /@nuxt/kit-edge@3.7.4-28246374.3334ca26:
+    resolution: {integrity: sha512-uPsJEtO3Q5dOL1cdd7YvFICREqFLB5c1Y85xwrZGSH+sXI8jIBNKOaxbBjVY+mS+Wzphsd6E3ochDWDBNw3zQg==}
     engines: {node: ^14.18.0 || >=16.10.0}
     dependencies:
-      '@nuxt/schema': /@nuxt/schema-edge@3.7.4-28244537.e7294068
+      '@nuxt/schema': /@nuxt/schema-edge@3.7.4-28246374.3334ca26
       c12: 1.4.2
       consola: 3.2.3
       defu: 6.1.2
@@ -1425,8 +1425,8 @@ packages:
       - webpack
     dev: true
 
-  /@nuxt/schema-edge@3.7.4-28244537.e7294068:
-    resolution: {integrity: sha512-9odx9QuETx4/xUw800wdGVymVXVEYboNmQl153DEs/VeEoGr2ydae8MItoKX5eiz/CTq0DYIcYDR+Dend73QZA==}
+  /@nuxt/schema-edge@3.7.4-28246374.3334ca26:
+    resolution: {integrity: sha512-OK6OrdaD5aBb0dOw49NL17FZSvGyvk4nrdfH7BEy+K4FiJ7Zf6DFjvywIp0R5kNivVzpm8L/0MYMu4uAjDn7Gg==}
     engines: {node: ^14.18.0 || >=16.10.0}
     dependencies:
       '@nuxt/ui-templates': 1.3.1
@@ -1985,7 +1985,7 @@ packages:
       picomatch: 2.3.1
       rollup: 3.29.1
 
-  /@sidebase/nuxt-auth@0.6.0-beta.5(next-auth@4.23.1)(vue@3.3.4):
+  /@sidebase/nuxt-auth@0.6.0-beta.5(next-auth@4.22.5)(vue@3.3.4):
     resolution: {integrity: sha512-3MKnW/V5SX1BVzV4olBuuSDIehfmCveFJwwxP5ho63CEFmxPXUqQTQs9jzjBJ1NUJnOsH/BIjkkun0lVfcr9tg==}
     peerDependencies:
       next-auth: ^4.21.1
@@ -1995,7 +1995,7 @@ packages:
       defu: 6.1.2
       h3: 1.8.1
       knitwork: 1.0.0
-      next-auth: 4.23.1(next@13.4.19)(react-dom@18.2.0)(react@18.2.0)
+      next-auth: 4.22.5(next@13.4.19)(react-dom@18.2.0)(react@18.2.0)
       nitropack: 2.6.3
       requrl: 3.0.2
       ufo: 1.3.0
@@ -2076,7 +2076,7 @@ packages:
     peerDependencies:
       tailvue: workspace:*
     dependencies:
-      '@nuxt/kit': /@nuxt/kit-edge@3.7.4-28244537.e7294068
+      '@nuxt/kit': /@nuxt/kit-edge@3.7.4-28246374.3334ca26
       pathe: 0.2.0
       tailvue: 1.0.0(vue@3.3.4)
     transitivePeerDependencies:
@@ -6276,8 +6276,8 @@ packages:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
 
-  /next-auth@4.23.1(next@13.4.19)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-mL083z8KgRtlrIV6CDca2H1kduWJuK/3pTS0Fe2og15KOm4v2kkLGdSDfc2g+019aEBrJUT0pPW2Xx42ImN1WA==}
+  /next-auth@4.22.5(next@13.4.19)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-zPVEpqDp4cx1y0HbonCSrz2sA4qw0grTMd/S0PezUKXvDzmVemtsJnfNK/xo5pO2sz5ilM541+EVCTp9QoRLbA==}
     peerDependencies:
       next: ^12.2.5 || ^13
       nodemailer: ^6.6.5
