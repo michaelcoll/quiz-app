@@ -35,8 +35,8 @@ devDependencies:
     specifier: 6.8.0
     version: 6.8.0(webpack@5.88.2)
   '@pinia-plugin-persistedstate/nuxt':
-    specifier: 1.1.1
-    version: 1.1.1(@pinia/nuxt@0.4.11)(pinia@2.1.6)
+    specifier: 1.1.2
+    version: 1.1.2(@pinia/nuxt@0.4.11)(pinia@2.1.6)
   '@sidebase/nuxt-auth':
     specifier: 0.6.0-beta.5
     version: 0.6.0-beta.5(next-auth@4.22.5)(vue@3.3.4)
@@ -1330,11 +1330,11 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@nuxt/kit-edge@3.7.4-28246374.3334ca26:
-    resolution: {integrity: sha512-uPsJEtO3Q5dOL1cdd7YvFICREqFLB5c1Y85xwrZGSH+sXI8jIBNKOaxbBjVY+mS+Wzphsd6E3ochDWDBNw3zQg==}
+  /@nuxt/kit-edge@3.7.4-28247608.137c0b60:
+    resolution: {integrity: sha512-oiCZKVBHRCF0uZEpw0XR1tYUkGDrUwPZC1o/Pk5GGZ6Ds1gMg4oLkuti+Lz2gsvZa+nH36ougNMYRTat4MujAg==}
     engines: {node: ^14.18.0 || >=16.10.0}
     dependencies:
-      '@nuxt/schema': /@nuxt/schema-edge@3.7.4-28246374.3334ca26
+      '@nuxt/schema': /@nuxt/schema-edge@3.7.4-28247608.137c0b60
       c12: 1.4.2
       consola: 3.2.3
       defu: 6.1.2
@@ -1425,8 +1425,8 @@ packages:
       - webpack
     dev: true
 
-  /@nuxt/schema-edge@3.7.4-28246374.3334ca26:
-    resolution: {integrity: sha512-OK6OrdaD5aBb0dOw49NL17FZSvGyvk4nrdfH7BEy+K4FiJ7Zf6DFjvywIp0R5kNivVzpm8L/0MYMu4uAjDn7Gg==}
+  /@nuxt/schema-edge@3.7.4-28247608.137c0b60:
+    resolution: {integrity: sha512-+joxXW6ARrnDY8PDHNndxuYTlkhBzrDN8UhOV4kl0T+y+cDg8qU7+8h/s+nI5KTQwKDEe8bgJ10C+Ojf3wRjBw==}
     engines: {node: ^14.18.0 || >=16.10.0}
     dependencies:
       '@nuxt/ui-templates': 1.3.1
@@ -1791,12 +1791,12 @@ packages:
       '@parcel/watcher-win32-x64': 2.3.0
     dev: true
 
-  /@pinia-plugin-persistedstate/nuxt@1.1.1(@pinia/nuxt@0.4.11)(pinia@2.1.6):
-    resolution: {integrity: sha512-b6ZNP3Re8COmfZEpj4KQmbp2TuDKrLggDFLZa8FiJF68xE/oCsPXIuXUvAt8E4ht/5sq4Z/grlA+iGXaI2aeKQ==}
+  /@pinia-plugin-persistedstate/nuxt@1.1.2(@pinia/nuxt@0.4.11)(pinia@2.1.6):
+    resolution: {integrity: sha512-3deRNiIlFoFGO/K8Sz+yc53ayMzElR8ack7RnGka80zBgp6Fs9GWjoLJiy+ToIc7qVa6wrQcoLDsxcnvzX4T0g==}
     peerDependencies:
       '@pinia/nuxt': ^0.4.4
     dependencies:
-      '@nuxt/kit': 3.7.2
+      '@nuxt/kit': 3.7.3
       '@pinia/nuxt': 0.4.11(typescript@5.2.2)(vue@3.3.4)
       defu: 6.1.2
       pinia-plugin-persistedstate: 3.2.0(pinia@2.1.6)
@@ -2076,7 +2076,7 @@ packages:
     peerDependencies:
       tailvue: workspace:*
     dependencies:
-      '@nuxt/kit': /@nuxt/kit-edge@3.7.4-28246374.3334ca26
+      '@nuxt/kit': /@nuxt/kit-edge@3.7.4-28247608.137c0b60
       pathe: 0.2.0
       tailvue: 1.0.0(vue@3.3.4)
     transitivePeerDependencies:
@@ -2136,10 +2136,6 @@ packages:
 
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
-    dev: true
-
-  /@types/node@20.6.0:
-    resolution: {integrity: sha512-najjVq5KN2vsH2U/xyh2opaSEz6cZMR2SetLIlxlj08nOcmPOemJmUK2o4kUzfLqfrWE0PIrNeE16XhYDd3nqg==}
     dev: true
 
   /@types/node@20.6.1:
@@ -5615,7 +5611,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 20.6.0
+      '@types/node': 20.6.1
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
