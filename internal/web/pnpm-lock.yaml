@@ -35,8 +35,8 @@ devDependencies:
     specifier: 6.8.0
     version: 6.8.0(webpack@5.88.2)
   '@pinia-plugin-persistedstate/nuxt':
-    specifier: 1.1.1
-    version: 1.1.1(@pinia/nuxt@0.4.11)(pinia@2.1.6)
+    specifier: 1.1.2
+    version: 1.1.2(@pinia/nuxt@0.4.11)(pinia@2.1.6)
   '@sidebase/nuxt-auth':
     specifier: 0.6.0-beta.5
     version: 0.6.0-beta.5(next-auth@4.22.5)(vue@3.3.4)
@@ -1791,12 +1791,12 @@ packages:
       '@parcel/watcher-win32-x64': 2.3.0
     dev: true
 
-  /@pinia-plugin-persistedstate/nuxt@1.1.1(@pinia/nuxt@0.4.11)(pinia@2.1.6):
-    resolution: {integrity: sha512-b6ZNP3Re8COmfZEpj4KQmbp2TuDKrLggDFLZa8FiJF68xE/oCsPXIuXUvAt8E4ht/5sq4Z/grlA+iGXaI2aeKQ==}
+  /@pinia-plugin-persistedstate/nuxt@1.1.2(@pinia/nuxt@0.4.11)(pinia@2.1.6):
+    resolution: {integrity: sha512-3deRNiIlFoFGO/K8Sz+yc53ayMzElR8ack7RnGka80zBgp6Fs9GWjoLJiy+ToIc7qVa6wrQcoLDsxcnvzX4T0g==}
     peerDependencies:
       '@pinia/nuxt': ^0.4.4
     dependencies:
-      '@nuxt/kit': 3.7.2
+      '@nuxt/kit': 3.7.3
       '@pinia/nuxt': 0.4.11(typescript@5.2.2)(vue@3.3.4)
       defu: 6.1.2
       pinia-plugin-persistedstate: 3.2.0(pinia@2.1.6)
