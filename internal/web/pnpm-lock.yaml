@@ -12,8 +12,8 @@ dependencies:
     specifier: 0.4.11
     version: 0.4.11(typescript@5.2.2)(vue@3.3.4)
   dayjs:
-    specifier: 1.11.9
-    version: 1.11.9
+    specifier: 1.11.10
+    version: 1.11.10
   flowbite:
     specifier: 1.8.1
     version: 1.8.1
@@ -1330,11 +1330,11 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@nuxt/kit-edge@3.7.4-28247608.137c0b60:
-    resolution: {integrity: sha512-oiCZKVBHRCF0uZEpw0XR1tYUkGDrUwPZC1o/Pk5GGZ6Ds1gMg4oLkuti+Lz2gsvZa+nH36ougNMYRTat4MujAg==}
+  /@nuxt/kit-edge@3.7.4-28252678.2bf9028f:
+    resolution: {integrity: sha512-pYta2YeqAFnC4U26pjp/WPgTPJyfiPkNxsRqWhnJPm8i9mds89ctoi4igX6yr9LHZiYStMq7Y9bGdwcUCOoomg==}
     engines: {node: ^14.18.0 || >=16.10.0}
     dependencies:
-      '@nuxt/schema': /@nuxt/schema-edge@3.7.4-28247608.137c0b60
+      '@nuxt/schema': /@nuxt/schema-edge@3.7.4-28252678.2bf9028f
       c12: 1.4.2
       consola: 3.2.3
       defu: 6.1.2
@@ -1425,11 +1425,12 @@ packages:
       - webpack
     dev: true
 
-  /@nuxt/schema-edge@3.7.4-28247608.137c0b60:
-    resolution: {integrity: sha512-+joxXW6ARrnDY8PDHNndxuYTlkhBzrDN8UhOV4kl0T+y+cDg8qU7+8h/s+nI5KTQwKDEe8bgJ10C+Ojf3wRjBw==}
+  /@nuxt/schema-edge@3.7.4-28252678.2bf9028f:
+    resolution: {integrity: sha512-Nr7kmcwZmZ/zTTZS12Bwr+NE3hj3ZrSJdGS/lwepY9h0gLKR194ldQUUVzb1JOAsrj0mC7NxCTjQvqCF7VfctA==}
     engines: {node: ^14.18.0 || >=16.10.0}
     dependencies:
       '@nuxt/ui-templates': 1.3.1
+      consola: 3.2.3
       defu: 6.1.2
       hookable: 5.5.3
       pathe: 1.1.1
@@ -2076,7 +2077,7 @@ packages:
     peerDependencies:
       tailvue: workspace:*
     dependencies:
-      '@nuxt/kit': /@nuxt/kit-edge@3.7.4-28247608.137c0b60
+      '@nuxt/kit': /@nuxt/kit-edge@3.7.4-28252678.2bf9028f
       pathe: 0.2.0
       tailvue: 1.0.0(vue@3.3.4)
     transitivePeerDependencies:
@@ -2136,10 +2137,6 @@ packages:
 
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
-    dev: true
-
-  /@types/node@20.6.1:
-    resolution: {integrity: sha512-4LcJvuXQlv4lTHnxwyHQZ3uR9Zw2j7m1C9DfuwoTFQQP4Pmu04O6IfLYgMmHoOCt0nosItLLZAH+sOrRE0Bo8g==}
     dev: true
 
   /@types/node@20.6.2:
@@ -3647,8 +3644,8 @@ packages:
     engines: {node: '>= 12'}
     dev: true
 
-  /dayjs@1.11.9:
-    resolution: {integrity: sha512-QvzAURSbQ0pKdIye2txOzNaHmxtUBXerpY0FJsFXUMKbIZeFm5ht1LS/jFsrncjnmtv8HsG0W2g6c0zUjZWmpA==}
+  /dayjs@1.11.10:
+    resolution: {integrity: sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==}
     dev: false
 
   /debug@2.6.9:
@@ -5615,7 +5612,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 20.6.1
+      '@types/node': 20.6.2
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
