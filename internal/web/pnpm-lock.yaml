@@ -38,8 +38,8 @@ devDependencies:
     specifier: 1.1.2
     version: 1.1.2(@pinia/nuxt@0.4.11)(pinia@2.1.6)
   '@sidebase/nuxt-auth':
-    specifier: 0.6.0-beta.5
-    version: 0.6.0-beta.5(next-auth@4.22.5)(vue@3.3.4)
+    specifier: 0.6.0-beta.6
+    version: 0.6.0-beta.6(next-auth@4.22.5)(vue@3.3.4)
   '@tailvue/nuxt':
     specifier: 1.0.0
     version: 1.0.0(tailvue@1.0.0)
@@ -1983,12 +1983,12 @@ packages:
       picomatch: 2.3.1
       rollup: 3.29.1
 
-  /@sidebase/nuxt-auth@0.6.0-beta.5(next-auth@4.22.5)(vue@3.3.4):
-    resolution: {integrity: sha512-3MKnW/V5SX1BVzV4olBuuSDIehfmCveFJwwxP5ho63CEFmxPXUqQTQs9jzjBJ1NUJnOsH/BIjkkun0lVfcr9tg==}
+  /@sidebase/nuxt-auth@0.6.0-beta.6(next-auth@4.22.5)(vue@3.3.4):
+    resolution: {integrity: sha512-THIxH6qFGq/QNJTy5kgopRhX5byzfYrhHtlPDRxbs/yLP/Yn3qaamPGc1Ry0GRGqw4Mb2uOLHCrbfWeg5drBxw==}
     peerDependencies:
       next-auth: ^4.21.1
     dependencies:
-      '@nuxt/kit': 3.7.2
+      '@nuxt/kit': 3.7.3
       '@vueuse/core': 9.13.0(vue@3.3.4)
       defu: 6.1.2
       h3: 1.8.1
