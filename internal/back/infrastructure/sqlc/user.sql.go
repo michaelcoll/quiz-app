@@ -176,6 +176,31 @@ func (q *Queries) UpdateUserClass(ctx context.Context, arg UpdateUserClassParams
 	return err
 }
 
+const updateUserInfo = `-- name: UpdateUserInfo :exec
+UPDATE user
+SET login   = ?,
+    name    = ?,
+    picture = ?
+WHERE id = ?
+`
+
+type UpdateUserInfoParams struct {
+	Login   string `db:"login"`
+	Name    string `db:"name"`
+	Picture string `db:"picture"`
+	ID      string `db:"id"`
+}
+
+func (q *Queries) UpdateUserInfo(ctx context.Context, arg UpdateUserInfoParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserInfo,
+		arg.Login,
+		arg.Name,
+		arg.Picture,
+		arg.ID,
+	)
+	return err
+}
+
 const updateUserRole = `-- name: UpdateUserRole :exec
 UPDATE user
 SET role_id = ?

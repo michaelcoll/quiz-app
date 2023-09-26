@@ -21,6 +21,7 @@ export async function useApi<
     },
 
     onResponseError({ response }) {
+      console.log(response);
       useToast().danger(`Error : ${response._data.message}`);
     },
   });

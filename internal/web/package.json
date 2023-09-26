@@ -35,7 +35,7 @@
     "next-auth": "4.22.5",
     "tailvue": "1.0.0"
   },
-  "packageManager": "pnpm@8.7.5",
+  "packageManager": "pnpm@8.8.0",
   "engines": {
     "node": ">=20.5.0"
   }

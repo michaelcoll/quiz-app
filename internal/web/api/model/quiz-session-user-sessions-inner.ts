@@ -39,6 +39,18 @@ export interface QuizSessionUserSessionsInner {
    */
   userName?: string;
   /**
+   * The avatar of the user
+   * @type {string}
+   * @memberof QuizSessionUserSessionsInner
+   */
+  picture?: string;
+  /**
+   * The class name of the user
+   * @type {string}
+   * @memberof QuizSessionUserSessionsInner
+   */
+  className?: string;
+  /**
    * The remaining seconds before the end of the session
    * @type {number}
    * @memberof QuizSessionUserSessionsInner

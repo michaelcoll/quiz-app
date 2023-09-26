@@ -79,20 +79,6 @@ FROM quiz q
 WHERE q.active = 1
   AND u.id = ?;
 
--- name: FindAllQuizSessions :many
-SELECT *
-FROM quiz_session_view
-LIMIT ? OFFSET ?;
-
--- name: FindAllQuizSessionsForUser :many
-SELECT qsv.*
-FROM quiz_session_view qsv
-         JOIN quiz_class_visibility qcv ON qsv.quiz_sha1 = qcv.quiz_sha1
-         JOIN student_class sc ON sc.uuid = qcv.class_uuid
-         JOIN user u ON sc.uuid = u.class_uuid
-WHERE u.id = ?
-LIMIT ? OFFSET ?;
-
 -- name: FindQuizSessionByUuid :many
 SELECT *
 FROM quiz_session_detail_view

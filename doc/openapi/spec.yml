@@ -1065,6 +1065,16 @@ components:
                 description: The firstname of the user
                 nullable: false
                 example: 'Anakin Skywalker'
+              picture:
+                type: string
+                description: The avatar of the user
+                nullable: false
+                example: 'https://avatars.githubusercontent.com/u/424242424242424224242?v=4'
+              className:
+                type: string
+                description: The class name of the user
+                nullable: false
+                example: 'Promotion 2023-2024'
               remainingSec:
                 type: integer
                 description: The remaining seconds before the end of the session

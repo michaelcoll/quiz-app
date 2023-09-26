@@ -65,7 +65,7 @@ func (r *QuizDBRepository) toSessionArray(entities []sqlc.SessionView) []*domain
 	return domains
 }
 
-func (r *QuizDBRepository) toQuizSession(entity sqlc.QuizSessionView, isAdmin bool) *domain.QuizSession {
+func (r *QuizDBRepository) toQuizSession(entity sqlc.QuizSessionView, userId string, isAdmin bool) *domain.QuizSession {
 
 	d := domain.QuizSession{
 		QuizSha1: entity.QuizSha1,
@@ -79,32 +79,38 @@ func (r *QuizDBRepository) toQuizSession(entity sqlc.QuizSessionView, isAdmin bo
 		d.CreatedAt = entity.QuizCreatedAt
 	}
 
-	userSession := domain.UserSession{
-		SessionId:    entity.SessionUuid,
-		UserId:       entity.UserID,
-		UserName:     entity.UserName,
-		RemainingSec: entity.RemainingSec,
-	}
-	if entity.RemainingSec == 0 {
-		userSession.Result = &domain.SessionResult{
-			GoodAnswer:  entity.Results,
-			TotalAnswer: entity.CheckedAnswers,
+	if isAdmin || userId == entity.UserID {
+		userSession := domain.UserSession{
+			SessionId:    entity.SessionUuid,
+			UserId:       entity.UserID,
+			UserName:     entity.UserName,
+			Picture:      entity.UserPicture,
+			ClassName:    entity.ClassName,
+			RemainingSec: entity.RemainingSec,
 		}
-	}
-	if userSession.UserId != "" {
-		userSessions := make([]*domain.UserSession, 1)
-		d.UserSessions = userSessions
-		d.UserSessions[0] = &userSession
+
+		if entity.RemainingSec == 0 {
+			userSession.Result = &domain.SessionResult{
+				GoodAnswer:  entity.Results,
+				TotalAnswer: entity.CheckedAnswers,
+			}
+		}
+
+		if userSession.UserId != "" {
+			userSessions := make([]*domain.UserSession, 1)
+			d.UserSessions = userSessions
+			d.UserSessions[0] = &userSession
+		}
 	}
 
 	return &d
 }
 
-func (r *QuizDBRepository) toQuizSessionArray(entities []sqlc.QuizSessionView, isAdmin bool) []*domain.QuizSession {
+func (r *QuizDBRepository) toQuizSessionArray(entities []sqlc.QuizSessionView, userId string, isAdmin bool) []*domain.QuizSession {
 
 	m := make(map[string]*domain.QuizSession)
 	for _, entity := range entities {
-		quizSession := r.toQuizSession(entity, isAdmin)
+		quizSession := r.toQuizSession(entity, userId, isAdmin)
 		if existingSession, found := m[quizSession.QuizSha1]; found {
 			existingSession.UserSessions = append(existingSession.UserSessions, quizSession.UserSessions...)
 		} else {

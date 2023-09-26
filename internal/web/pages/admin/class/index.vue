@@ -90,17 +90,7 @@
     <NuxtLoadingIndicator />
     <NavBar />
 
-    <Tabs>
-      <TabsItem name="User" icon-name="solar:user-hands-bold-duotone" to="/admin/user" />
-      <TabsItem
-        name="Classes"
-        icon-name="solar:users-group-two-rounded-bold-duotone"
-        active />
-      <TabsItem
-        name="Quizzes"
-        icon-name="solar:checklist-line-duotone"
-        to="/admin/quiz" />
-    </Tabs>
+    <AdminTabs active-tab="class" />
 
     <section class="container mx-auto mt-10 px-4">
       <div class="mt-4 sm:flex sm:items-center sm:justify-between">

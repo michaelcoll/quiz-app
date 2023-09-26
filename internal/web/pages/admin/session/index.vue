@@ -15,32 +15,27 @@
   -->
 
 <script setup lang="ts">
-  import dayjs from "dayjs";
-
-  import { Class, Quiz } from "~/api/model";
+  import { QuizSession } from "~/api/model";
   import { extractTotalFromHeader, toRangeHeader } from "~/helpers/pageable";
-  import { toDurationStr } from "~/helpers/quiz";
+  import { ComboItem } from "~/model/combo-item";
 
   const pageSize = 8;
   const page = ref(1);
   const total = ref(0);
+  const classFilter = ref<string>();
 
-  const { data: classes } = await useApi<Class[]>("/api/v1/class", {
-    onRequest({ options }) {
-      options.headers = options.headers || {};
-      options.headers.Range = toRangeHeader("class", 1, 5);
+  const { data: quizSessions } = await useApi<QuizSession[]>(`/api/v1/quiz-session`, {
+    params: {
+      classId: classFilter,
     },
-  });
-
-  const { data: quizzes, refresh } = await useApi<Quiz[]>("/api/v1/quiz", {
     onRequest({ options }) {
       options.headers = options.headers || {};
-      options.headers.Range = toRangeHeader("quiz", page.value, pageSize);
+      options.headers.Range = toRangeHeader("quiz-session", page.value, pageSize);
     },
     onResponse({ response }) {
       total.value = extractTotalFromHeader(response);
     },
-    watch: [page],
+    watch: [page, classFilter],
   });
 
   function nextPage() {
@@ -51,12 +46,8 @@
     page.value--;
   }
 
-  function formatDate(quiz: Quiz): string {
-    return dayjs(quiz.createdAt).format("DD/MM/YYYY");
-  }
-
-  function onUpdated() {
-    refresh();
+  function onClassSelected(item: ComboItem) {
+    classFilter.value = item.key;
   }
 </script>
 
@@ -65,9 +56,17 @@
     <NuxtLoadingIndicator />
     <NavBar />
 
-    <AdminTabs active-tab="quiz" />
+    <AdminTabs active-tab="session" />
 
     <section class="container mx-auto mt-10 px-4">
+      <div class="mt-4 sm:flex sm:items-center sm:justify-between">
+        <span></span>
+
+        <div class="flex items-center gap-x-3 text-gray-800 dark:text-white">
+          <ClassDropDown @on-selected="onClassSelected" />
+        </div>
+      </div>
+
       <div class="mt-6 flex flex-col">
         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -84,53 +83,26 @@
 
                     <th
                       scope="col"
-                      class="w-8 px-12 py-3.5 text-left text-sm font-normal text-gray-500 rtl:text-right dark:text-gray-400"></th>
-
-                    <th
-                      scope="col"
-                      class="px-4 py-3.5 text-left text-sm font-normal text-gray-500 rtl:text-right dark:text-gray-400">
-                      Visibility
-                    </th>
-
-                    <th
-                      scope="col"
-                      class="w-8 px-4 py-3.5 text-left text-sm font-normal text-gray-500 rtl:text-right dark:text-gray-400">
-                      Duration
+                      class="w-24 px-4 py-3.5 text-left text-sm font-normal text-gray-500 rtl:text-right dark:text-gray-400">
+                      Users
                     </th>
                   </tr>
                 </thead>
                 <tbody
                   class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
-                  <tr v-for="quiz in quizzes" :key="quiz.quizSha1">
+                  <tr v-for="quizSession in quizSessions" :key="quizSession.quizSha1">
                     <td class="whitespace-nowrap p-4 text-sm font-medium">
-                      <div>
-                        <h2 class="font-medium text-gray-800 dark:text-white">
-                          {{ quiz.name }}
-                        </h2>
-                        <p class="text-sm font-normal text-gray-600 dark:text-gray-400">
-                          {{ quiz.filename }} &bull; {{ formatDate(quiz) }}
-                        </p>
-                      </div>
-                    </td>
-                    <td class="whitespace-nowrap px-12 py-4 text-sm font-medium">
-                      <div
-                        class="inline gap-x-2 rounded-full bg-emerald-100/60 px-3 py-1 text-sm font-normal text-emerald-500 dark:bg-gray-800">
-                        v{{ quiz.version }}
-                      </div>
+                      <UserSessions :quiz-session="quizSession" />
                     </td>
 
-                    <td class="space-y-2 whitespace-nowrap p-4 text-sm">
-                      <QuizClsVisibilityUpdater
-                        :quiz="quiz"
-                        :classes="classes"
-                        @on-updated="onUpdated" />
-                    </td>
-
-                    <td class="whitespace-nowrap p-4 text-sm font-medium">
-                      <div>
-                        <h2 class="font-medium text-gray-800 dark:text-white">
-                          {{ toDurationStr(quiz.duration) }}
-                        </h2>
+                    <td class="whitespace-nowrap p-4 align-top text-sm font-medium">
+                      <div v-if="quizSession.userSessions" class="flex items-center">
+                        <img
+                          v-for="userSession in quizSession.userSessions"
+                          :key="userSession.userId"
+                          class="-mx-1 h-6 w-6 shrink-0 rounded-full border-2 border-white object-cover dark:border-gray-700"
+                          :src="userSession.picture"
+                          :alt="userSession.userName" />
                       </div>
                     </td>
                   </tr>

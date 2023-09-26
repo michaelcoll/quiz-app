@@ -126,6 +126,17 @@ func (r *UserDBRepository) UpdateUserActive(ctx context.Context, id string, acti
 	})
 }
 
+func (r *UserDBRepository) UpdateUserInfo(ctx context.Context, user *domain.User) error {
+	r.uc.Delete(user.Id)
+
+	return r.q.UpdateUserInfo(ctx, sqlc.UpdateUserInfoParams{
+		Login:   user.Login,
+		Name:    user.Name,
+		Picture: user.Picture,
+		ID:      user.Id,
+	})
+}
+
 func (r *UserDBRepository) AssignUserToClass(ctx context.Context, userId string, classId uuid.UUID) error {
 	return r.q.AssignUserToClass(ctx, sqlc.AssignUserToClassParams{
 		ClassUuid: classId,

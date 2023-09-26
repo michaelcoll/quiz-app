@@ -317,30 +317,18 @@ func (r *QuizDBRepository) AddSessionAnswer(ctx context.Context, sessionUuid uui
 	return nil
 }
 
-func (r *QuizDBRepository) FindAllQuizSessions(ctx context.Context, userId string, limit uint16, offset uint16) ([]*domain.QuizSession, error) {
-
-	if isAdmin(userId) {
-		quizSessions, err := r.q.FindAllQuizSessions(ctx, sqlc.FindAllQuizSessionsParams{
-			Limit:  int64(limit),
-			Offset: int64(offset),
-		})
-		if err != nil {
-			return nil, err
-		}
-
-		return r.toQuizSessionArray(quizSessions, true), nil
-	}
-
-	quizSessions, err := r.q.FindAllQuizSessionsForUser(ctx, sqlc.FindAllQuizSessionsForUserParams{
-		ID:     userId,
-		Limit:  int64(limit),
-		Offset: int64(offset),
+func (r *QuizDBRepository) FindAllQuizSessions(ctx context.Context, userId string, classId string, limit uint16, offset uint16) ([]*domain.QuizSession, error) {
+	quizSessions, err := r.q.FindAllQuizSessions(ctx, sqlc.FindAllQuizSessionsParams{
+		UserId:  userId,
+		ClassId: classId,
+		Limit:   int64(limit),
+		Offset:  int64(offset),
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return r.toQuizSessionArray(quizSessions, false), nil
+	return r.toQuizSessionArray(quizSessions, userId, isAdmin(userId)), nil
 }
 
 func (r *QuizDBRepository) FindQuizSessionByUuid(ctx context.Context, sessionUuid uuid.UUID) (*domain.QuizSessionDetail, error) {

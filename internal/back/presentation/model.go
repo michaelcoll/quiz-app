@@ -289,6 +289,8 @@ type UserSession struct {
 	SessionId    *uuid.UUID     `json:"sessionId"`
 	UserId       string         `json:"userId"`
 	UserName     string         `json:"userName"`
+	Picture      string         `json:"picture"`
+	ClassName    string         `json:"className"`
 	RemainingSec int            `json:"remainingSec,omitempty"`
 	Result       *SessionResult `json:"result,omitempty"`
 }
@@ -332,9 +334,9 @@ func toQuizSession(domain *domain.QuizSession, userId string) *QuizSession {
 						TotalAnswer: userSession.Result.TotalAnswer,
 					}
 				}
-			} else {
-				session.UserSessions = append(session.UserSessions, toUserSession(userSession))
 			}
+
+			session.UserSessions = append(session.UserSessions, toUserSession(userSession))
 		}
 	}
 
@@ -342,15 +344,20 @@ func toQuizSession(domain *domain.QuizSession, userId string) *QuizSession {
 }
 
 func toUserSession(domain *domain.UserSession) *UserSession {
+	result := &SessionResult{}
+	if domain.Result != nil {
+		result.GoodAnswer = domain.Result.GoodAnswer
+		result.TotalAnswer = domain.Result.TotalAnswer
+	}
+
 	return &UserSession{
 		SessionId:    &domain.SessionId,
 		UserId:       domain.UserId,
 		UserName:     domain.UserName,
+		Picture:      domain.Picture,
+		ClassName:    domain.ClassName,
 		RemainingSec: domain.RemainingSec,
-		Result: &SessionResult{
-			GoodAnswer:  domain.Result.GoodAnswer,
-			TotalAnswer: domain.Result.TotalAnswer,
-		},
+		Result:       result,
 	}
 }
 

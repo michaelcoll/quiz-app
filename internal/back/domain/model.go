@@ -134,6 +134,8 @@ type UserSession struct {
 	UserId    string
 
 	UserName     string
+	Picture      string
+	ClassName    string
 	RemainingSec int
 	Result       *SessionResult
 }
