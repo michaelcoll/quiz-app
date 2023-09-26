@@ -62,7 +62,15 @@ func (s *AuthService) Login(ctx context.Context, accessToken string) (*User, err
 	}
 
 	if dbUser, err := s.userRepository.FindUserById(ctx, token.Sub); dbUser != nil && err == nil {
-		fmt.Printf("dbUser %v\n", dbUser)
+		dbUser.Name = user.Name
+		dbUser.Login = user.Login
+		dbUser.Picture = user.Picture
+
+		err = s.userRepository.UpdateUserInfo(ctx, dbUser)
+		if err != nil {
+			return nil, err
+		}
+
 		return dbUser, nil
 	}
 

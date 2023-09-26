@@ -172,8 +172,8 @@ func (s *QuizService) AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUI
 	return s.r.AddSessionAnswer(ctx, sessionUuid, userId, questionSha1, answerSha1, checked)
 }
 
-func (s *QuizService) FindAllQuizSessions(ctx context.Context, userId string, limit uint16, offset uint16) ([]*QuizSession, uint32, error) {
-	quizzes, err := s.r.FindAllQuizSessions(ctx, userId, limit, offset)
+func (s *QuizService) FindAllQuizSessions(ctx context.Context, userId string, classId string, limit uint16, offset uint16) ([]*QuizSession, uint32, error) {
+	quizzes, err := s.r.FindAllQuizSessions(ctx, userId, classId, limit, offset)
 	if err != nil {
 		return nil, 0, err
 	}

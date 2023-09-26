@@ -29,6 +29,7 @@
       <!-- Dropdown toggle button -->
       <button
         class="relative z-10 flex items-center rounded-md border border-transparent bg-white p-2 text-sm text-gray-600 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+        @focusout="isOpen = false"
         @click="isOpen = !isOpen">
         <div class="mx-1 h-8 w-8 overflow-hidden rounded-full border border-gray-400">
           <img
@@ -42,7 +43,7 @@
       </button>
 
       <!-- Dropdown menu -->
-      <Transition name="profile">
+      <Transition name="dropdown">
         <div
           v-if="isOpen"
           class="absolute right-0 z-20 mt-2 w-64 origin-top-right overflow-hidden rounded-md border border-gray-200 bg-white py-2 shadow-xl transition dark:border-gray-700 dark:bg-gray-800">
@@ -95,7 +96,7 @@
 
           <a
             href="#"
-            class="flex items-center p-3 text-sm capitalize text-gray-600 transition-colors duration-300 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
+            class="flex items-center p-3 text-sm text-gray-600 transition-colors duration-300 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
             @click="handleLogout">
             <Icon class="mx-1 h-5 w-5" name="solar:login-3-bold-duotone" />
             <span class="mx-1"> Sign Out </span>

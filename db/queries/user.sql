@@ -32,6 +32,13 @@ UPDATE user
 SET class_uuid = ?
 WHERE id = ?;
 
+-- name: UpdateUserInfo :exec
+UPDATE user
+SET login   = ?,
+    name    = ?,
+    picture = ?
+WHERE id = ?;
+
 -- name: ClearClassUsers :exec
 UPDATE user
 SET class_uuid = NULL

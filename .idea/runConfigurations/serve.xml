@@ -3,6 +3,11 @@
     <module name="quizz-app" />
     <working_directory value="$PROJECT_DIR$" />
     <parameters value="serve" />
+    <envs>
+      <env name="QUIZ_DEFAULT_ADMIN_USERNAME" value="michaelcoll" />
+      <env name="QUIZ_REPOSITORY_URL" value="https://github.com/school-by-hiit/quizz" />
+      <env name="QUIZ_TOKEN" value="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" />
+    </envs>
     <kind value="PACKAGE" />
     <package value="github.com/michaelcoll/quiz-app" />
     <directory value="$PROJECT_DIR$" />

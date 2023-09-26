@@ -54,7 +54,7 @@ func TestQuizDBRepository_toQuizSessionArray_2quiz_1session(t *testing.T) {
 	}
 
 	// When
-	actual := r.toQuizSessionArray(sessions, true)
+	actual := r.toQuizSessionArray(sessions, userId1, true)
 
 	// Then
 	assert.Len(t, actual, 2)
@@ -116,7 +116,7 @@ func TestQuizDBRepository_toQuizSessionArray_3quiz_2session(t *testing.T) {
 	}
 
 	// When
-	actual := r.toQuizSessionArray(sessions, true)
+	actual := r.toQuizSessionArray(sessions, "", true)
 
 	// Then
 	assert.Len(t, actual, 2)

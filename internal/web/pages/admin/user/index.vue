@@ -17,7 +17,8 @@
 <script setup lang="ts">
   import { useToast } from "tailvue";
 
-  import { Session, User } from "~/api/model";
+  import { Message, Session, User } from "~/api/model";
+  import { ComboItem } from "~/model/combo-item";
   import { useAuthStore } from "~/stores/auth";
 
   const userEditMap = ref<Map<string, boolean>>(new Map<string, boolean>());
@@ -58,6 +59,26 @@
     }
     refresh();
   }
+
+  async function onClassSelected(item: ComboItem, user: User) {
+    await usePutApi<Message>(`/api/v1/user/${user.id}/class/${item.key}`, {
+      onResponse({ response }) {
+        if (response.status === 200) {
+          useToast().success(response._data.message);
+        }
+      },
+    });
+  }
+
+  async function onRoleSelected(item: ComboItem, user: User) {
+    await usePutApi<Message>(`/api/v1/user/${user.id}/role/${item.key}`, {
+      onResponse({ response }) {
+        if (response.status === 200) {
+          useToast().success(response._data.message);
+        }
+      },
+    });
+  }
 </script>
 
 <template>
@@ -65,17 +86,7 @@
     <NuxtLoadingIndicator />
     <NavBar />
 
-    <Tabs>
-      <TabsItem name="User" icon-name="solar:user-hands-bold-duotone" active />
-      <TabsItem
-        name="Classes"
-        icon-name="solar:users-group-two-rounded-bold-duotone"
-        to="/admin/classes" />
-      <TabsItem
-        name="Quizzes"
-        icon-name="solar:checklist-line-duotone"
-        to="/admin/quiz" />
-    </Tabs>
+    <AdminTabs active-tab="user" />
 
     <section class="container mx-auto mt-10 px-4">
       <div class="mt-6 flex flex-col">
@@ -138,28 +149,32 @@
                     </td>
 
                     <td class="w-40 p-4 text-sm font-medium">
-                      <RoleUpdaterCombo
+                      <RoleDropDown
                         v-if="
                           loggedUser.role == 'ADMIN' &&
                           userEditMap &&
                           user.id &&
                           userEditMap.get(user.id)
                         "
-                        :user="user" />
+                        :updating-item="user"
+                        :selected-role="user.role"
+                        @on-selected="onRoleSelected" />
                       <div v-else>
                         <RoleBadge :user="user" />
                       </div>
                     </td>
 
                     <td class="whitespace-nowrap p-4 text-sm font-medium">
-                      <ClassUpdaterCombo
+                      <ClassDropDown
                         v-if="
                           loggedUser.role == 'ADMIN' &&
                           userEditMap &&
                           user.id &&
                           userEditMap.get(user.id)
                         "
-                        :user="user" />
+                        :updating-item="user"
+                        :selected-class-id="user.class?.id"
+                        @on-selected="onClassSelected" />
                       <h2 v-else class="font-medium text-gray-800 dark:text-white">
                         {{ user.class?.name }}
                       </h2>

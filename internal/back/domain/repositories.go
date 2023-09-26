@@ -36,7 +36,7 @@ type QuizRepository interface {
 	StartSession(ctx context.Context, userId string, quizSha1 string) (uuid.UUID, error)
 	AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUID, userId string, questionSha1 string, answerSha1 string, checked bool) error
 
-	FindAllQuizSessions(ctx context.Context, userId string, limit uint16, offset uint16) ([]*QuizSession, error)
+	FindAllQuizSessions(ctx context.Context, userId string, classId string, limit uint16, offset uint16) ([]*QuizSession, error)
 	FindQuizSessionByUuid(ctx context.Context, sessionUuid uuid.UUID) (*QuizSessionDetail, error)
 }
 
@@ -54,6 +54,7 @@ type UserRepository interface {
 	CreateOrReplaceUser(ctx context.Context, user *User) error
 	UpdateUserActive(ctx context.Context, id string, active bool) error
 	UpdateUserRole(ctx context.Context, userId string, role Role) error
+	UpdateUserInfo(ctx context.Context, user *User) error
 	AssignUserToClass(ctx context.Context, userId string, classId uuid.UUID) error
 }
 

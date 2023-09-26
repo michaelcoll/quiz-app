@@ -185,7 +185,9 @@ func (c *ApiController) quizSessionList(ctx *gin.Context) {
 		studentUserId = userId
 	}
 
-	sessions, total, err := c.quizService.FindAllQuizSessions(ctx.Request.Context(), studentUserId, end-start, start)
+	classId, _ := ctx.GetQuery("classId")
+
+	sessions, total, err := c.quizService.FindAllQuizSessions(ctx.Request.Context(), studentUserId, classId, end-start, start)
 	if err != nil {
 		handleError(ctx, err)
 		return

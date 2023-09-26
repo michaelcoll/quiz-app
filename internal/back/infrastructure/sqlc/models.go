@@ -104,19 +104,21 @@ type QuizSessionDetailView struct {
 }
 
 type QuizSessionView struct {
-	QuizSha1       string      `db:"quiz_sha1"`
-	QuizName       string      `db:"quiz_name"`
-	QuizFilename   string      `db:"quiz_filename"`
-	QuizVersion    int         `db:"quiz_version"`
-	QuizDuration   int         `db:"quiz_duration"`
-	QuizCreatedAt  string      `db:"quiz_created_at"`
-	SessionUuid    uuid.UUID   `db:"session_uuid"`
-	UserID         string      `db:"user_id"`
-	UserName       string      `db:"user_name"`
-	UserPicture    interface{} `db:"user_picture"`
-	RemainingSec   int         `db:"remaining_sec"`
-	CheckedAnswers int         `db:"checked_answers"`
-	Results        int         `db:"results"`
+	QuizSha1       string    `db:"quiz_sha1"`
+	QuizName       string    `db:"quiz_name"`
+	QuizFilename   string    `db:"quiz_filename"`
+	QuizVersion    int       `db:"quiz_version"`
+	QuizDuration   int       `db:"quiz_duration"`
+	QuizCreatedAt  string    `db:"quiz_created_at"`
+	SessionUuid    uuid.UUID `db:"session_uuid"`
+	UserID         string    `db:"user_id"`
+	UserName       string    `db:"user_name"`
+	UserPicture    string    `db:"user_picture"`
+	ClassUuid      uuid.UUID `db:"class_uuid"`
+	ClassName      string    `db:"class_name"`
+	RemainingSec   int       `db:"remaining_sec"`
+	CheckedAnswers int       `db:"checked_answers"`
+	Results        int       `db:"results"`
 }
 
 type Role struct {

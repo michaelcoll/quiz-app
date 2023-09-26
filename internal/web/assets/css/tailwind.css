@@ -2,14 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Transition to show hide profile */
-.profile-enter-active,
-.profile-leave-active {
+/* Transition to show hide dropdown */
+.dropdown-enter-active,
+.dropdown-leave-active {
     transition: all 0.2s ease;
 }
 
-.profile-enter-from,
-.profile-leave-to {
+.dropdown-enter-from,
+.dropdown-leave-to {
     opacity: 0;
     transform: translateY(-10px);
 }

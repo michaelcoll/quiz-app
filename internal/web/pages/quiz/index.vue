@@ -108,14 +108,6 @@
                     <th
                       scope="col"
                       class="w-8 px-12 py-3.5 text-left text-sm font-normal text-gray-500 rtl:text-right dark:text-gray-400"></th>
-                    <!--
-
-                    <th
-                      scope="col"
-                      class="px-4 py-3.5 text-left text-sm font-normal text-gray-500 rtl:text-right dark:text-gray-400">
-                      Users
-                    </th>
--->
 
                     <th
                       scope="col"
@@ -148,17 +140,6 @@
                         v{{ quiz.version }}
                       </div>
                     </td>
-
-                    <!--
-                    <td class="whitespace-nowrap p-4 text-sm">
-                      <div class="flex items-center">
-                        <p
-                          class="-mx-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-blue-100 text-xs text-blue-600">
-                          +4
-                        </p>
-                      </div>
-                    </td>
--->
 
                     <td class="whitespace-nowrap p-4 text-sm font-medium">
                       <div>
