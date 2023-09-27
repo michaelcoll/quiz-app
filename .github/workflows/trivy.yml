@@ -28,23 +28,28 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run Trivy vulnerability scanner
+      - name: Run Trivy vulnerability scanner for backend
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'ghcr.io/michaelcoll/quiz-app-back:latest'
           format: 'sarif'
-          output: 'trivy-results.sarif'
+          output: 'trivy-results-back.sarif'
           severity: 'CRITICAL,HIGH'
 
-      - name: Run Trivy vulnerability scanner
+      - name: Run Trivy vulnerability scanner for frontend
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'ghcr.io/michaelcoll/quiz-app-front:latest'
           format: 'sarif'
-          output: 'trivy-results.sarif'
+          output: 'trivy-results-front.sarif'
           severity: 'CRITICAL,HIGH'
 
-      - name: Upload Trivy scan results to GitHub Security tab
+      - name: Upload Trivy scan results to GitHub Security tab for backend
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: 'trivy-results-back.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab for frontend
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results-front.sarif'
