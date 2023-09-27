@@ -106,11 +106,13 @@ SELECT q.sha1                                                                  A
        CASE WHEN sv.checked_answers IS NULL THEN 0 ELSE sv.checked_answers END AS checked_answers,
        CASE WHEN sv.results IS NULL THEN 0 ELSE sv.results END                 AS results
 FROM quiz q
-         LEFT JOIN session s ON q.sha1 = s.quiz_sha1 AND s.user_id = ?
-         LEFT JOIN user u ON s.user_id = u.id
-         LEFT JOIN student_class sc ON u.class_uuid = sc.uuid
+         JOIN quiz_class_visibility qcv ON q.sha1 = qcv.quiz_sha1
+         JOIN student_class sc ON qcv.class_uuid = sc.uuid
+         JOIN user u ON qcv.class_uuid = u.class_uuid
+         LEFT JOIN session s ON q.sha1 = s.quiz_sha1 AND s.user_id = u.id
          LEFT JOIN session_view sv ON sv.uuid = s.uuid
 WHERE q.active = TRUE
+AND u.id = ?
 LIMIT ? OFFSET ?
 `
 
