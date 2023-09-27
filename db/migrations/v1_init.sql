@@ -94,14 +94,12 @@ CREATE TABLE session
 CREATE TABLE session_answer
 (
     session_uuid  TEXT    NOT NULL,
-    user_id       TEXT    NOT NULL,
     question_sha1 TEXT    NOT NULL,
     answer_sha1   TEXT    NOT NULL,
     checked       INTEGER NOT NULL,
 
     PRIMARY KEY (session_uuid, question_sha1, answer_sha1),
     FOREIGN KEY (session_uuid) REFERENCES session (uuid),
-    FOREIGN KEY (user_id) REFERENCES user (id),
     FOREIGN KEY (question_sha1) REFERENCES quiz_question (sha1),
     FOREIGN KEY (answer_sha1) REFERENCES quiz_answer (sha1)
 );
@@ -137,8 +135,11 @@ FROM quiz_question_quiz qqq
          JOIN quiz_question_answer qqa ON qqq.question_sha1 = qqa.question_sha1
          JOIN quiz_answer qa ON qa.sha1 = qqa.answer_sha1
          LEFT JOIN session s ON qqq.quiz_sha1 = s.quiz_sha1
-         LEFT JOIN session_answer sa ON qa.sha1 = sa.answer_sha1 AND sa.question_sha1 = qqq.question_sha1 AND
-                                        sa.answer_sha1 = qqa.answer_sha1;
+         LEFT JOIN session_answer sa
+                   ON sa.session_uuid = s.uuid
+                       AND qa.sha1 = sa.answer_sha1
+                       AND sa.question_sha1 = qqq.question_sha1
+                       AND sa.answer_sha1 = qqa.answer_sha1;
 
 CREATE VIEW session_view
 AS
@@ -156,7 +157,8 @@ FROM session s
          JOIN quiz q ON q.sha1 = s.quiz_sha1
          JOIN user u ON u.id = s.user_id
          JOIN quiz_answer_count_view qacv ON s.quiz_sha1 = qacv.quiz_sha1
-         JOIN session_response_view srv ON s.uuid = srv.session_uuid;
+         JOIN session_response_view srv ON s.uuid = srv.session_uuid
+GROUP BY s.uuid, q.sha1, q.name, q.active, u.id, u.name, u.picture;
 
 CREATE TRIGGER verify_remaining_time_create
     BEFORE INSERT

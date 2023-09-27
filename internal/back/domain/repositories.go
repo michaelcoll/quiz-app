@@ -34,7 +34,7 @@ type QuizRepository interface {
 	FindAllSessions(ctx context.Context, quizActive bool, userId string, limit uint16, offset uint16) ([]*Session, error)
 	CountAllSessions(ctx context.Context, quizActive bool, userId string) (uint32, error)
 	StartSession(ctx context.Context, userId string, quizSha1 string) (uuid.UUID, error)
-	AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUID, userId string, questionSha1 string, answerSha1 string, checked bool) error
+	AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUID, questionSha1 string, answerSha1 string, checked bool) error
 
 	FindAllQuizSessions(ctx context.Context, userId string, classId string, limit uint16, offset uint16) ([]*QuizSession, error)
 	FindQuizSessionByUuid(ctx context.Context, sessionUuid uuid.UUID) (*QuizSessionDetail, error)
