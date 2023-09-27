@@ -298,11 +298,10 @@ func (r *QuizDBRepository) StartSession(ctx context.Context, userId string, quiz
 	return sessionUuid, nil
 }
 
-func (r *QuizDBRepository) AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUID, userId string, questionSha1 string, answerSha1 string, checked bool) error {
+func (r *QuizDBRepository) AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUID, questionSha1 string, answerSha1 string, checked bool) error {
 
 	err := r.q.CreateOrReplaceSessionAnswer(ctx, sqlc.CreateOrReplaceSessionAnswerParams{
 		SessionUuid:  sessionUuid,
-		UserID:       userId,
 		QuestionSha1: questionSha1,
 		AnswerSha1:   answerSha1,
 		Checked:      checked,
@@ -318,17 +317,29 @@ func (r *QuizDBRepository) AddSessionAnswer(ctx context.Context, sessionUuid uui
 }
 
 func (r *QuizDBRepository) FindAllQuizSessions(ctx context.Context, userId string, classId string, limit uint16, offset uint16) ([]*domain.QuizSession, error) {
-	quizSessions, err := r.q.FindAllQuizSessions(ctx, sqlc.FindAllQuizSessionsParams{
-		UserId:  userId,
-		ClassId: classId,
-		Limit:   int64(limit),
-		Offset:  int64(offset),
+	if isAdmin(userId) {
+		quizSessions, err := r.q.FindAllQuizSessions(ctx, sqlc.FindAllQuizSessionsParams{
+			ClassId: classId,
+			Limit:   int64(limit),
+			Offset:  int64(offset),
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		return r.toQuizSessionArray(quizSessions, userId, true), nil
+	}
+
+	quizSessions, err := r.q.FindAllQuizSessionsForUser(ctx, sqlc.FindAllQuizSessionsParams{
+		UserId: userId,
+		Limit:  int64(limit),
+		Offset: int64(offset),
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return r.toQuizSessionArray(quizSessions, userId, isAdmin(userId)), nil
+	return r.toQuizSessionArray(quizSessions, userId, false), nil
 }
 
 func (r *QuizDBRepository) FindQuizSessionByUuid(ctx context.Context, sessionUuid uuid.UUID) (*domain.QuizSessionDetail, error) {

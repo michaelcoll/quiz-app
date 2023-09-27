@@ -135,7 +135,6 @@ type Session struct {
 
 type SessionAnswer struct {
 	SessionUuid  uuid.UUID `db:"session_uuid"`
-	UserID       string    `db:"user_id"`
 	QuestionSha1 string    `db:"question_sha1"`
 	AnswerSha1   string    `db:"answer_sha1"`
 	Checked      bool      `db:"checked"`

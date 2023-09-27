@@ -82,13 +82,13 @@ func (_c *MockQuizRepository_ActivateOnlyVersion_Call) RunAndReturn(run func(con
 	return _c
 }
 
-// AddSessionAnswer provides a mock function with given fields: ctx, sessionUuid, userId, questionSha1, answerSha1, checked
-func (_m *MockQuizRepository) AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUID, userId string, questionSha1 string, answerSha1 string, checked bool) error {
-	ret := _m.Called(ctx, sessionUuid, userId, questionSha1, answerSha1, checked)
+// AddSessionAnswer provides a mock function with given fields: ctx, sessionUuid, questionSha1, answerSha1, checked
+func (_m *MockQuizRepository) AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUID, questionSha1 string, answerSha1 string, checked bool) error {
+	ret := _m.Called(ctx, sessionUuid, questionSha1, answerSha1, checked)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, string, string, string, bool) error); ok {
-		r0 = rf(ctx, sessionUuid, userId, questionSha1, answerSha1, checked)
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, string, string, bool) error); ok {
+		r0 = rf(ctx, sessionUuid, questionSha1, answerSha1, checked)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -104,17 +104,16 @@ type MockQuizRepository_AddSessionAnswer_Call struct {
 // AddSessionAnswer is a helper method to define mock.On call
 //   - ctx context.Context
 //   - sessionUuid uuid.UUID
-//   - userId string
 //   - questionSha1 string
 //   - answerSha1 string
 //   - checked bool
-func (_e *MockQuizRepository_Expecter) AddSessionAnswer(ctx interface{}, sessionUuid interface{}, userId interface{}, questionSha1 interface{}, answerSha1 interface{}, checked interface{}) *MockQuizRepository_AddSessionAnswer_Call {
-	return &MockQuizRepository_AddSessionAnswer_Call{Call: _e.mock.On("AddSessionAnswer", ctx, sessionUuid, userId, questionSha1, answerSha1, checked)}
+func (_e *MockQuizRepository_Expecter) AddSessionAnswer(ctx interface{}, sessionUuid interface{}, questionSha1 interface{}, answerSha1 interface{}, checked interface{}) *MockQuizRepository_AddSessionAnswer_Call {
+	return &MockQuizRepository_AddSessionAnswer_Call{Call: _e.mock.On("AddSessionAnswer", ctx, sessionUuid, questionSha1, answerSha1, checked)}
 }
 
-func (_c *MockQuizRepository_AddSessionAnswer_Call) Run(run func(ctx context.Context, sessionUuid uuid.UUID, userId string, questionSha1 string, answerSha1 string, checked bool)) *MockQuizRepository_AddSessionAnswer_Call {
+func (_c *MockQuizRepository_AddSessionAnswer_Call) Run(run func(ctx context.Context, sessionUuid uuid.UUID, questionSha1 string, answerSha1 string, checked bool)) *MockQuizRepository_AddSessionAnswer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(uuid.UUID), args[2].(string), args[3].(string), args[4].(string), args[5].(bool))
+		run(args[0].(context.Context), args[1].(uuid.UUID), args[2].(string), args[3].(string), args[4].(bool))
 	})
 	return _c
 }
@@ -124,7 +123,7 @@ func (_c *MockQuizRepository_AddSessionAnswer_Call) Return(_a0 error) *MockQuizR
 	return _c
 }
 
-func (_c *MockQuizRepository_AddSessionAnswer_Call) RunAndReturn(run func(context.Context, uuid.UUID, string, string, string, bool) error) *MockQuizRepository_AddSessionAnswer_Call {
+func (_c *MockQuizRepository_AddSessionAnswer_Call) RunAndReturn(run func(context.Context, uuid.UUID, string, string, bool) error) *MockQuizRepository_AddSessionAnswer_Call {
 	_c.Call.Return(run)
 	return _c
 }

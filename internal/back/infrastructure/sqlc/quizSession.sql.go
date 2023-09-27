@@ -77,21 +77,78 @@ func (q *Queries) FindAllQuizSessions(ctx context.Context, arg FindAllQuizSessio
 
 func findAllQuizSessionsQueryWithWhereClause(arg FindAllQuizSessionsParams) (req string, args []interface{}) {
 	whereClause := ""
-	userWhereClause := "user_id = ?"
 	classWhereClause := "class_uuid = ?"
 
-	if arg.ClassId != "" && arg.UserId != "" {
-		whereClause = "WHERE " + userWhereClause + " AND " + classWhereClause
-		args = append(args, arg.UserId, arg.ClassId)
-	} else if arg.ClassId != "" {
+	if arg.ClassId != "" {
 		whereClause = "WHERE " + classWhereClause
 		args = append(args, arg.ClassId)
-	} else if arg.UserId != "" {
-		whereClause = "WHERE " + userWhereClause
-		args = append(args, arg.UserId)
 	}
 
 	args = append(args, arg.Limit, arg.Offset)
 
 	return fmt.Sprintf(findAllQuizSessions, whereClause), args
+}
+
+const findAllQuizSessionsForUser = `
+SELECT q.sha1                                                                  AS quiz_sha1,
+       q.name                                                                  AS quiz_name,
+       q.filename                                                              AS quiz_filename,
+       q.version                                                               AS quiz_version,
+       q.duration                                                              AS quiz_duration,
+       q.created_at                                                            AS quiz_created_at,
+       CASE WHEN s.uuid IS NULL THEN '' ELSE s.uuid END                        AS session_uuid,
+       CASE WHEN s.user_id IS NULL THEN '' ELSE s.user_id END                  AS user_id,
+       CASE WHEN u.name IS NULL THEN '' ELSE u.name END                        AS user_name,
+       CASE WHEN u.picture IS NULL THEN '' ELSE u.picture END                  AS user_picture,
+       CASE WHEN sc.uuid IS NULL THEN '' ELSE sc.uuid END                      AS class_uuid,
+       CASE WHEN sc.name IS NULL THEN '' ELSE sc.name END                      AS class_name,
+       CASE WHEN sv.remaining_sec IS NULL THEN 0 ELSE sv.remaining_sec END     AS remaining_sec,
+       CASE WHEN sv.checked_answers IS NULL THEN 0 ELSE sv.checked_answers END AS checked_answers,
+       CASE WHEN sv.results IS NULL THEN 0 ELSE sv.results END                 AS results
+FROM quiz q
+         LEFT JOIN session s ON q.sha1 = s.quiz_sha1 AND s.user_id = ?
+         LEFT JOIN user u ON s.user_id = u.id
+         LEFT JOIN student_class sc ON u.class_uuid = sc.uuid
+         LEFT JOIN session_view sv ON sv.uuid = s.uuid
+WHERE q.active = TRUE
+LIMIT ? OFFSET ?
+`
+
+func (q *Queries) FindAllQuizSessionsForUser(ctx context.Context, arg FindAllQuizSessionsParams) ([]QuizSessionView, error) {
+	rows, err := q.db.QueryContext(ctx, findAllQuizSessionsForUser, arg.UserId, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []QuizSessionView
+	for rows.Next() {
+		var i QuizSessionView
+		if err := rows.Scan(
+			&i.QuizSha1,
+			&i.QuizName,
+			&i.QuizFilename,
+			&i.QuizVersion,
+			&i.QuizDuration,
+			&i.QuizCreatedAt,
+			&i.SessionUuid,
+			&i.UserID,
+			&i.UserName,
+			&i.UserPicture,
+			&i.ClassUuid,
+			&i.ClassName,
+			&i.RemainingSec,
+			&i.CheckedAnswers,
+			&i.Results,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
