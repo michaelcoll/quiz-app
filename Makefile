@@ -1,6 +1,6 @@
-build: build-web build-go
+build: build-web build-go ## Build the app
 
-prepare:
+prepare: ## Prepares the frontend
 	cd internal/web \
 		&& corepack enable && corepack prepare \
 		&& rm -fr .output \
@@ -8,7 +8,7 @@ prepare:
         && rm -fr node_modules \
 		&& pnpm i
 
-dep-upgrade: dep-upgrade-go dep-upgrade-node
+dep-upgrade: dep-upgrade-go dep-upgrade-node ## Upgrades dependencies
 
 dep-upgrade-go:
 	@go get -u
@@ -26,32 +26,29 @@ build-web:
 	cd internal/web \
 		&& pnpm run generate
 
-build-docker:
-	@docker build . -t michaelcoll/quiz-app:latest --pull --build-arg VERSION=v0.0.1
-
 .PHONY: test
-test:
+test: ## Launch go tests and linter
 	@go test -vet=all ./...
 
 .PHONY: coverage
-coverage:
+coverage: ## Launch go tests with coverage
 	@go test -vet=all -covermode atomic -coverprofile=coverage.out ./...
 
-run-back:
+run-back: ## Launch the backend
 	@go run . serve
 
-run-front:
+run-front: ## Launch the frontend
 	cd internal/web \
   		&& pnpm run dev
 
-lint-front:
+lint-front: ## Run the linter for the frontend
 	cd internal/web \
   		&& pnpm run lint
 
 run-docker:
-	docker run -ti --rm -p 8080:8080 web:latest
+	docker compose up --build
 
-gen: sqlc generate
+gen: sqlc generate ## Generate all the code
 
 .PHONY: generate
 generate:
@@ -63,7 +60,7 @@ sqlc:
 	@sqlc-addon generate --quiet
 
 .PHONY: ts-model
-ts-model:
+ts-model: ## Generate typescript api model
 	openapi-generator-cli \
 		generate \
 		-i doc/openapi/spec.yml \
@@ -77,3 +74,7 @@ ts-model:
 		&& find ./internal/web/api/model -type f -exec sed -i 's@/\* tslint:disable \*/@@g' {} \; \
 		&& cd internal/web \
 		&& pnpm run lint
+
+.PHONY: help
+help:
+	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
