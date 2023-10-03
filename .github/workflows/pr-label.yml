@@ -1,0 +1,37 @@
+on:
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  label_regex:
+    runs-on: ubuntu-latest
+    name: Add label
+    steps:
+    - name: "Assign fix label to new Pull Request"
+      uses: Bhacaz/label-regex@v2
+      with:
+        field: title
+        regex: '(fix+?)'
+        lowercase: true
+        token: ${{ github.token }}
+    - name: "Assign feat label to new Pull Request"
+      uses: Bhacaz/label-regex@v2
+      with:
+        field: title
+        regex: '(feat+?)'
+        lowercase: true
+        token: ${{ github.token }}
+    - name: "Assign chore label to new Pull Request"
+      uses: Bhacaz/label-regex@v2
+      with:
+        field: title
+        regex: '(chore+?)'
+        lowercase: true
+        token: ${{ github.token }}
+    - name: "Assign ci label to new Pull Request"
+      uses: Bhacaz/label-regex@v2
+      with:
+        field: title
+        regex: '(ci+?)'
+        lowercase: true
+        token: ${{ github.token }}

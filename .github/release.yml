@@ -5,11 +5,11 @@ changelog:
     - '*'
     exclude:
       labels:
-      - deps
+      - dependencies
       - fix
   - title: 🔧 Fixes
     labels:
     - fix
   - title: 📦 Dependencies
     labels:
-    - deps
+    - dependencies
