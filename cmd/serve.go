@@ -43,12 +43,18 @@ func serve(_ *cobra.Command, _ []string) {
 
 	module := back.New()
 
+	go sync(module)
+
+	module.GetApiController().Serve()
+}
+
+func sync(module back.Module) {
 	err := module.GetService().Sync(context.Background())
 	if err != nil {
 		fmt.Printf("%s Can't sync quizzes (%v)\n", color.RedString("✗"), err)
 		os.Exit(-1)
 	}
-	module.GetPhotoController().Serve()
+	module.GetApiController().SetReady()
 }
 
 func init() {

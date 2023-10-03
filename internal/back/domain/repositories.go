@@ -68,3 +68,8 @@ type ClassRepository interface {
 	CreateQuizClassVisibility(ctx context.Context, quizSha1 string, classId uuid.UUID) error
 	DeleteQuizClassVisibility(ctx context.Context, quizSha1 string, classId uuid.UUID) error
 }
+
+//go:generate mockery --name HealthRepository
+type HealthRepository interface {
+	Ping(ctx context.Context) bool
+}
