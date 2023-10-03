@@ -232,8 +232,9 @@ END;
 
 CREATE TABLE quiz_class_visibility
 (
-    class_uuid TEXT NOT NULL,
-    quiz_sha1  TEXT NOT NULL,
+    class_uuid     TEXT    NOT NULL,
+    display_result INTEGER NOT NULL DEFAULT 0,
+    quiz_sha1      TEXT    NOT NULL,
 
     PRIMARY KEY (class_uuid, quiz_sha1),
     FOREIGN KEY (class_uuid) REFERENCES student_class (uuid) ON DELETE CASCADE,

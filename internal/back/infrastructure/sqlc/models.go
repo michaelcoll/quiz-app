@@ -61,8 +61,9 @@ type QuizClassView struct {
 }
 
 type QuizClassVisibility struct {
-	ClassUuid uuid.UUID `db:"class_uuid"`
-	QuizSha1  string    `db:"quiz_sha1"`
+	ClassUuid     uuid.UUID `db:"class_uuid"`
+	DisplayResult bool      `db:"display_result"`
+	QuizSha1      string    `db:"quiz_sha1"`
 }
 
 type QuizQuestion struct {

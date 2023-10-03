@@ -47,6 +47,8 @@ sql:
             go_type: "int"
           - column: "main.*.active"
             go_type: "bool"
+          - column: "main.*.display_result"
+            go_type: "bool"
           - column: "main.*.quiz_active"
             go_type: "bool"
           - column: "main.*.valid"
