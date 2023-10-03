@@ -34,19 +34,21 @@ const apiPort = ":8080"
 var rangeRxp = regexp.MustCompile(`(?P<Unit>.*)=(?P<Start>[0-9]+)-(?P<End>[0-9]*)`)
 
 type ApiController struct {
-	authService  *domain.AuthService
-	classService *domain.ClassService
-	quizService  *domain.QuizService
-	userService  *domain.UserService
+	authService   *domain.AuthService
+	classService  *domain.ClassService
+	quizService   *domain.QuizService
+	userService   *domain.UserService
+	healthService *domain.HealthService
 }
 
 func NewApiController(
 	authService *domain.AuthService,
 	classService *domain.ClassService,
 	quizService *domain.QuizService,
-	userService *domain.UserService) ApiController {
+	userService *domain.UserService,
+	healthService *domain.HealthService) ApiController {
 	return ApiController{authService: authService, classService: classService,
-		quizService: quizService, userService: userService}
+		quizService: quizService, userService: userService, healthService: healthService}
 }
 
 var pathRoleMapping = map[*endPointDef]domain.Role{}
@@ -62,11 +64,16 @@ func (c *ApiController) Serve() {
 
 	public := router.Group("/api/v1")
 	private := router.Group("/api/v1")
+	health := router.Group("/health")
 
 	private.Use(validateAuthHeaderAndGetUser(c.authService))
 	private.Use(enforceRoles)
 
 	addPostEndpoint(public, "/login", domain.NoRole, c.login)
+
+	addGetEndpoint(health, "/started", domain.NoRole, c.started)
+	addGetEndpoint(health, "/ready", domain.NoRole, c.ready)
+	addGetEndpoint(health, "/live", domain.NoRole, c.live)
 
 	addGetEndpoint(private, "/quiz", domain.Student, c.quizList)
 	addGetEndpoint(private, "/quiz/:sha1", domain.Student, c.quizBySha1)

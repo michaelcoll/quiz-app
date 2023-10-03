@@ -29,7 +29,7 @@ type Module struct {
 	quizCtrl presentation.ApiController
 }
 
-func (m *Module) GetPhotoController() *presentation.ApiController {
+func (m *Module) GetApiController() *presentation.ApiController {
 	return &m.quizCtrl
 }
 
@@ -44,6 +44,7 @@ func New() Module {
 	classRepository := infrastructure.NewClassRepository(connection)
 	quizRepository := infrastructure.NewQuizRepository(connection)
 	userRepository := infrastructure.NewUserRepository(connection)
+	healthRepository := infrastructure.NewHealthRepository(connection)
 
 	githubCaller := infrastructure.NewGithubAccessTokenCaller()
 
@@ -51,10 +52,11 @@ func New() Module {
 	classService := domain.NewClassService(classRepository)
 	quizService := domain.NewQuizService(quizRepository)
 	userService := domain.NewUserService(userRepository)
+	healthService := domain.NewHealthService(healthRepository)
 
 	return Module{
 		quizServ: quizService,
 		authServ: authService,
-		quizCtrl: presentation.NewApiController(&authService, &classService, &quizService, &userService),
+		quizCtrl: presentation.NewApiController(&authService, &classService, &quizService, &userService, &healthService),
 	}
 }
