@@ -57,7 +57,11 @@ func (c *ApiController) Serve() {
 
 	gin.SetMode(gin.ReleaseMode)
 
-	router := gin.Default()
+	router := gin.New()
+	router.Use(
+		gin.LoggerWithWriter(gin.DefaultWriter, "/health/started", "/health/ready", "/health/live"),
+		gin.Recovery(),
+	)
 	router.Use(injectTokenIfPresent)
 
 	addCommonMiddlewares(router)
