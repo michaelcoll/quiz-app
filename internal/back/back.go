@@ -17,6 +17,8 @@
 package back
 
 import (
+	"github.com/spf13/viper"
+
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
 	"github.com/michaelcoll/quiz-app/internal/back/infrastructure"
 	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/db"
@@ -38,7 +40,8 @@ func (m *Module) GetService() *domain.QuizService {
 }
 
 func New() Module {
-	connection := db.Init("data")
+	dbLocation := viper.GetString("db-location")
+	connection := db.Init(dbLocation)
 
 	authRepository := infrastructure.NewAuthRepository(connection)
 	classRepository := infrastructure.NewClassRepository(connection)
