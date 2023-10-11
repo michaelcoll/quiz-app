@@ -19,7 +19,7 @@
     "@types/node": "20.8.4",
     "@vue/eslint-config-prettier": "8.0.0",
     "eslint": "8.50.0",
-    "eslint-plugin-prettier": "5.0.0",
+    "eslint-plugin-prettier": "5.0.1",
     "eslint-plugin-simple-import-sort": "10.0.0",
     "eslint-plugin-tailwindcss": "3.13.0",
     "nuxt": "3.7.4",
