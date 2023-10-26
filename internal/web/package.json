@@ -12,7 +12,7 @@
   "devDependencies": {
     "@nuxt/devtools": "1.0.0",
     "@nuxtjs/eslint-config-typescript": "12.1.0",
-    "@nuxtjs/tailwindcss": "6.8.0",
+    "@nuxtjs/tailwindcss": "6.8.1",
     "@pinia-plugin-persistedstate/nuxt": "1.1.2",
     "@sidebase/nuxt-auth": "0.6.0-rc.1",
     "@tailvue/nuxt": "1.0.0",
