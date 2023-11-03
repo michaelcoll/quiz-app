@@ -13,8 +13,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm i --frozen-lockfile --sha
 
 FROM dependency-base AS production-base
 
-ENV API_BASE="http://back:8080"
-
 COPY . .
 RUN pnpm run build
 
