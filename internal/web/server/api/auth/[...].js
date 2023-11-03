@@ -7,8 +7,8 @@ export default NuxtAuthHandler({
   providers: [
     // @ts-expect-error You need to use .default here for it to work during SSR. May be fixed via Vite at some point
     GithubProvider.default({
-      clientId: "afd22679cd8118504e36",
-      clientSecret: "e32fe9cdc9e69367d1e5eb87880be8eb5e637190",
+      clientId: useRuntimeConfig().clientId,
+      clientSecret: useRuntimeConfig().clientSecret,
     }),
   ],
   callbacks: {
@@ -29,8 +29,7 @@ export default NuxtAuthHandler({
       return session;
     },
     async signIn({ account }) {
-      const apiServerUrl = useRuntimeConfig().apiBase;
-      await $fetch(`${apiServerUrl}/api/v1/login`, {
+      await $fetch(`${useRuntimeConfig().apiBase}/api/v1/login`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${account.access_token}`,

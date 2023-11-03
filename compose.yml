@@ -1,19 +1,48 @@
 services:
+  traefik:
+    image: "traefik:v2.10"
+    container_name: "traefik"
+    command:
+    - "--log.level=INFO"
+    - "--api.insecure=true"
+    - "--providers.docker=true"
+    - "--providers.docker.exposedbydefault=false"
+    - "--entrypoints.web.address=:8081"
+    ports:
+    - "8081:8081"
+    - "8080:8080"
+    volumes:
+    - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+    - back
+
   back:
     build: .
     env_file:
     - .env
     networks:
     - back
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.backend.rule=Host(`localhost`) && PathPrefix(`/api/v1`)"
+    - "traefik.http.routers.backend.entrypoints=web"
+    - "traefik.http.services.backend.loadbalancer.server.port=8080"
 
   front:
     build: ./internal/web
     environment:
-    - AUTH_ORIGIN=http://localhost:3000
-    ports:
-    - 3000:3000
+    - AUTH_ORIGIN=http://localhost:8081
+    - NEXTAUTH_URL=http://localhost:8081
+    - NUXT_API_BASE=http://back:8080
+    - NUXT_CLIENT_ID=afd22679cd8118504e36
+    - NUXT_CLIENT_SECRET=e32fe9cdc9e69367d1e5eb87880be8eb5e637190
     networks:
     - back
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.frontend.rule=Host(`localhost`)"
+    - "traefik.http.routers.frontend.entrypoints=web"
+    - "traefik.http.services.frontend.loadbalancer.server.port=3000"
 
 networks:
   back:

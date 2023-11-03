@@ -22,17 +22,16 @@ export default defineNuxtConfig({
   ],
 
   runtimeConfig: {
-    apiBase: process.env.API_BASE || "http://localhost:8080",
-    public: {
-      apiBase: process.env.API_BASE || "http://localhost:8080",
-    },
+    apiBase: "http://localhost:8080",
+    clientId: "afd22679cd8118504e36",
+    clientSecret: "e32fe9cdc9e69367d1e5eb87880be8eb5e637190",
   },
 
   nitro: {
     routeRules: {
       "api/v1/**": {
         proxy: {
-          to: (process.env.API_BASE || "http://localhost:8080") + "/**",
+          to: "http://localhost:8080/**",
         },
       },
     },
