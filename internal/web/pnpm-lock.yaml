@@ -9,8 +9,8 @@ dependencies:
     specifier: 2.1.0
     version: 2.1.0(highlight.js@11.8.0)(vue@3.3.4)
   '@pinia/nuxt':
-    specifier: 0.4.11
-    version: 0.4.11(typescript@5.2.2)(vue@3.3.4)
+    specifier: 0.5.1
+    version: 0.5.1(typescript@5.2.2)(vue@3.3.4)
   dayjs:
     specifier: 1.11.10
     version: 1.11.10
@@ -35,8 +35,8 @@ devDependencies:
     specifier: 6.9.3
     version: 6.9.3(webpack@5.88.2)
   '@pinia-plugin-persistedstate/nuxt':
-    specifier: 1.1.2
-    version: 1.1.2(@pinia/nuxt@0.4.11)(pinia@2.1.6)
+    specifier: 1.2.0
+    version: 1.2.0(@pinia/nuxt@0.5.1)(pinia@2.1.6)
   '@sidebase/nuxt-auth':
     specifier: 0.6.0-rc.1
     version: 0.6.0-rc.1(next-auth@4.22.5)(vue@3.3.4)
@@ -1342,59 +1342,6 @@ packages:
       - supports-color
     dev: true
 
-  /@nuxt/kit@3.7.2:
-    resolution: {integrity: sha512-z3oW52Ar/nQvyUR2/s5AemcQJDv/EeRto6OUYa7/J9oMOmSpXJ39eldiggn4GV+2jSFCPAYozS/yIKtXYiPo/A==}
-    engines: {node: ^14.18.0 || >=16.10.0}
-    dependencies:
-      '@nuxt/schema': 3.7.2
-      c12: 1.5.1
-      consola: 3.2.3
-      defu: 6.1.2
-      globby: 13.2.2
-      hash-sum: 2.0.0
-      ignore: 5.2.4
-      jiti: 1.20.0
-      knitwork: 1.0.0
-      mlly: 1.4.2
-      pathe: 1.1.1
-      pkg-types: 1.0.3
-      scule: 1.0.0
-      semver: 7.5.4
-      ufo: 1.3.1
-      unctx: 2.3.1
-      unimport: 3.4.0(rollup@3.29.4)
-      untyped: 1.4.0
-    transitivePeerDependencies:
-      - rollup
-      - supports-color
-
-  /@nuxt/kit@3.7.3:
-    resolution: {integrity: sha512-bhP02i6CNti15Z4ix3LpR3fd1ANtTcpfS3CDSaCja24hDt3UxIasyp52mqD9LRC+OxrUVHJziB18EwUtS6RLDQ==}
-    engines: {node: ^14.18.0 || >=16.10.0}
-    dependencies:
-      '@nuxt/schema': 3.7.3
-      c12: 1.5.1
-      consola: 3.2.3
-      defu: 6.1.2
-      globby: 13.2.2
-      hash-sum: 2.0.0
-      ignore: 5.2.4
-      jiti: 1.20.0
-      knitwork: 1.0.0
-      mlly: 1.4.2
-      pathe: 1.1.1
-      pkg-types: 1.0.3
-      scule: 1.0.0
-      semver: 7.5.4
-      ufo: 1.3.1
-      unctx: 2.3.1
-      unimport: 3.4.0(rollup@3.29.4)
-      untyped: 1.4.0
-    transitivePeerDependencies:
-      - rollup
-      - supports-color
-    dev: true
-
   /@nuxt/kit@3.8.0:
     resolution: {integrity: sha512-oIthQxeMIVs4ESVP5FqLYn8tj0S1sLd+eYreh+dNYgnJ2pTi7+THR12ONBNHjk668jqEe7ErUJ8UlGwqBzgezg==}
     engines: {node: ^14.18.0 || >=16.10.0}
@@ -1402,7 +1349,7 @@ packages:
       '@nuxt/schema': 3.8.0
       c12: 1.5.1
       consola: 3.2.3
-      defu: 6.1.2
+      defu: 6.1.3
       globby: 13.2.2
       hash-sum: 2.0.0
       ignore: 5.2.4
@@ -1420,7 +1367,6 @@ packages:
     transitivePeerDependencies:
       - rollup
       - supports-color
-    dev: true
 
   /@nuxt/postcss8@1.1.3(webpack@5.88.2):
     resolution: {integrity: sha512-CdHtErhvQwueNZPBOmlAAKrNCK7aIpZDYhtS7TzXlSgPHHox1g3cSlf+Ke9oB/8t4mNNjdB+prclme2ibuCOEA==}
@@ -1457,50 +1403,13 @@ packages:
       - supports-color
     dev: true
 
-  /@nuxt/schema@3.7.2:
-    resolution: {integrity: sha512-hajUPjpXD3TYfv1PL1UO2wCp8YOasMAnQI9keAYbO3gvMdvyf1SyIUWr2nQOmJDIC0bW4+mLNHFGhGf1dgUVoQ==}
-    engines: {node: ^14.18.0 || >=16.10.0}
-    dependencies:
-      '@nuxt/ui-templates': 1.3.1
-      defu: 6.1.3
-      hookable: 5.5.3
-      pathe: 1.1.1
-      pkg-types: 1.0.3
-      postcss-import-resolver: 2.0.0
-      std-env: 3.4.3
-      ufo: 1.3.1
-      unimport: 3.4.0(rollup@3.29.4)
-      untyped: 1.4.0
-    transitivePeerDependencies:
-      - rollup
-      - supports-color
-
-  /@nuxt/schema@3.7.3:
-    resolution: {integrity: sha512-Uqe3Z9RnAROzv5owQo//PztD9d4csKK6ulwQO1hIAinCh34X7z2zrv9lhm14hlRYU1n7ISEi4S7UeHgL/r8d8A==}
-    engines: {node: ^14.18.0 || >=16.10.0}
-    dependencies:
-      '@nuxt/ui-templates': 1.3.1
-      defu: 6.1.3
-      hookable: 5.5.3
-      pathe: 1.1.1
-      pkg-types: 1.0.3
-      postcss-import-resolver: 2.0.0
-      std-env: 3.4.3
-      ufo: 1.3.1
-      unimport: 3.4.0(rollup@3.29.4)
-      untyped: 1.4.0
-    transitivePeerDependencies:
-      - rollup
-      - supports-color
-    dev: true
-
   /@nuxt/schema@3.8.0:
     resolution: {integrity: sha512-VEDVeCjdVowhoY5vIBSz94+SSwmM204jN6TNe/ShBJ2d/vZiy9EtLbhOwqaPNFHwnN1fl/XFHThwJiexdB9D1w==}
     engines: {node: ^14.18.0 || >=16.10.0}
     dependencies:
       '@nuxt/ui-templates': 1.3.1
       consola: 3.2.3
-      defu: 6.1.2
+      defu: 6.1.3
       hookable: 5.5.3
       pathe: 1.1.1
       pkg-types: 1.0.3
@@ -1512,7 +1421,6 @@ packages:
     transitivePeerDependencies:
       - rollup
       - supports-color
-    dev: true
 
   /@nuxt/telemetry@2.5.2:
     resolution: {integrity: sha512-kZ+rWq/5MZonMhp8KGFI5zMaR2VsiWpnlkOLJIuIX2WoJl0DkHvtxCtuFq2erAqMVruWLpKU+tgMC+1cno/QmA==}
@@ -1522,7 +1430,7 @@ packages:
       ci-info: 3.8.0
       consola: 3.2.3
       create-require: 1.1.1
-      defu: 6.1.2
+      defu: 6.1.3
       destr: 2.0.1
       dotenv: 16.3.1
       git-url-parse: 13.1.0
@@ -1557,7 +1465,7 @@ packages:
       clear: 0.1.0
       consola: 3.2.3
       cssnano: 6.0.1(postcss@8.4.31)
-      defu: 6.1.2
+      defu: 6.1.3
       esbuild: 0.19.5
       escape-string-regexp: 5.0.0
       estree-walker: 3.0.3
@@ -1821,14 +1729,14 @@ packages:
       '@parcel/watcher-win32-x64': 2.3.0
     dev: true
 
-  /@pinia-plugin-persistedstate/nuxt@1.1.2(@pinia/nuxt@0.4.11)(pinia@2.1.6):
-    resolution: {integrity: sha512-3deRNiIlFoFGO/K8Sz+yc53ayMzElR8ack7RnGka80zBgp6Fs9GWjoLJiy+ToIc7qVa6wrQcoLDsxcnvzX4T0g==}
+  /@pinia-plugin-persistedstate/nuxt@1.2.0(@pinia/nuxt@0.5.1)(pinia@2.1.6):
+    resolution: {integrity: sha512-2rtgx5viGSMQMCoFYZMHguA2FhFKCUvw0PwETfqQegsWeBHlqk1/D0G/9xqep8Hq+c1BuFx+jNLJzoLXtYfivg==}
     peerDependencies:
-      '@pinia/nuxt': ^0.4.4
+      '@pinia/nuxt': ^0.5.0
     dependencies:
-      '@nuxt/kit': 3.7.3
-      '@pinia/nuxt': 0.4.11(typescript@5.2.2)(vue@3.3.4)
-      defu: 6.1.2
+      '@nuxt/kit': 3.8.0
+      '@pinia/nuxt': 0.5.1(typescript@5.2.2)(vue@3.3.4)
+      defu: 6.1.3
       pinia-plugin-persistedstate: 3.2.0(pinia@2.1.6)
     transitivePeerDependencies:
       - pinia
@@ -1836,11 +1744,11 @@ packages:
       - supports-color
     dev: true
 
-  /@pinia/nuxt@0.4.11(typescript@5.2.2)(vue@3.3.4):
-    resolution: {integrity: sha512-bhuNFngJpmBCdAqWguezNJ/oJFR7wvKieqiZrmmdmPR07XjsidAw8RLXHMZE9kUm32M9E6T057OBbG/22jERTg==}
+  /@pinia/nuxt@0.5.1(typescript@5.2.2)(vue@3.3.4):
+    resolution: {integrity: sha512-6wT6TqY81n+7/x3Yhf0yfaJVKkZU42AGqOR0T3+UvChcaOJhSma7OWPN64v+ptYlznat+fS1VTwNAcbi2lzHnw==}
     dependencies:
-      '@nuxt/kit': 3.7.2
-      pinia: 2.1.6(typescript@5.2.2)(vue@3.3.4)
+      '@nuxt/kit': 3.8.0
+      pinia: 2.1.7(typescript@5.2.2)(vue@3.3.4)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - rollup
@@ -3709,6 +3617,7 @@ packages:
 
   /defu@6.1.2:
     resolution: {integrity: sha512-+uO4+qr7msjNNWKYPHqN/3+Dx3NFkmIzayk2L1MyZQlvgZb/J1A0fo410dpKrN2SnqFjt8n4JL8fDJE0wIgjFQ==}
+    dev: true
 
   /defu@6.1.3:
     resolution: {integrity: sha512-Vy2wmG3NTkmHNg/kzpuvHhkqeIx3ODWqasgCRbKtbXEN0G+HpEEv9BtJLp7ZG1CZloFaC41Ah3ZFbq7aqCqMeQ==}
@@ -6265,7 +6174,7 @@ packages:
       citty: 0.1.4
       consola: 3.2.3
       cookie-es: 1.0.0
-      defu: 6.1.2
+      defu: 6.1.3
       destr: 2.0.1
       dot-prop: 8.0.2
       esbuild: 0.19.5
@@ -7026,6 +6935,24 @@ packages:
       typescript: 5.2.2
       vue: 3.3.4
       vue-demi: 0.14.6(vue@3.3.4)
+    dev: true
+
+  /pinia@2.1.7(typescript@5.2.2)(vue@3.3.4):
+    resolution: {integrity: sha512-+C2AHFtcFqjPih0zpYuvof37SFxMQ7OEG2zV9jRI12i9BOy3YQVAHwdKtyyc8pDcDyIc33WCIsZaCFWU7WWxGQ==}
+    peerDependencies:
+      '@vue/composition-api': ^1.4.0
+      typescript: '>=4.4.4'
+      vue: ^2.6.14 || ^3.3.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      '@vue/devtools-api': 6.5.0
+      typescript: 5.2.2
+      vue: 3.3.4
+      vue-demi: 0.14.6(vue@3.3.4)
 
   /pirates@4.0.6:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
@@ -7632,7 +7559,7 @@ packages:
   /rc9@2.1.1:
     resolution: {integrity: sha512-lNeOl38Ws0eNxpO3+wD1I9rkHGQyj1NU1jlzv4go2CtEnEQEUfqnIvZG7W+bC/aXdJ27n5x/yUjb6RoT9tko+Q==}
     dependencies:
-      defu: 6.1.2
+      defu: 6.1.3
       destr: 2.0.1
       flat: 5.0.2
 
