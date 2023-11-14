@@ -22,6 +22,7 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/gin-gonic/gin"
@@ -34,6 +35,8 @@ const apiPort = ":8080"
 var rangeRxp = regexp.MustCompile(`(?P<Unit>.*)=(?P<Start>[0-9]+)-(?P<End>[0-9]*)`)
 
 type ApiController struct {
+	lastSyncUpdate time.Time
+
 	authService   *domain.AuthService
 	classService  *domain.ClassService
 	quizService   *domain.QuizService
@@ -47,7 +50,7 @@ func NewApiController(
 	quizService *domain.QuizService,
 	userService *domain.UserService,
 	healthService *domain.HealthService) ApiController {
-	return ApiController{authService: authService, classService: classService,
+	return ApiController{lastSyncUpdate: time.Now(), authService: authService, classService: classService,
 		quizService: quizService, userService: userService, healthService: healthService}
 }
 
@@ -74,6 +77,7 @@ func (c *ApiController) Serve() {
 	private.Use(enforceRoles)
 
 	addPostEndpoint(public, "/login", domain.NoRole, c.login)
+	addPostEndpoint(public, "/sync", domain.NoRole, c.sync)
 
 	addGetEndpoint(health, "/started", domain.NoRole, c.started)
 	addGetEndpoint(health, "/ready", domain.NoRole, c.ready)
