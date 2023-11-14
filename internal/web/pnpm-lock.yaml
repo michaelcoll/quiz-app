@@ -15,8 +15,8 @@ dependencies:
     specifier: 1.11.10
     version: 1.11.10
   flowbite:
-    specifier: 2.0.0
-    version: 2.0.0
+    specifier: 2.1.1
+    version: 2.1.1
   next-auth:
     specifier: 4.22.5
     version: 4.22.5(next@13.5.6)(react-dom@18.2.0)(react@18.2.0)
@@ -4635,8 +4635,8 @@ packages:
     resolution: {integrity: sha512-36yxDn5H7OFZQla0/jFJmbIKTdZAQHngCedGxiMmpNfEZM0sdEeT+WczLQrjK6D7o2aiyLYDnkw0R3JK0Qv1RQ==}
     dev: true
 
-  /flowbite@2.0.0:
-    resolution: {integrity: sha512-gP/iC/WuznQ5XBzikhaSs4RDs49zrvoAdHbWMHSY3l7nVJX0xJz+dELIlLjh+czLdEVTMLxUjuARYYwCb5q34A==}
+  /flowbite@2.1.1:
+    resolution: {integrity: sha512-FkTwNXlfWRXUhSsiE9D4bEqLN8ywdunW2qOz1z7gN+Co7h9EQIJf/Fr4xgq1NJPFa+6MeMf08QLzviU7LqB/rQ==}
     dependencies:
       '@popperjs/core': 2.11.8
       mini-svg-data-uri: 1.4.4
