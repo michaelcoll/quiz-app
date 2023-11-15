@@ -65,8 +65,8 @@ devDependencies:
     specifier: 3.8.1
     version: 3.8.1(@types/node@20.9.0)(eslint@8.53.0)(typescript@5.2.2)(vite@4.5.0)
   nuxt-icon:
-    specifier: 0.6.5
-    version: 0.6.5(nuxt@3.8.1)(vite@4.5.0)(vue@3.3.8)
+    specifier: 0.6.6
+    version: 0.6.6(nuxt@3.8.1)(vite@4.5.0)(vue@3.3.8)
   prettier:
     specifier: 3.1.0
     version: 3.1.0
@@ -924,8 +924,8 @@ packages:
     resolution: {integrity: sha512-dvuCeX5fC9dXgJn9t+X5atfmgQAzUOWqS1254Gh0m6i8wKd10ebXkfNKiRK+1GWi/yTvvLDHpoxLr0xxxeslWw==}
     dev: true
 
-  /@iconify/collections@1.0.352:
-    resolution: {integrity: sha512-jFIyhRq3P/ymUnfq9CoYDfd6H3nmh5a/qlj/KZqN4ipuYYTIIoP7XkW9TMydOB4g7YqblnGzxXUjKZiJO06jLw==}
+  /@iconify/collections@1.0.356:
+    resolution: {integrity: sha512-aisir83gheS3FLZnSh7oK+avzLRBboFfsgDaowYVlLHgoQkg77u7Vj2HjwPwywVbrXUCx25fBzLJOuocqUoc2w==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true
@@ -1220,22 +1220,6 @@ packages:
 
   /@nuxt/devalue@2.0.2:
     resolution: {integrity: sha512-GBzP8zOc7CGWyFQS6dv1lQz8VVpz5C2yRszbXufwG/9zhStTIH50EtD87NmWbTMwXDvZLNg8GIpb1UFdH93JCA==}
-    dev: true
-
-  /@nuxt/devtools-kit@1.0.0(nuxt@3.8.1)(vite@4.5.0):
-    resolution: {integrity: sha512-cNloBepQYCBW6x/ctfCvyYRZudxhfgh5w5JDswpCzn7KXmm8U6abG2jyT0FXIaceW1d5QYMpGCN1RUw24wSvOA==}
-    peerDependencies:
-      nuxt: ^3.7.4
-      vite: '*'
-    dependencies:
-      '@nuxt/kit': 3.8.1
-      '@nuxt/schema': 3.8.1
-      execa: 7.2.0
-      nuxt: 3.8.1(@types/node@20.9.0)(eslint@8.53.0)(typescript@5.2.2)(vite@4.5.0)
-      vite: 4.5.0(@types/node@20.9.0)
-    transitivePeerDependencies:
-      - rollup
-      - supports-color
     dev: true
 
   /@nuxt/devtools-kit@1.0.2(nuxt@3.8.1)(vite@4.5.0):
@@ -6458,12 +6442,12 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /nuxt-icon@0.6.5(nuxt@3.8.1)(vite@4.5.0)(vue@3.3.8):
-    resolution: {integrity: sha512-+NwwFkVRsqCd3kRR2B1IPPpfERrjxGhco/JwtvuIa3fti5MNauTlPJBBQiQsoljOSwwVeZS6Ie67jr56m2runA==}
+  /nuxt-icon@0.6.6(nuxt@3.8.1)(vite@4.5.0)(vue@3.3.8):
+    resolution: {integrity: sha512-rTRUIjYVlYAyj6ZPVVwGxyyiINNudhC6r9vF96Ec5ZaLOC6mSdUBnJ3oV6sJgViYrIkDLwbIjviFvRcZzvgu3g==}
     dependencies:
-      '@iconify/collections': 1.0.352
+      '@iconify/collections': 1.0.356
       '@iconify/vue': 4.1.1(vue@3.3.8)
-      '@nuxt/devtools-kit': 1.0.0(nuxt@3.8.1)(vite@4.5.0)
+      '@nuxt/devtools-kit': 1.0.2(nuxt@3.8.1)(vite@4.5.0)
       '@nuxt/kit': 3.8.1
     transitivePeerDependencies:
       - nuxt
