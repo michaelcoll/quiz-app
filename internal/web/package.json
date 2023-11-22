@@ -31,7 +31,7 @@
     "@highlightjs/vue-plugin": "2.1.0",
     "@pinia/nuxt": "0.5.1",
     "dayjs": "1.11.10",
-    "flowbite": "2.1.1",
+    "flowbite": "2.2.0",
     "next-auth": "4.24.5",
     "tailvue": "1.0.0"
   },
