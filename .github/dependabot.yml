@@ -14,4 +14,4 @@ updates:
       interval: "daily"
     ignore:
     - dependency-name: "next-auth"
-      update-types: ["version-update:semver-minor"]
+      update-types: ["version-update:semver-patch"]
