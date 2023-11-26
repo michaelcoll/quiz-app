@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { SessionResult } from "~/api/model";
+import type { SessionResult } from "~/api/model";
 
 export function toDurationStr(seconds: number | undefined): string {
   if (seconds) {

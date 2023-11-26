@@ -17,7 +17,7 @@
 <script setup lang="ts">
   import { useToast } from "tailvue";
 
-  import { Class, Message } from "~/api/model";
+  import type { Class, Message } from "~/api/model";
   import { useDeleteApi } from "~/composables/useDeleteApi";
   import { usePostApi } from "~/composables/usePostApi";
   import { extractTotalFromHeader, toRangeHeader } from "~/helpers/pageable";

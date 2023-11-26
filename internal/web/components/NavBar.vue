@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { useToast } from "tailvue";
 
-  import { User } from "~/api/model";
+  import type { User } from "~/api/model";
   import { useAuthStore } from "~/stores/auth";
 
   const { getUser, isLogged } = useAuthStore();

@@ -15,7 +15,7 @@
   -->
 
 <script setup lang="ts">
-  import { Session } from "~/api/model";
+  import type { Session } from "~/api/model";
 
   const props = defineProps({
     sessionUuid: { type: String, required: true },

@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { useToast } from "tailvue";
 
-  import { Class, Message, Quiz } from "~/api/model";
+  import type { Class, Message, Quiz } from "~/api/model";
 
   const emit = defineEmits(["onUpdated"]);
   const props = defineProps<{

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { User } from "~/api/model";
+  import type { User } from "~/api/model";
 
   const props = defineProps<{
     user: User;

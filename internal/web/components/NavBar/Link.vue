@@ -1,5 +1,6 @@
 <script setup lang="ts">
-  import { User, UserRoleEnum } from "~/api/model";
+  import type { User } from "~/api/model";
+  import { UserRoleEnum } from "~/api/model";
   import { useAuthStore } from "~/stores/auth";
 
   const { isLogged } = useAuthStore();

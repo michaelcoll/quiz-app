@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import dayjs from "dayjs";
 
-  import { QuizSession } from "~/api/model";
+  import type { QuizSession } from "~/api/model";
   import { toPercent } from "~/helpers/quiz";
 
   const props = defineProps<{

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { Session } from "~/api/model";
+  import type { Session } from "~/api/model";
 
   const router = useRouter();
 

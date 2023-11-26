@@ -16,7 +16,7 @@
 
 import { defineStore } from "pinia";
 
-import { User } from "~/api/model";
+import type { User } from "~/api/model";
 
 export type AuthState = {
   exp: number;
