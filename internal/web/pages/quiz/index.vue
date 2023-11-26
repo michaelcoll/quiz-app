@@ -15,7 +15,7 @@
   -->
 
 <script setup lang="ts">
-  import { QuizSession } from "~/api/model";
+  import type { QuizSession } from "~/api/model";
   import { extractTotalFromHeader, toRangeHeader } from "~/helpers/pageable";
   import { toDurationStr, toPercent } from "~/helpers/quiz";
 

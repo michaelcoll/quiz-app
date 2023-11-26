@@ -17,7 +17,7 @@
 <script setup lang="ts">
   import dayjs from "dayjs";
 
-  import { Class, Quiz } from "~/api/model";
+  import type { Class, Quiz } from "~/api/model";
   import { extractTotalFromHeader, toRangeHeader } from "~/helpers/pageable";
   import { toDurationStr } from "~/helpers/quiz";
 

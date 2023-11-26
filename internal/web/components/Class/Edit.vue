@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { useToast } from "tailvue";
 
-  import { Class, Message } from "~/api/model";
+  import type { Class, Message } from "~/api/model";
   import { usePutApi } from "~/composables/usePutApi";
 
   const props = defineProps<{

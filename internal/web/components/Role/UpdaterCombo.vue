@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { useToast } from "tailvue";
 
-  import { Session, User } from "~/api/model";
+  import type { Session, User } from "~/api/model";
 
   const props = defineProps<{
     user: User;

@@ -15,7 +15,7 @@
   -->
 
 <script setup lang="ts">
-  import { QuizSessionDetail } from "~/api/model";
+  import type { QuizSessionDetail } from "~/api/model";
 
   const route = useRoute();
   const sessionUuid = route.params.uuid as string;

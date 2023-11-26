@@ -17,8 +17,8 @@
 <script setup lang="ts">
   import { useToast } from "tailvue";
 
-  import { Message, Session, User } from "~/api/model";
-  import { ComboItem } from "~/model/combo-item";
+  import type { Message, Session, User } from "~/api/model";
+  import type { ComboItem } from "~/model/combo-item";
   import { useAuthStore } from "~/stores/auth";
 
   const userEditMap = ref<Map<string, boolean>>(new Map<string, boolean>());

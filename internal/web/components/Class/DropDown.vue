@@ -1,7 +1,7 @@
 <script setup lang="ts">
-  import { Class } from "~/api/model";
+  import type { Class } from "~/api/model";
   import { toRangeHeader } from "~/helpers/pageable";
-  import { ComboItem } from "~/model/combo-item";
+  import type { ComboItem } from "~/model/combo-item";
 
   const emit = defineEmits(["onSelected"]);
   const props = defineProps<{

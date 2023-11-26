@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { Class, Quiz } from "~/api/model";
+  import type { Class, Quiz } from "~/api/model";
 
   const emit = defineEmits(["onUpdated"]);
   const props = defineProps<{

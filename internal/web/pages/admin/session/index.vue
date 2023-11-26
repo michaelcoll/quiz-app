@@ -15,9 +15,9 @@
   -->
 
 <script setup lang="ts">
-  import { QuizSession } from "~/api/model";
+  import type { QuizSession } from "~/api/model";
   import { extractTotalFromHeader, toRangeHeader } from "~/helpers/pageable";
-  import { ComboItem } from "~/model/combo-item";
+  import type { ComboItem } from "~/model/combo-item";
 
   const pageSize = 8;
   const page = ref(1);
