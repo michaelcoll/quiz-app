@@ -38,7 +38,7 @@
   }
 
   async function activateUser(user: User) {
-    await usePostApi<Session>(`/api/v1/user/${user.id}/activate`, {
+    await usePutApi<Session>(`/api/v1/user/${user.id}/activate`, {
       onResponse({ response }) {
         if (response.status === 200) {
           useToast().success(response._data.message);
