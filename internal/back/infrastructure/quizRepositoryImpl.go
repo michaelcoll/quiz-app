@@ -32,11 +32,11 @@ import (
 type QuizDBRepository struct {
 	domain.QuizRepository
 
-	q *sqlc.Queries
+	w *ConnectionWrapper
 }
 
-func NewQuizRepository(c *sql.DB) *QuizDBRepository {
-	return &QuizDBRepository{q: sqlc.New(c)}
+func NewQuizRepository(w *ConnectionWrapper) *QuizDBRepository {
+	return &QuizDBRepository{w: w}
 }
 
 func isAdmin(userId string) bool {
@@ -44,7 +44,7 @@ func isAdmin(userId string) bool {
 }
 
 func (r *QuizDBRepository) FindFullBySha1(ctx context.Context, sha1 string, userId string) (*domain.Quiz, error) {
-	entities, err := r.q.FindQuizFullBySha1(ctx, sqlc.FindQuizFullBySha1Params{
+	entities, err := r.w.queries().FindQuizFullBySha1(ctx, sqlc.FindQuizFullBySha1Params{
 		Sha1: sha1,
 		ID:   userId,
 	})
@@ -93,7 +93,7 @@ func (r *QuizDBRepository) FindFullBySha1(ctx context.Context, sha1 string, user
 }
 
 func (r *QuizDBRepository) FindAllActive(ctx context.Context, userId string, limit uint16, offset uint16) ([]*domain.Quiz, error) {
-	entities, err := r.q.FindAllActiveQuiz(ctx, sqlc.FindAllActiveQuizParams{
+	entities, err := r.w.queries().FindAllActiveQuiz(ctx, sqlc.FindAllActiveQuizParams{
 		Limit:  int64(limit),
 		Offset: int64(offset),
 	})
@@ -137,7 +137,7 @@ func (r *QuizDBRepository) FindAllActive(ctx context.Context, userId string, lim
 func (r *QuizDBRepository) CountAllActive(ctx context.Context, userId string) (uint32, error) {
 
 	if isAdmin(userId) {
-		count, err := r.q.CountAllActiveQuiz(ctx)
+		count, err := r.w.queries().CountAllActiveQuiz(ctx)
 		if err != nil {
 			return 0, err
 		}
@@ -145,7 +145,7 @@ func (r *QuizDBRepository) CountAllActive(ctx context.Context, userId string) (u
 		return uint32(count), nil
 	}
 
-	count, err := r.q.CountAllActiveQuizForUser(ctx, userId)
+	count, err := r.w.queries().CountAllActiveQuizForUser(ctx, userId)
 	if err != nil {
 		return 0, err
 	}
@@ -156,7 +156,7 @@ func (r *QuizDBRepository) CountAllActive(ctx context.Context, userId string) (u
 
 func (r *QuizDBRepository) FindLatestVersionByFilename(ctx context.Context, filename string) (*domain.Quiz, error) {
 
-	quiz, err := r.q.FindQuizByFilenameAndLatestVersion(ctx, filename)
+	quiz, err := r.w.queries().FindQuizByFilenameAndLatestVersion(ctx, filename)
 	if err != nil && errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
 	} else if err != nil {
@@ -168,7 +168,7 @@ func (r *QuizDBRepository) FindLatestVersionByFilename(ctx context.Context, file
 
 func (r *QuizDBRepository) Create(ctx context.Context, quiz *domain.Quiz) error {
 
-	err := r.q.CreateOrReplaceQuiz(ctx, sqlc.CreateOrReplaceQuizParams{
+	err := r.w.queries().CreateOrReplaceQuiz(ctx, sqlc.CreateOrReplaceQuizParams{
 		Sha1:      quiz.Sha1,
 		Name:      quiz.Name,
 		Filename:  quiz.Filename,
@@ -181,7 +181,7 @@ func (r *QuizDBRepository) Create(ctx context.Context, quiz *domain.Quiz) error 
 	}
 
 	for _, question := range quiz.Questions {
-		err := r.q.CreateOrReplaceQuestion(ctx, sqlc.CreateOrReplaceQuestionParams{
+		err := r.w.queries().CreateOrReplaceQuestion(ctx, sqlc.CreateOrReplaceQuestionParams{
 			Sha1:         question.Sha1,
 			Position:     int64(question.Position),
 			Content:      question.Content,
@@ -192,7 +192,7 @@ func (r *QuizDBRepository) Create(ctx context.Context, quiz *domain.Quiz) error 
 			return err
 		}
 
-		err = r.q.LinkQuestion(ctx, sqlc.LinkQuestionParams{
+		err = r.w.queries().LinkQuestion(ctx, sqlc.LinkQuestionParams{
 			QuizSha1:     quiz.Sha1,
 			QuestionSha1: question.Sha1,
 		})
@@ -201,7 +201,7 @@ func (r *QuizDBRepository) Create(ctx context.Context, quiz *domain.Quiz) error 
 		}
 
 		for _, answer := range question.Answers {
-			err := r.q.CreateOrReplaceAnswer(ctx, sqlc.CreateOrReplaceAnswerParams{
+			err := r.w.queries().CreateOrReplaceAnswer(ctx, sqlc.CreateOrReplaceAnswerParams{
 				Sha1:    answer.Sha1,
 				Content: answer.Content,
 				Valid:   answer.Valid,
@@ -210,7 +210,7 @@ func (r *QuizDBRepository) Create(ctx context.Context, quiz *domain.Quiz) error 
 				return err
 			}
 
-			err = r.q.LinkAnswer(ctx, sqlc.LinkAnswerParams{
+			err = r.w.queries().LinkAnswer(ctx, sqlc.LinkAnswerParams{
 				QuestionSha1: question.Sha1,
 				AnswerSha1:   answer.Sha1,
 			})
@@ -224,7 +224,7 @@ func (r *QuizDBRepository) Create(ctx context.Context, quiz *domain.Quiz) error 
 }
 
 func (r *QuizDBRepository) ActivateOnlyVersion(ctx context.Context, filename string, version int) error {
-	err := r.q.ActivateOnlyVersion(ctx, sqlc.ActivateOnlyVersionParams{
+	err := r.w.queries().ActivateOnlyVersion(ctx, sqlc.ActivateOnlyVersionParams{
 		Filename: filename,
 		Version:  version,
 	})
@@ -237,7 +237,7 @@ func (r *QuizDBRepository) ActivateOnlyVersion(ctx context.Context, filename str
 
 func (r *QuizDBRepository) FindAllSessions(ctx context.Context, quizActive bool, userId string, limit uint16, offset uint16) ([]*domain.Session, error) {
 	if isAdmin(userId) {
-		sessions, err := r.q.FindAllSessions(ctx, sqlc.FindAllSessionsParams{
+		sessions, err := r.w.queries().FindAllSessions(ctx, sqlc.FindAllSessionsParams{
 			QuizActive: quizActive,
 			Limit:      int64(limit),
 			Offset:     int64(offset),
@@ -249,7 +249,7 @@ func (r *QuizDBRepository) FindAllSessions(ctx context.Context, quizActive bool,
 		return r.toSessionArray(sessions), nil
 	}
 
-	sessions, err := r.q.FindAllSessionsForUser(ctx, sqlc.FindAllSessionsForUserParams{
+	sessions, err := r.w.queries().FindAllSessionsForUser(ctx, sqlc.FindAllSessionsForUserParams{
 		QuizActive: quizActive,
 		UserID:     userId,
 		Limit:      int64(limit),
@@ -264,7 +264,7 @@ func (r *QuizDBRepository) FindAllSessions(ctx context.Context, quizActive bool,
 
 func (r *QuizDBRepository) CountAllSessions(ctx context.Context, quizActive bool, userId string) (uint32, error) {
 	if isAdmin(userId) {
-		count, err := r.q.CountAllSessions(ctx, quizActive)
+		count, err := r.w.queries().CountAllSessions(ctx, quizActive)
 		if err != nil {
 			return 0, err
 		}
@@ -272,7 +272,7 @@ func (r *QuizDBRepository) CountAllSessions(ctx context.Context, quizActive bool
 		return uint32(count), nil
 	}
 
-	count, err := r.q.CountAllSessionsForUser(ctx, sqlc.CountAllSessionsForUserParams{
+	count, err := r.w.queries().CountAllSessionsForUser(ctx, sqlc.CountAllSessionsForUserParams{
 		QuizActive: quizActive,
 		UserID:     userId,
 	})
@@ -286,7 +286,7 @@ func (r *QuizDBRepository) CountAllSessions(ctx context.Context, quizActive bool
 func (r *QuizDBRepository) StartSession(ctx context.Context, userId string, quizSha1 string) (uuid.UUID, error) {
 	sessionUuid := uuid.New()
 
-	err := r.q.CreateOrReplaceSession(ctx, sqlc.CreateOrReplaceSessionParams{
+	err := r.w.queries().CreateOrReplaceSession(ctx, sqlc.CreateOrReplaceSessionParams{
 		Uuid:     sessionUuid,
 		QuizSha1: quizSha1,
 		UserID:   userId,
@@ -300,7 +300,7 @@ func (r *QuizDBRepository) StartSession(ctx context.Context, userId string, quiz
 
 func (r *QuizDBRepository) AddSessionAnswer(ctx context.Context, sessionUuid uuid.UUID, questionSha1 string, answerSha1 string, checked bool) error {
 
-	err := r.q.CreateOrReplaceSessionAnswer(ctx, sqlc.CreateOrReplaceSessionAnswerParams{
+	err := r.w.queries().CreateOrReplaceSessionAnswer(ctx, sqlc.CreateOrReplaceSessionAnswerParams{
 		SessionUuid:  sessionUuid,
 		QuestionSha1: questionSha1,
 		AnswerSha1:   answerSha1,
@@ -318,7 +318,7 @@ func (r *QuizDBRepository) AddSessionAnswer(ctx context.Context, sessionUuid uui
 
 func (r *QuizDBRepository) FindAllQuizSessions(ctx context.Context, userId string, classId string, limit uint16, offset uint16) ([]*domain.QuizSession, error) {
 	if isAdmin(userId) {
-		quizSessions, err := r.q.FindAllQuizSessions(ctx, sqlc.FindAllQuizSessionsParams{
+		quizSessions, err := r.w.queries().FindAllQuizSessions(ctx, sqlc.FindAllQuizSessionsParams{
 			ClassId: classId,
 			Limit:   int64(limit),
 			Offset:  int64(offset),
@@ -330,7 +330,7 @@ func (r *QuizDBRepository) FindAllQuizSessions(ctx context.Context, userId strin
 		return r.toQuizSessionArray(quizSessions, userId, true), nil
 	}
 
-	quizSessions, err := r.q.FindAllQuizSessionsForUser(ctx, sqlc.FindAllQuizSessionsParams{
+	quizSessions, err := r.w.queries().FindAllQuizSessionsForUser(ctx, sqlc.FindAllQuizSessionsParams{
 		UserId: userId,
 		Limit:  int64(limit),
 		Offset: int64(offset),
@@ -344,7 +344,7 @@ func (r *QuizDBRepository) FindAllQuizSessions(ctx context.Context, userId strin
 
 func (r *QuizDBRepository) FindQuizSessionByUuid(ctx context.Context, sessionUuid uuid.UUID) (*domain.QuizSessionDetail, error) {
 
-	details, err := r.q.FindQuizSessionByUuid(ctx, sessionUuid)
+	details, err := r.w.queries().FindQuizSessionByUuid(ctx, sessionUuid)
 	if err != nil {
 		return nil, err
 	}

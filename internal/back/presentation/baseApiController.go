@@ -37,11 +37,12 @@ var rangeRxp = regexp.MustCompile(`(?P<Unit>.*)=(?P<Start>[0-9]+)-(?P<End>[0-9]*
 type ApiController struct {
 	lastSyncUpdate time.Time
 
-	authService   *domain.AuthService
-	classService  *domain.ClassService
-	quizService   *domain.QuizService
-	userService   *domain.UserService
-	healthService *domain.HealthService
+	authService        *domain.AuthService
+	classService       *domain.ClassService
+	quizService        *domain.QuizService
+	userService        *domain.UserService
+	healthService      *domain.HealthService
+	maintenanceService *domain.MaintenanceService
 }
 
 func NewApiController(
@@ -49,9 +50,11 @@ func NewApiController(
 	classService *domain.ClassService,
 	quizService *domain.QuizService,
 	userService *domain.UserService,
-	healthService *domain.HealthService) ApiController {
+	healthService *domain.HealthService,
+	maintenanceService *domain.MaintenanceService) ApiController {
 	return ApiController{lastSyncUpdate: time.Now(), authService: authService, classService: classService,
-		quizService: quizService, userService: userService, healthService: healthService}
+		quizService: quizService, userService: userService, healthService: healthService,
+		maintenanceService: maintenanceService}
 }
 
 var pathRoleMapping = map[*endPointDef]domain.Role{}
@@ -72,9 +75,13 @@ func (c *ApiController) Serve() {
 	public := router.Group("/api/v1")
 	private := router.Group("/api/v1")
 	health := router.Group("/health")
+	maintenance := router.Group("/maintenance")
 
 	private.Use(validateAuthHeaderAndGetUser(c.authService))
 	private.Use(enforceRoles)
+
+	maintenance.Use(validateAuthHeaderAndGetApiKey)
+	maintenance.Use(enforceApiKey)
 
 	addPostEndpoint(public, "/login", domain.NoRole, c.login)
 	addPostEndpoint(public, "/sync", domain.NoRole, c.sync)
@@ -82,6 +89,8 @@ func (c *ApiController) Serve() {
 	addGetEndpoint(health, "/started", domain.NoRole, c.started)
 	addGetEndpoint(health, "/ready", domain.NoRole, c.ready)
 	addGetEndpoint(health, "/live", domain.NoRole, c.live)
+
+	addGetEndpoint(maintenance, "/database/dump", domain.Machine, c.dbDump)
 
 	addGetEndpoint(private, "/quiz", domain.Student, c.quizList)
 	addGetEndpoint(private, "/quiz/:sha1", domain.Student, c.quizBySha1)

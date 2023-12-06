@@ -32,13 +32,13 @@ import (
 type UserDBRepository struct {
 	domain.UserRepository
 
-	q  *sqlc.Queries
+	w  *ConnectionWrapper
 	uc *cache.Cache
 }
 
-func NewUserRepository(c *sql.DB) *UserDBRepository {
+func NewUserRepository(w *ConnectionWrapper) *UserDBRepository {
 	userCache := cache.New(30*time.Minute, 10*time.Minute)
-	return &UserDBRepository{q: sqlc.New(c), uc: userCache}
+	return &UserDBRepository{w: w, uc: userCache}
 }
 
 func (r *UserDBRepository) FindActiveUserById(ctx context.Context, id string) (*domain.User, error) {
@@ -47,7 +47,7 @@ func (r *UserDBRepository) FindActiveUserById(ctx context.Context, id string) (*
 		return user.(*domain.User), nil
 	}
 
-	entity, err := r.q.FindActiveUserById(ctx, id)
+	entity, err := r.w.queries().FindActiveUserById(ctx, id)
 	if err != nil && errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
 	} else if err != nil {
@@ -63,7 +63,7 @@ func (r *UserDBRepository) FindActiveUserById(ctx context.Context, id string) (*
 
 func (r *UserDBRepository) FindUserById(ctx context.Context, id string) (*domain.User, error) {
 
-	entity, err := r.q.FindUserById(ctx, id)
+	entity, err := r.w.queries().FindUserById(ctx, id)
 	if err != nil && errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
 	} else if err != nil {
@@ -76,7 +76,7 @@ func (r *UserDBRepository) FindUserById(ctx context.Context, id string) (*domain
 }
 
 func (r *UserDBRepository) CreateOrReplaceUser(ctx context.Context, user *domain.User) error {
-	err := r.q.CreateOrReplaceUser(ctx, sqlc.CreateOrReplaceUserParams{
+	err := r.w.queries().CreateOrReplaceUser(ctx, sqlc.CreateOrReplaceUserParams{
 		ID:      user.Id,
 		Login:   user.Login,
 		Name:    user.Name,
@@ -91,7 +91,7 @@ func (r *UserDBRepository) CreateOrReplaceUser(ctx context.Context, user *domain
 }
 
 func (r *UserDBRepository) UpdateUserRole(ctx context.Context, userId string, role domain.Role) error {
-	err := r.q.UpdateUserRole(ctx, sqlc.UpdateUserRoleParams{
+	err := r.w.queries().UpdateUserRole(ctx, sqlc.UpdateUserRoleParams{
 		ID:     userId,
 		RoleID: int8(role),
 	})
@@ -105,7 +105,7 @@ func (r *UserDBRepository) UpdateUserRole(ctx context.Context, userId string, ro
 }
 
 func (r *UserDBRepository) FindAllUser(ctx context.Context) ([]*domain.User, error) {
-	entities, err := r.q.FindAllUser(ctx)
+	entities, err := r.w.queries().FindAllUser(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func (r *UserDBRepository) FindAllUser(ctx context.Context) ([]*domain.User, err
 }
 
 func (r *UserDBRepository) UpdateUserActive(ctx context.Context, id string, active bool) error {
-	return r.q.UpdateUserActive(ctx, sqlc.UpdateUserActiveParams{
+	return r.w.queries().UpdateUserActive(ctx, sqlc.UpdateUserActiveParams{
 		Active: active,
 		ID:     id,
 	})
@@ -129,7 +129,7 @@ func (r *UserDBRepository) UpdateUserActive(ctx context.Context, id string, acti
 func (r *UserDBRepository) UpdateUserInfo(ctx context.Context, user *domain.User) error {
 	r.uc.Delete(user.Id)
 
-	return r.q.UpdateUserInfo(ctx, sqlc.UpdateUserInfoParams{
+	return r.w.queries().UpdateUserInfo(ctx, sqlc.UpdateUserInfoParams{
 		Login:   user.Login,
 		Name:    user.Name,
 		Picture: user.Picture,
@@ -138,7 +138,7 @@ func (r *UserDBRepository) UpdateUserInfo(ctx context.Context, user *domain.User
 }
 
 func (r *UserDBRepository) AssignUserToClass(ctx context.Context, userId string, classId uuid.UUID) error {
-	return r.q.AssignUserToClass(ctx, sqlc.AssignUserToClassParams{
+	return r.w.queries().AssignUserToClass(ctx, sqlc.AssignUserToClassParams{
 		ClassUuid: classId,
 		ID:        userId,
 	})

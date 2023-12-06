@@ -21,7 +21,6 @@ import (
 
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
 	"github.com/michaelcoll/quiz-app/internal/back/infrastructure"
-	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/db"
 	"github.com/michaelcoll/quiz-app/internal/back/presentation"
 )
 
@@ -41,13 +40,14 @@ func (m *Module) GetService() *domain.QuizService {
 
 func New() Module {
 	dbLocation := viper.GetString("db-location")
-	connection := db.Init(dbLocation)
+	connection := infrastructure.NewConnectionWrapper(dbLocation)
 
-	authRepository := infrastructure.NewAuthRepository(connection)
+	authRepository := infrastructure.NewAuthRepository()
 	classRepository := infrastructure.NewClassRepository(connection)
 	quizRepository := infrastructure.NewQuizRepository(connection)
 	userRepository := infrastructure.NewUserRepository(connection)
 	healthRepository := infrastructure.NewHealthRepository(connection)
+	maintenanceRepository := infrastructure.NewMaintenanceRepository(connection)
 
 	githubCaller := infrastructure.NewGithubAccessTokenCaller()
 
@@ -56,10 +56,11 @@ func New() Module {
 	quizService := domain.NewQuizService(quizRepository)
 	userService := domain.NewUserService(userRepository)
 	healthService := domain.NewHealthService(healthRepository)
+	maintenanceService := domain.NewMaintenanceService(maintenanceRepository)
 
 	return Module{
 		quizServ: quizService,
 		authServ: authService,
-		quizCtrl: presentation.NewApiController(&authService, &classService, &quizService, &userService, &healthService),
+		quizCtrl: presentation.NewApiController(&authService, &classService, &quizService, &userService, &healthService, &maintenanceService),
 	}
 }

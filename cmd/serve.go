@@ -43,6 +43,11 @@ func serve(_ *cobra.Command, _ []string) {
 
 	module := back.New()
 
+	if viper.GetString("api-key") == "" {
+		fmt.Printf("%s API Key is not defined, maintenance endpoints will not be usable.\n",
+			color.HiYellowString("!"))
+	}
+
 	go sync(module)
 
 	module.GetApiController().Serve()
@@ -63,10 +68,12 @@ func init() {
 	serveCmd.Flags().StringP("token", "t", "", "The P.A.T. used to access the repository.")
 	serveCmd.Flags().String("default-admin-username", "",
 		"The default admin username. If specified when the user with the given username registers, it will be created with admin role automatically.")
+	serveCmd.Flags().StringP("api-key", "k", "", "The API key used for the maintenance endpoints.")
 
 	_ = viper.BindPFlag("db-location", serveCmd.Flags().Lookup("db-location"))
 	_ = viper.BindPFlag("repository-url", serveCmd.Flags().Lookup("repository-url"))
 	_ = viper.BindPFlag("token", serveCmd.Flags().Lookup("token"))
+	_ = viper.BindPFlag("api-key", serveCmd.Flags().Lookup("api-key"))
 
 	viper.SetDefault("db-location", "data")
 	viper.SetDefault("repository-url", "https://github.com/michaelcoll/quiz-app.git")

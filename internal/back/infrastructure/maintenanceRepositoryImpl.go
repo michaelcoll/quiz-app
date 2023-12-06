@@ -17,39 +17,29 @@
 package infrastructure
 
 import (
-	"time"
-
-	"github.com/patrickmn/go-cache"
+	"github.com/spf13/viper"
 
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
+	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/db"
 )
 
-type AuthDBRepository struct {
-	domain.AuthRepository
+type MaintenanceDBRepository struct {
+	domain.MaintenanceRepository
 
-	tc *cache.Cache
+	w *ConnectionWrapper
 }
 
-func NewAuthRepository() *AuthDBRepository {
-	tokenCache := cache.New(1*time.Hour, 1*time.Second)
-	return &AuthDBRepository{tc: tokenCache}
+func NewMaintenanceRepository(w *ConnectionWrapper) *MaintenanceDBRepository {
+	return &MaintenanceDBRepository{w: w}
 }
 
-func (r *AuthDBRepository) CacheToken(token *domain.AccessToken) error {
+func (r *MaintenanceDBRepository) Dump() (fullDbLocation string, err error) {
+	dbLocation := viper.GetString("db-location")
 
-	r.tc.Set(token.OpaqueToken, token, 1*time.Hour)
-
-	return nil
-}
-
-func (r *AuthDBRepository) FindTokenByTokenStr(tokenStr string) (*domain.AccessToken, error) {
-
-	if t, found := r.tc.Get(tokenStr); found {
-		token := t.(*domain.AccessToken)
-		token.Provenance = domain.Cache
-
-		return token, nil
+	err = r.w.Close()
+	if err != nil {
+		return "", err
 	}
 
-	return nil, nil
+	return db.GetDatabaseFullPath(dbLocation), nil
 }

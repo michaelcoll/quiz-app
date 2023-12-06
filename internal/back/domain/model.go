@@ -76,6 +76,7 @@ const (
 	Admin   Role = 1
 	Teacher Role = 2
 	Student Role = 3
+	Machine Role = 4
 )
 
 type User struct {

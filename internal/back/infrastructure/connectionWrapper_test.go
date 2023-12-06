@@ -17,22 +17,37 @@
 package infrastructure
 
 import (
+	"database/sql"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAuthDBRepository_FindTokenByTokenStr(t *testing.T) {
+func NewConnectionWrapperForTest(dbLocation string, c *sql.DB) *ConnectionWrapper {
+	return &ConnectionWrapper{dbLocation: dbLocation, c: c}
+}
 
-	connection := getDBConnection(t, true)
-	defer connection.Close()
+func TestQueries_WhenConnectionIsClosed_ShouldReinitializeConnection(t *testing.T) {
+	// Given
+	wrapper := NewConnectionWrapper("test_db_location")
+	wrapper.Close()
 
-	r := NewAuthRepository()
+	// When
+	result := wrapper.queries()
 
-	token, err := r.FindTokenByTokenStr("42")
-	if err != nil {
-		assert.Failf(t, "Fail to get token", "%v", err)
-	}
+	// Then
+	assert.NotNil(t, result)
+	assert.False(t, wrapper.isClosed)
+}
 
-	assert.Nil(t, token)
+func TestQueries_WhenConnectionIsOpen_ShouldNotReinitializeConnection(t *testing.T) {
+	// Given
+	wrapper := NewConnectionWrapper("test_db_location")
+
+	// When
+	result := wrapper.queries()
+
+	// Then
+	assert.NotNil(t, result)
+	assert.False(t, wrapper.isClosed)
 }

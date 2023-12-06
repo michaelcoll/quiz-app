@@ -29,7 +29,7 @@ func TestUserDBRepository_FindUserById(t *testing.T) {
 	connection := getDBConnection(t, true)
 	defer connection.Close()
 
-	r := NewUserRepository(connection)
+	r := NewUserRepository(NewConnectionWrapperForTest("data", connection))
 
 	user, err := r.FindActiveUserById(context.Background(), "42")
 	if err != nil {

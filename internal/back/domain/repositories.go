@@ -73,3 +73,8 @@ type ClassRepository interface {
 type HealthRepository interface {
 	Ping(ctx context.Context) bool
 }
+
+//go:generate mockery --name MaintenanceRepository
+type MaintenanceRepository interface {
+	Dump() (string, error)
+}

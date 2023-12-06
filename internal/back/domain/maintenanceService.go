@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package infrastructure
+package domain
 
-import (
-	"testing"
+type MaintenanceService struct {
+	r MaintenanceRepository
+}
 
-	"github.com/stretchr/testify/assert"
-)
+func NewMaintenanceService(r MaintenanceRepository) MaintenanceService {
+	return MaintenanceService{r: r}
+}
 
-func TestAuthDBRepository_FindTokenByTokenStr(t *testing.T) {
-
-	connection := getDBConnection(t, true)
-	defer connection.Close()
-
-	r := NewAuthRepository()
-
-	token, err := r.FindTokenByTokenStr("42")
-	if err != nil {
-		assert.Failf(t, "Fail to get token", "%v", err)
-	}
-
-	assert.Nil(t, token)
+func (s *MaintenanceService) Dump() (string, error) {
+	return s.r.Dump()
 }

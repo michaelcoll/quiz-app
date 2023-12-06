@@ -17,22 +17,34 @@
 package infrastructure
 
 import (
-	"testing"
+	"database/sql"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/db"
+	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/sqlc"
 )
 
-func TestAuthDBRepository_FindTokenByTokenStr(t *testing.T) {
+type ConnectionWrapper struct {
+	dbLocation string
+	c          *sql.DB
+	isClosed   bool
+}
 
-	connection := getDBConnection(t, true)
-	defer connection.Close()
+func NewConnectionWrapper(dbLocation string) *ConnectionWrapper {
+	return &ConnectionWrapper{dbLocation: dbLocation, c: db.Init(dbLocation)}
+}
 
-	r := NewAuthRepository()
-
-	token, err := r.FindTokenByTokenStr("42")
-	if err != nil {
-		assert.Failf(t, "Fail to get token", "%v", err)
+func (w *ConnectionWrapper) queries() *sqlc.Queries {
+	if w.isClosed {
+		w.c = db.Init(w.dbLocation)
+		w.isClosed = false
 	}
 
-	assert.Nil(t, token)
+	return sqlc.New(w.c)
+}
+
+func (w *ConnectionWrapper) Close() error {
+	defer func() {
+		w.isClosed = true
+	}()
+	return w.c.Close()
 }

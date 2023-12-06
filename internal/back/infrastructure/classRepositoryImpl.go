@@ -18,7 +18,6 @@ package infrastructure
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/google/uuid"
 
@@ -29,15 +28,15 @@ import (
 type ClassDBRepository struct {
 	domain.ClassRepository
 
-	q *sqlc.Queries
+	w *ConnectionWrapper
 }
 
-func NewClassRepository(c *sql.DB) *ClassDBRepository {
-	return &ClassDBRepository{q: sqlc.New(c)}
+func NewClassRepository(w *ConnectionWrapper) *ClassDBRepository {
+	return &ClassDBRepository{w: w}
 }
 
 func (r *ClassDBRepository) FindAll(ctx context.Context, limit uint16, offset uint16) ([]*domain.Class, error) {
-	classes, err := r.q.FindAllClasses(ctx, sqlc.FindAllClassesParams{
+	classes, err := r.w.queries().FindAllClasses(ctx, sqlc.FindAllClassesParams{
 		Limit:  int64(limit),
 		Offset: int64(offset),
 	})
@@ -49,7 +48,7 @@ func (r *ClassDBRepository) FindAll(ctx context.Context, limit uint16, offset ui
 }
 
 func (r *ClassDBRepository) CountAll(ctx context.Context) (uint32, error) {
-	count, err := r.q.CountAllClasses(ctx)
+	count, err := r.w.queries().CountAllClasses(ctx)
 	if err != nil {
 		return 0, err
 	}
@@ -75,18 +74,18 @@ func (r *ClassDBRepository) toClassArray(entities []sqlc.StudentClass) []*domain
 }
 
 func (r *ClassDBRepository) CreateOrReplace(ctx context.Context, class *domain.Class) error {
-	return r.q.CreateOrReplaceClass(ctx, sqlc.CreateOrReplaceClassParams{
+	return r.w.queries().CreateOrReplaceClass(ctx, sqlc.CreateOrReplaceClassParams{
 		Uuid: class.Id,
 		Name: class.Name,
 	})
 }
 
 func (r *ClassDBRepository) Delete(ctx context.Context, classId uuid.UUID) error {
-	return r.q.DeleteClassById(ctx, classId)
+	return r.w.queries().DeleteClassById(ctx, classId)
 }
 
 func (r *ClassDBRepository) ExistsById(ctx context.Context, classId uuid.UUID) bool {
-	count, err := r.q.CountClassById(ctx, classId)
+	count, err := r.w.queries().CountClassById(ctx, classId)
 	if err != nil {
 		return false
 	}
@@ -95,7 +94,7 @@ func (r *ClassDBRepository) ExistsById(ctx context.Context, classId uuid.UUID) b
 }
 
 func (r *ClassDBRepository) CreateQuizClassVisibility(ctx context.Context, quizSha1 string, classId uuid.UUID) error {
-	err := r.q.CreateQuizClassVisibility(ctx, sqlc.CreateQuizClassVisibilityParams{
+	err := r.w.queries().CreateQuizClassVisibility(ctx, sqlc.CreateQuizClassVisibilityParams{
 		ClassUuid: classId,
 		QuizSha1:  quizSha1,
 	})
@@ -110,7 +109,7 @@ func (r *ClassDBRepository) CreateQuizClassVisibility(ctx context.Context, quizS
 }
 
 func (r *ClassDBRepository) DeleteQuizClassVisibility(ctx context.Context, quizSha1 string, classId uuid.UUID) error {
-	return r.q.DeleteQuizClassVisibility(ctx, sqlc.DeleteQuizClassVisibilityParams{
+	return r.w.queries().DeleteQuizClassVisibility(ctx, sqlc.DeleteQuizClassVisibilityParams{
 		ClassUuid: classId,
 		QuizSha1:  quizSha1,
 	})
