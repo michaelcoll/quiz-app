@@ -30,7 +30,12 @@ func NewConnectionWrapperForTest(dbLocation string, c *sql.DB) *ConnectionWrappe
 func TestQueries_WhenConnectionIsClosed_ShouldReinitializeConnection(t *testing.T) {
 	// Given
 	wrapper := NewConnectionWrapper("test_db_location")
-	wrapper.Close()
+	err := wrapper.Close()
+	if err != nil {
+		assert.Fail(t, "Error while closing connection", err)
+	}
+
+	assert.True(t, wrapper.isClosed)
 
 	// When
 	result := wrapper.queries()

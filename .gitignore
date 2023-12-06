@@ -17,9 +17,9 @@ node_modules
 # build / tests
 quiz-app
 internal/web/dist
-data.db
-data.db-shm
-data.db-wal
+data*.db
+data*.db-shm
+data*.db-wal
 coverage.out
 .openapi-generator
 openapitools.json
