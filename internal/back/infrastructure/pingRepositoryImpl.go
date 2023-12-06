@@ -18,25 +18,23 @@ package infrastructure
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
-	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/sqlc"
 )
 
 type HealthDBRepository struct {
 	domain.HealthRepository
 
-	q *sqlc.Queries
+	w *ConnectionWrapper
 }
 
-func NewHealthRepository(c *sql.DB) *HealthDBRepository {
-	return &HealthDBRepository{q: sqlc.New(c)}
+func NewHealthRepository(w *ConnectionWrapper) *HealthDBRepository {
+	return &HealthDBRepository{w: w}
 }
 
 func (r *HealthDBRepository) Ping(ctx context.Context) bool {
 
-	err := r.q.Ping(ctx)
+	err := r.w.queries().Ping(ctx)
 	if err != nil {
 		return false
 	}

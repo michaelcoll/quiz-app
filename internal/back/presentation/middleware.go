@@ -25,6 +25,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
 )
@@ -33,6 +34,7 @@ const (
 	userCtxKey   = "user"
 	userIdCtxKey = "userId"
 	roleCtxKey   = "role"
+	apiKeyCtxKey = "apiKey"
 )
 
 func addCommonMiddlewares(group *gin.Engine) {
@@ -73,6 +75,16 @@ func validateAuthHeaderAndGetUser(s *domain.AuthService) gin.HandlerFunc {
 	}
 }
 
+func validateAuthHeaderAndGetApiKey(ctx *gin.Context) {
+	apiKey, err := getApiKey(ctx)
+	if err != nil {
+		handleError(ctx, err)
+	}
+
+	ctx.Set(apiKeyCtxKey, apiKey)
+	ctx.Set(roleCtxKey, domain.Machine)
+}
+
 func injectTokenIfPresent(ctx *gin.Context) {
 	if token, err := getBearerToken(ctx); err == nil {
 		ctx.Set("token", token)
@@ -98,6 +110,16 @@ func getBearerToken(ctx *gin.Context) (string, error) {
 	return token, nil
 }
 
+func getApiKey(ctx *gin.Context) (string, error) {
+	key := ctx.GetHeader("X-Api-Key")
+
+	if key == "" {
+		return "", Errorf(http.StatusUnauthorized, "no X-Api-Key header")
+	}
+
+	return key, nil
+}
+
 func enforceRoles(ctx *gin.Context) {
 
 	role := findRoleMatchingEndpointDef(ctx)
@@ -118,6 +140,23 @@ func enforceRoles(ctx *gin.Context) {
 	}
 
 	handleHttpError(ctx, http.StatusForbidden, "forbidden access (no role in context)")
+}
+
+func enforceApiKey(ctx *gin.Context) {
+	apiKey := viper.GetString("api-key")
+
+	if requestKey, found := getApiKeyFromContext(ctx); found {
+		if requestKey != apiKey {
+			handleHttpError(ctx,
+				http.StatusForbidden,
+				fmt.Sprintf("forbidden access (path %s)", ctx.Request.URL.Path))
+			return
+		}
+
+		return
+	}
+
+	handleHttpError(ctx, http.StatusForbidden, "forbidden access (no apiKey in context)")
 }
 
 func findRoleMatchingEndpointDef(ctx *gin.Context) domain.Role {

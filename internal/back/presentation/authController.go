@@ -57,6 +57,14 @@ func getUserIdFromContext(ctx *gin.Context) (string, bool) {
 	return "", false
 }
 
+func getApiKeyFromContext(ctx *gin.Context) (string, bool) {
+	if r, found := ctx.Get(apiKeyCtxKey); found {
+		return r.(string), true
+	}
+
+	return "", false
+}
+
 func isAdmin(ctx *gin.Context) bool {
 	if role, found := getRoleFromContext(ctx); found {
 		return role == domain.Admin

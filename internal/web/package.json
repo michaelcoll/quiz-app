@@ -14,7 +14,7 @@
     "@nuxtjs/eslint-config-typescript": "12.1.0",
     "@nuxtjs/tailwindcss": "6.10.1",
     "@pinia-plugin-persistedstate/nuxt": "1.2.0",
-    "@sidebase/nuxt-auth": "0.6.2",
+    "@sidebase/nuxt-auth": "0.6.3-alpha.1",
     "@tailvue/nuxt": "1.0.0",
     "@types/node": "20.10.3",
     "@vue/eslint-config-prettier": "8.0.0",
@@ -23,7 +23,7 @@
     "eslint-plugin-simple-import-sort": "10.0.0",
     "eslint-plugin-tailwindcss": "3.13.0",
     "nuxt": "3.8.2",
-    "nuxt-icon": "0.6.6",
+    "nuxt-icon": "0.6.7",
     "prettier": "3.1.0",
     "typescript": "5.3.2"
   },

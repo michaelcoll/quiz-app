@@ -156,6 +156,7 @@ const (
 	Admin        = "ADMIN"
 	Teacher      = "TEACHER"
 	Student      = "STUDENT"
+	Machine      = "MACHINE"
 )
 
 func toRoleDto(d domain.Role) Role {
@@ -167,6 +168,8 @@ func toRoleDto(d domain.Role) Role {
 		dto = Teacher
 	case domain.Student:
 		dto = Student
+	case domain.Machine:
+		dto = Machine
 	}
 	return dto
 }
