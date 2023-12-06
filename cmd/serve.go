@@ -44,7 +44,7 @@ func serve(_ *cobra.Command, _ []string) {
 	module := back.New()
 
 	if viper.GetString("api-key") == "" {
-		fmt.Printf("%s API Key is not defined, maintenance endpoints will not be usable.\n",
+		fmt.Printf("%s API Key is not defined, maintenance endpoints will not be usable\n",
 			color.HiYellowString("!"))
 	}
 
