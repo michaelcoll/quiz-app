@@ -25,7 +25,7 @@
     "nuxt": "3.8.2",
     "nuxt-icon": "0.6.7",
     "prettier": "3.1.0",
-    "typescript": "5.3.2"
+    "typescript": "5.3.3"
   },
   "dependencies": {
     "@highlightjs/vue-plugin": "2.1.0",
