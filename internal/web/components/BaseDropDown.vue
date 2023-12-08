@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ComboItem } from "~/model/combo-item";
+  import type { ComboItem } from "~/model/combo-item";
 
   const emit = defineEmits(["onSelected"]);
   const props = defineProps<{

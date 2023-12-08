@@ -83,7 +83,7 @@
 
                     <th
                       scope="col"
-                      class="w-24 px-4 py-3.5 text-left text-sm font-normal text-gray-500 rtl:text-right dark:text-gray-400">
+                      class="w-44 px-4 py-3.5 text-left text-sm font-normal text-gray-500 rtl:text-right dark:text-gray-400">
                       Users
                     </th>
                   </tr>
@@ -100,7 +100,7 @@
                         <img
                           v-for="userSession in quizSession.userSessions"
                           :key="userSession.userId"
-                          class="-mx-1 h-6 w-6 shrink-0 rounded-full border-2 border-white object-cover dark:border-gray-700"
+                          class="-mx-1 h-6 w-6 shrink-0 rounded-full border border-white object-cover dark:border-gray-700"
                           :src="userSession.picture"
                           :alt="userSession.userName" />
                       </div>

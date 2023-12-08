@@ -34,26 +34,31 @@
   <Transition name="dropdown">
     <table v-if="sessionsVisible" class="ml-7 mt-2">
       <tr v-for="userSession in props.quizSession.userSessions" :key="userSession.userId">
-        <td class="w-6 pt-2">
+        <td class="w-12 p-2">
           <img
-            class="h-4 w-4 shrink-0 rounded-full border-2 border-white object-cover dark:border-gray-700"
+            class="h-6 w-6 shrink-0 rounded-full border border-white object-cover dark:border-gray-700"
             :src="userSession.picture"
             :alt="userSession.userName" />
         </td>
-        <td class="pl-1 pt-2">
-          <h2 class="font-medium text-gray-800 dark:text-white">
-            {{ userSession.userName }}
-          </h2>
-          <p class="text-sm font-normal text-gray-600 dark:text-gray-400">
-            {{ userSession.className }}
-          </p>
+        <td class="pl-2 pt-2">
+          <NuxtLink :to="'/quiz/' + userSession.sessionId">
+            <div
+              class="cursor-pointer rounded p-1 px-2 hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-800">
+              <h2 class="font-medium text-gray-800 dark:text-white">
+                {{ userSession.userName }}
+              </h2>
+              <p class="text-sm font-normal text-gray-600 dark:text-gray-400">
+                {{ userSession.className }}
+              </p>
+            </div>
+          </NuxtLink>
         </td>
         <td class="px-4 pt-2 align-top">
           <h2 class="font-extrabold text-gray-800 dark:text-white">
             {{ toPercent(userSession.result) + "%" }}
           </h2>
         </td>
-        <td class="w-32 pt-2 align-top">
+        <td class="w-36 pr-2 pt-2 align-top">
           <div class="my-1.5 h-1.5 w-full rounded-full bg-gray-200 dark:bg-gray-700">
             <div
               class="h-1.5 rounded-full bg-blue-600 dark:bg-blue-500"
