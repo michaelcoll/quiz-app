@@ -38,8 +38,8 @@ devDependencies:
     specifier: 1.2.0
     version: 1.2.0(@pinia/nuxt@0.5.1)(pinia@2.1.7)
   '@sidebase/nuxt-auth':
-    specifier: 0.6.3-alpha.1
-    version: 0.6.3-alpha.1(next-auth@4.21.1)(vue@3.3.10)
+    specifier: 0.6.3
+    version: 0.6.3(next-auth@4.21.1)(vue@3.3.10)
   '@tailvue/nuxt':
     specifier: 1.0.0
     version: 1.0.0(tailvue@1.0.0)
@@ -2012,8 +2012,8 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@sidebase/nuxt-auth@0.6.3-alpha.1(next-auth@4.21.1)(vue@3.3.10):
-    resolution: {integrity: sha512-ohd9MJgnbG0S88d6fTs+iSg2h3jAC/kmgTGZGusjXejPKt6TzL8gaZWISimgWdr614F+Q2gDuADoFy8qa/legw==}
+  /@sidebase/nuxt-auth@0.6.3(next-auth@4.21.1)(vue@3.3.10):
+    resolution: {integrity: sha512-wAbqXZOQoMpe1OgOyREMaNy++2D9Mc+U1PwP5GscfmCEiea04PTV3qEjo1T/2pSCra2wIeOxwqkaXXhspXOUsA==}
     peerDependencies:
       next-auth: ^4.21.1
     dependencies:
