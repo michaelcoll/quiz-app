@@ -29,16 +29,16 @@ jobs:
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       if: steps.changed-files-specific.outputs.any_changed == 'true'
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: javascript
 
     - name: Autobuild
       if: steps.changed-files-specific.outputs.any_changed == 'true'
-      uses: github/codeql-action/autobuild@v2
+      uses: github/codeql-action/autobuild@v3
 
     - name: Perform CodeQL Analysis
       if: steps.changed-files-specific.outputs.any_changed == 'true'
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
       with:
         category: "/language:javascript"
