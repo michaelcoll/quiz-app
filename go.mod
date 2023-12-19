@@ -13,7 +13,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.19
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/spf13/cobra v1.8.0
-	github.com/spf13/viper v1.18.1
+	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.8.4
 	github.com/vitorsalgado/mocha/v3 v3.0.2
 	golang.org/x/net v0.19.0
