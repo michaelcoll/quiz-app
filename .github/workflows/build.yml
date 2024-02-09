@@ -18,7 +18,7 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
         with:
           version: 8
 
