@@ -23,7 +23,7 @@ jobs:
 
     - name: Get changed files in the internal/back folder
       id: changed-files-specific
-      uses: tj-actions/changed-files@v42
+      uses: tj-actions/changed-files@v43
       with:
         files: internal/**/*.go
 
