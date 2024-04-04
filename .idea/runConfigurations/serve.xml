@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="serve" type="GoApplicationRunConfiguration" factoryName="Go Application">
-    <module name="quizz-app" />
+    <module name="quiz-app" />
     <working_directory value="$PROJECT_DIR$" />
     <parameters value="serve" />
     <envs>

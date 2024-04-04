@@ -425,7 +425,7 @@ paths:
           example: '424242424242424224242'
       - name: roleName
         in: path
-        description: The name of the role to chnage
+        description: The name of the role to change
         required: true
         schema:
           type: string
