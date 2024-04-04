@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/fatih/color v1.16.0
 	github.com/gin-contrib/cors v1.7.1
-	github.com/gin-contrib/gzip v0.0.6
+	github.com/gin-contrib/gzip v1.0.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-git/go-billy/v5 v5.5.0
 	github.com/go-git/go-git/v5 v5.12.0
