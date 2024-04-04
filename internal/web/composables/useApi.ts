@@ -1,4 +1,4 @@
-import { NitroFetchRequest } from "nitropack";
+import type { NitroFetchRequest } from "nitropack";
 import { useToast } from "tailvue";
 
 import { useAuthStore } from "~/stores/auth";

@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="go [coverage]" type="GoTestRunConfiguration" factoryName="Go Test">
-    <module name="quizz-app" />
+    <module name="quiz-app" />
     <working_directory value="$PROJECT_DIR$" />
     <kind value="DIRECTORY" />
     <package value="github.com/michaelcoll/gallery-web" />

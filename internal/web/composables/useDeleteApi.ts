@@ -1,4 +1,4 @@
-import { NitroFetchRequest } from "nitropack";
+import type { NitroFetchRequest } from "nitropack";
 
 export function useDeleteApi<
   T = unknown,

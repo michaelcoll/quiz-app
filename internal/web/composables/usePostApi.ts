@@ -1,4 +1,4 @@
-import { NitroFetchRequest } from "nitropack";
+import type { NitroFetchRequest } from "nitropack";
 
 export function usePostApi<T = unknown, R extends NitroFetchRequest = NitroFetchRequest>(
   request: Parameters<typeof useApi<T, R>>[0],
