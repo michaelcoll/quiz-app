@@ -38,8 +38,8 @@ devDependencies:
     specifier: 1.2.0
     version: 1.2.0(@pinia/nuxt@0.5.1)(pinia@2.1.7)
   '@sidebase/nuxt-auth':
-    specifier: 0.7.0
-    version: 0.7.0(next-auth@4.21.1)
+    specifier: 0.7.1
+    version: 0.7.1(next-auth@4.21.1)
   '@tailvue/nuxt':
     specifier: 1.0.0
     version: 1.0.0(tailvue@1.0.0)
@@ -1146,8 +1146,8 @@ packages:
       nuxt: ^3.9.0
       vite: '*'
     dependencies:
-      '@nuxt/kit': 3.11.1
-      '@nuxt/schema': 3.11.1
+      '@nuxt/kit': 3.11.2
+      '@nuxt/schema': 3.11.2
       execa: 7.2.0
       nuxt: 3.11.2(@types/node@20.12.5)(@unocss/reset@0.58.9)(eslint@8.57.0)(floating-vue@5.2.2)(typescript@5.4.4)(unocss@0.58.9)(vite@5.2.8)
       vite: 5.2.8(@types/node@20.12.5)
@@ -1963,12 +1963,12 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@sidebase/nuxt-auth@0.7.0(next-auth@4.21.1):
-    resolution: {integrity: sha512-831YTa4KL1+o/WQ0keTWCRoib7QifKNc+DOk88aH4jqFE9JDGDRoZHzTTFP0ju6znX5Vh3jmRtiy2zFS3UJjLA==}
+  /@sidebase/nuxt-auth@0.7.1(next-auth@4.21.1):
+    resolution: {integrity: sha512-25stYS4eRbqNsUiA6+XDJG1x/xfvTxN6ZAW8hgTpWArjdoObKe3xDcOuNd2g8z2z1frSm4IoO/RKzhizQpRkMQ==}
     peerDependencies:
       next-auth: ~4.21.1
     dependencies:
-      '@nuxt/kit': 3.11.1
+      '@nuxt/kit': 3.11.2
       defu: 6.1.4
       h3: 1.11.1
       knitwork: 1.1.0
