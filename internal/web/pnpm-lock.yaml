@@ -38,8 +38,8 @@ devDependencies:
     specifier: 1.2.0
     version: 1.2.0(@pinia/nuxt@0.5.1)(pinia@2.1.7)
   '@sidebase/nuxt-auth':
-    specifier: 0.7.1
-    version: 0.7.1(next-auth@4.21.1)
+    specifier: 0.7.2
+    version: 0.7.2(next-auth@4.21.1)
   '@tailvue/nuxt':
     specifier: 1.0.0
     version: 1.0.0(tailvue@1.0.0)
@@ -1926,8 +1926,8 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@sidebase/nuxt-auth@0.7.1(next-auth@4.21.1):
-    resolution: {integrity: sha512-25stYS4eRbqNsUiA6+XDJG1x/xfvTxN6ZAW8hgTpWArjdoObKe3xDcOuNd2g8z2z1frSm4IoO/RKzhizQpRkMQ==}
+  /@sidebase/nuxt-auth@0.7.2(next-auth@4.21.1):
+    resolution: {integrity: sha512-0f/DxRvDKFBwg5jR85KMeuVGQSygnDl3LOFeXnEHOS3A9SnJLE8najNooq7DbQB6lB8dl+vDpguVNH+V92TiHg==}
     peerDependencies:
       next-auth: ~4.21.1
     dependencies:
