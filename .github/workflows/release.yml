@@ -22,7 +22,7 @@ jobs:
       - name: Set APP_VERSION env
         run: echo APP_VERSION=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev ) >> ${GITHUB_ENV}
 
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
         with:
           version: 8
 
