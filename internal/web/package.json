@@ -22,7 +22,7 @@
     "eslint-plugin-prettier": "5.2.1",
     "eslint-plugin-simple-import-sort": "12.1.1",
     "eslint-plugin-tailwindcss": "3.17.4",
-    "nuxt": "3.12.3",
+    "nuxt": "3.12.4",
     "nuxt-icon": "0.6.10",
     "prettier": "3.3.3",
     "typescript": "5.5.3"
