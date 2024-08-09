@@ -36,10 +36,10 @@ devDependencies:
     version: 6.12.1
   '@pinia-plugin-persistedstate/nuxt':
     specifier: 1.2.1
-    version: 1.2.1(@pinia/nuxt@0.5.3)(pinia@2.2.0)
+    version: 1.2.1(@pinia/nuxt@0.5.3)(pinia@2.2.1)
   '@sidebase/nuxt-auth':
-    specifier: 0.8.1
-    version: 0.8.1(@opentelemetry/api@1.9.0)(next-auth@4.21.1)
+    specifier: 0.8.2
+    version: 0.8.2(@opentelemetry/api@1.9.0)(next-auth@4.21.1)
   '@tailvue/nuxt':
     specifier: 1.0.0
     version: 1.0.0(tailvue@1.0.0)
@@ -1595,7 +1595,7 @@ packages:
       consola: 3.2.3
       defu: 6.1.4
       destr: 2.0.3
-      globby: 14.0.1
+      globby: 14.0.2
       hash-sum: 2.0.0
       ignore: 5.3.1
       jiti: 1.21.6
@@ -1603,12 +1603,12 @@ packages:
       knitwork: 1.1.0
       mlly: 1.7.1
       pathe: 1.1.2
-      pkg-types: 1.1.1
+      pkg-types: 1.1.3
       scule: 1.3.0
-      semver: 7.6.2
-      ufo: 1.5.3
+      semver: 7.6.3
+      ufo: 1.5.4
       unctx: 2.3.1
-      unimport: 3.7.2
+      unimport: 3.9.0(rollup@4.18.0)
       untyped: 1.4.2
     transitivePeerDependencies:
       - magicast
@@ -1636,7 +1636,7 @@ packages:
       pkg-types: 1.1.3
       scule: 1.3.0
       semver: 7.6.2
-      ufo: 1.5.3
+      ufo: 1.5.4
       unctx: 2.3.1
       unimport: 3.7.2
       untyped: 1.4.2
@@ -2333,7 +2333,7 @@ packages:
       '@parcel/watcher-win32-x64': 2.4.1
     dev: true
 
-  /@pinia-plugin-persistedstate/nuxt@1.2.1(@pinia/nuxt@0.5.3)(pinia@2.2.0):
+  /@pinia-plugin-persistedstate/nuxt@1.2.1(@pinia/nuxt@0.5.3)(pinia@2.2.1):
     resolution: {integrity: sha512-q8s+4aQW/AjBMyeqLL48/qzBR5lcgnvvf1525ovNuKf6Wl9CsoLjPKh/5X8vNoKGwSow4gP7lVmdYPQRypgjgg==}
     peerDependencies:
       '@pinia/nuxt': ^0.5.0
@@ -2341,7 +2341,7 @@ packages:
       '@nuxt/kit': 3.12.2
       '@pinia/nuxt': 0.5.3(typescript@5.5.4)(vue@3.4.32)
       defu: 6.1.4
-      pinia-plugin-persistedstate: 3.2.1(pinia@2.2.0)
+      pinia-plugin-persistedstate: 3.2.1(pinia@2.2.1)
     transitivePeerDependencies:
       - magicast
       - pinia
@@ -2664,19 +2664,21 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@sidebase/nuxt-auth@0.8.1(@opentelemetry/api@1.9.0)(next-auth@4.21.1):
-    resolution: {integrity: sha512-zNUoWPiHrnFMW7Skgu77UCHM0mR02/GPKHlgs4ulboGYHbkKbFkLj6/44jbuBqDE1ZH2Pg4UJnHj8DAw6XPrwQ==}
+  /@sidebase/nuxt-auth@0.8.2(@opentelemetry/api@1.9.0)(next-auth@4.21.1):
+    resolution: {integrity: sha512-D1jUsEZ8NH9invsWX0KQbT+NZdcpDNoQ2ZgWiNILts5983KO8lrYYsjK77jguVZ3Wxl0ae6SwiW9R0YbcKOvlQ==}
+    engines: {node: '>=22.3.0', pnpm: '>=9.4.0'}
     peerDependencies:
       next-auth: ~4.21.1
     dependencies:
-      '@nuxt/kit': 3.12.3(magicast@0.3.4)
+      '@nuxt/kit': 3.12.4(magicast@0.3.4)
       defu: 6.1.4
       h3: 1.12.0
       knitwork: 1.1.0
       next-auth: 4.21.1(next@13.5.6)(react-dom@18.2.0)(react@18.2.0)
       nitropack: 2.9.7(@opentelemetry/api@1.9.0)
       requrl: 3.0.2
-      ufo: 1.5.3
+      scule: 1.3.0
+      ufo: 1.5.4
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -3247,6 +3249,7 @@ packages:
     resolution: {integrity: sha512-RTvkC4w+KNXrM39/lWCUaG0IbRkWdCv7W/IOW9oU6SawyxulvkQy5HQPVTKxEjczcUvapcrw3cFx/60VN/NRNw==}
     engines: {node: '>=0.4.0'}
     hasBin: true
+    dev: true
 
   /acorn@8.12.1:
     resolution: {integrity: sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==}
@@ -5426,18 +5429,6 @@ packages:
       slash: 4.0.0
     dev: true
 
-  /globby@14.0.1:
-    resolution: {integrity: sha512-jOMLD2Z7MAhyG8aJpNOpmziMOP4rPLcc95oQPKXBazW82z+CEgPFBQvEpRUa1KeIMUJo4Wsm+q6uzO/Q/4BksQ==}
-    engines: {node: '>=18'}
-    dependencies:
-      '@sindresorhus/merge-streams': 2.3.0
-      fast-glob: 3.3.2
-      ignore: 5.3.1
-      path-type: 5.0.0
-      slash: 5.1.0
-      unicorn-magic: 0.1.0
-    dev: true
-
   /globby@14.0.2:
     resolution: {integrity: sha512-s3Fq41ZVh7vbbe2PN3nrW7yC7U7MFVc5c98/iTl9c2GawNMKx/J648KQRW6WKkuU8GIbbh2IXfIRQjOZnXcTnw==}
     engines: {node: '>=18'}
@@ -6904,7 +6895,7 @@ packages:
       execa: 8.0.1
       pathe: 1.1.2
       pkg-types: 1.1.3
-      ufo: 1.5.3
+      ufo: 1.5.4
 
   /oauth@0.9.15:
     resolution: {integrity: sha512-a5ERWK1kh38ExDEfoO6qUHJb32rd7aYmPHuyCu3Fta/cnICvYmgd2uhuKXvPD+PXB+gCEYYEaQdIRAjCOwAKNA==}
@@ -7206,30 +7197,12 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /pinia-plugin-persistedstate@3.2.1(pinia@2.2.0):
+  /pinia-plugin-persistedstate@3.2.1(pinia@2.2.1):
     resolution: {integrity: sha512-MK++8LRUsGF7r45PjBFES82ISnPzyO6IZx3CH5vyPseFLZCk1g2kgx6l/nW8pEBKxxd4do0P6bJw+mUSZIEZUQ==}
     peerDependencies:
       pinia: ^2.0.0
     dependencies:
-      pinia: 2.2.0(typescript@5.5.4)(vue@3.4.32)
-    dev: true
-
-  /pinia@2.2.0(typescript@5.5.4)(vue@3.4.32):
-    resolution: {integrity: sha512-iPrIh26GMqfpUlMOGyxuDowGmYousTecbTHFwT0xZ1zJvh23oQ+Cj99ZoPQA1TnUPhU6AuRPv6/drkTCJ0VHQA==}
-    peerDependencies:
-      '@vue/composition-api': ^1.4.0
-      typescript: '>=4.4.4'
-      vue: ^2.6.14 || ^3.3.0
-    peerDependenciesMeta:
-      '@vue/composition-api':
-        optional: true
-      typescript:
-        optional: true
-    dependencies:
-      '@vue/devtools-api': 6.6.3
-      typescript: 5.5.4
-      vue: 3.4.32(typescript@5.5.4)
-      vue-demi: 0.14.10(vue@3.4.32)
+      pinia: 2.2.1(typescript@5.5.4)(vue@3.4.32)
     dev: true
 
   /pinia@2.2.1(typescript@5.5.4)(vue@3.4.32):
@@ -7252,14 +7225,6 @@ packages:
   /pirates@4.0.6:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
     engines: {node: '>= 6'}
-    dev: true
-
-  /pkg-types@1.1.1:
-    resolution: {integrity: sha512-ko14TjmDuQJ14zsotODv7dBlwxKhUKQEhuhmbqo1uCi9BB0Z2alo/wAXg6q1dTR5TyuqYyWhjtfe/Tsh+X28jQ==}
-    dependencies:
-      confbox: 0.1.7
-      mlly: 1.7.1
-      pathe: 1.1.2
     dev: true
 
   /pkg-types@1.1.3:
@@ -8810,6 +8775,7 @@ packages:
 
   /ufo@1.5.3:
     resolution: {integrity: sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==}
+    dev: true
 
   /ufo@1.5.4:
     resolution: {integrity: sha512-UsUk3byDzKd04EyoZ7U4DOlxQaD14JUKQl6/P7wiX4FNvUfm3XL246n9W5AmqwW5RSFJ27NAuM0iLscAOYUiGQ==}
@@ -8833,7 +8799,7 @@ packages:
   /unctx@2.3.1:
     resolution: {integrity: sha512-PhKke8ZYauiqh3FEMVNm7ljvzQiph0Mt3GBRve03IJm7ukfaON2OBK795tLwhbyfzknuRRkW0+Ze+CQUmzOZ+A==}
     dependencies:
-      acorn: 8.12.0
+      acorn: 8.12.1
       estree-walker: 3.0.3
       magic-string: 0.30.10
       unplugin: 1.11.0
