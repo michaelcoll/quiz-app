@@ -62,7 +62,7 @@
           type="checkbox"
           :checked="props.checked"
           value=""
-          class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600" />
+          class="size-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600" />
         <label
           :for="answerSha1"
           class="ml-2 rounded bg-green-500/40 px-2 text-sm font-medium text-gray-900 dark:text-gray-300"
@@ -76,7 +76,7 @@
         type="checkbox"
         :checked="props.checked"
         value=""
-        class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600" />
+        class="size-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600" />
       <label
         :for="answerSha1"
         class="ml-2 rounded bg-red-500/40 px-2 text-sm font-medium text-gray-900 dark:text-gray-300"
@@ -90,7 +90,7 @@
       v-model="isChecked"
       type="checkbox"
       value=""
-      class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+      class="size-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
       @change="checkChange(isChecked)" />
     <label
       :for="answerSha1"

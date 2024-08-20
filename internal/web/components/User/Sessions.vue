@@ -20,7 +20,7 @@
     class="flex w-full cursor-pointer flex-row rounded-md border border-transparent hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-800"
     @click="sessionsVisible = !sessionsVisible">
     <Icon
-      class="mx-1 h-5 w-5 text-gray-800 dark:text-white"
+      class="mx-1 size-5 text-gray-800 dark:text-white"
       name="solar:alt-arrow-down-line-duotone" />
     <div>
       <h2 class="text-left font-medium text-gray-800 dark:text-white">
@@ -36,7 +36,7 @@
       <tr v-for="userSession in props.quizSession.userSessions" :key="userSession.userId">
         <td class="w-12 p-2">
           <img
-            class="h-6 w-6 shrink-0 rounded-full border border-white object-cover dark:border-gray-700"
+            class="size-6 shrink-0 rounded-full border border-white object-cover dark:border-gray-700"
             :src="userSession.picture"
             :alt="userSession.userName" />
         </td>
