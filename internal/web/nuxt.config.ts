@@ -19,7 +19,7 @@ export default defineNuxtConfig({
     "@pinia-plugin-persistedstate/nuxt",
     "@sidebase/nuxt-auth",
     "@tailvue/nuxt",
-    "nuxt-icon",
+    "@nuxt/icon",
   ],
 
   runtimeConfig: {
@@ -37,4 +37,6 @@ export default defineNuxtConfig({
       },
     },
   },
+
+  compatibilityDate: "2024-08-20",
 });
