@@ -51,11 +51,11 @@
 <template>
   <div class="mt-4 inline-block items-center lg:mt-0">
     <button
-      class="z-10 flex items-center rounded-md border border-transparent bg-white p-2 text-sm text-gray-600 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:bg-gray-800 dark:text-white dark:focus:ring-blue-400 dark:focus:ring-opacity-40"
+      class="z-10 flex items-center rounded-md border border-transparent bg-white p-2 text-sm text-gray-600 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-300/40 dark:bg-gray-800 dark:text-white dark:focus:ring-blue-400/40"
       @focusout="isOpen = false"
       @click="isOpen = !isOpen">
       <span class="mx-1">{{ selectedItem?.value }}</span>
-      <Icon class="mx-1 h-5 w-5" name="solar:alt-arrow-down-line-duotone" />
+      <Icon class="mx-1 size-5" name="solar:alt-arrow-down-line-duotone" />
     </button>
 
     <Transition name="dropdown">

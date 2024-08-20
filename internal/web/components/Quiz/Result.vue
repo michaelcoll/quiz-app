@@ -28,7 +28,7 @@
       class="flex h-10 items-center rounded-md bg-gray-50 px-8 shadow-md dark:bg-gray-800">
       <div
         class="-m-6 flex items-center justify-center overflow-hidden rounded-full bg-gray-50 dark:bg-gray-800">
-        <svg class="h-16 w-16 translate-x-1 translate-y-1" aria-hidden="true">
+        <svg class="size-16 translate-x-1 translate-y-1" aria-hidden="true">
           <circle
             class="text-gray-300/20"
             stroke-width="5"

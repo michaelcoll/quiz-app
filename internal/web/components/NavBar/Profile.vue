@@ -31,15 +31,15 @@
         class="relative z-10 flex items-center rounded-md border border-transparent bg-white p-2 text-sm text-gray-600 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
         @focusout="isOpen = false"
         @click="isOpen = !isOpen">
-        <div class="mx-1 h-8 w-8 overflow-hidden rounded-full border border-gray-400">
+        <div class="mx-1 size-8 overflow-hidden rounded-full border border-gray-400">
           <img
             :src="props.user?.picture"
-            class="h-full w-full object-cover"
+            class="size-full object-cover"
             referrerpolicy="no-referrer"
             alt="avatar" />
         </div>
         <span class="mx-1">{{ props.user.name }}</span>
-        <Icon class="mx-1 h-5 w-5" name="solar:alt-arrow-down-line-duotone" />
+        <Icon class="mx-1 size-5" name="solar:alt-arrow-down-line-duotone" />
       </button>
 
       <!-- Dropdown menu -->
@@ -56,17 +56,17 @@
                   'ring-amber-500': props.user.role === 'TEACHER',
                   'ring-orange-500': props.user.role === 'ADMIN',
                 }"
-                class="mx-1 h-11 w-11 rounded-full object-cover p-0.5 ring-2"
+                class="mx-1 size-11 rounded-full object-cover p-0.5 ring-2"
                 referrerpolicy="no-referrer"
                 :src="props.user?.picture"
                 alt="avatar" />
               <Icon
                 v-if="props.user.role === 'ADMIN'"
-                class="absolute -bottom-1 -right-1 h-6 w-6 text-orange-400"
+                class="absolute -bottom-1 -right-1 size-6 text-orange-400"
                 name="solar:crown-bold" />
               <Icon
                 v-if="props.user.role === 'TEACHER'"
-                class="absolute -bottom-1 -right-1 h-6 w-6 text-amber-400"
+                class="absolute -bottom-1 -right-1 size-6 text-amber-400"
                 name="solar:square-academic-cap-bold" />
             </div>
             <div class="mx-1">
@@ -98,7 +98,7 @@
             href="#"
             class="flex items-center p-3 text-sm text-gray-600 transition-colors duration-300 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
             @click="handleLogout">
-            <Icon class="mx-1 h-5 w-5" name="solar:login-3-bold-duotone" />
+            <Icon class="mx-1 size-5" name="solar:login-3-bold-duotone" />
             <span class="mx-1"> Sign Out </span>
           </a>
         </div>
@@ -106,11 +106,11 @@
     </div>
     <div v-else>
       <button
-        class="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors duration-200 hover:bg-gray-100 rtl:flex-row-reverse dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 sm:px-6 sm:text-base"
+        class="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors duration-200 hover:bg-gray-100 sm:px-6 sm:text-base rtl:flex-row-reverse dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
         @click="logIn">
         <Icon
           v-if="loginPending"
-          class="mx-1 mr-4 h-5 w-5"
+          class="mx-1 mr-4 size-5"
           name="svg-spinners:180-ring-with-bg" />
         Login
       </button>
