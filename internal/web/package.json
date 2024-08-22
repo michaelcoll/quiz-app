@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@highlightjs/vue-plugin": "2.1.0",
-    "@pinia/nuxt": "0.5.3",
+    "@pinia/nuxt": "0.5.4",
     "dayjs": "1.11.13",
     "flowbite": "2.5.1",
     "next-auth": "4.21.1",
