@@ -21,7 +21,7 @@
     "@tailvue/nuxt": "1.0.0",
     "@types/node": "22.5.5",
     "@vue/eslint-config-prettier": "9.0.0",
-    "eslint": "8.57.0",
+    "eslint": "8.57.1",
     "eslint-plugin-prettier": "5.2.1",
     "eslint-plugin-simple-import-sort": "12.1.1",
     "eslint-plugin-tailwindcss": "3.17.4",
