@@ -43,8 +43,8 @@ importers:
         specifier: 1.2.1
         version: 1.2.1(@pinia/nuxt@0.5.4(magicast@0.3.5)(rollup@4.21.0)(typescript@5.6.2)(vue@3.5.5(typescript@5.6.2))(webpack-sources@3.2.3))(magicast@0.3.5)(pinia@2.2.2(typescript@5.6.2)(vue@3.5.5(typescript@5.6.2)))(rollup@4.21.0)(webpack-sources@3.2.3)
       '@sidebase/nuxt-auth':
-        specifier: 0.9.2
-        version: 0.9.2(encoding@0.1.13)(magicast@0.3.5)(next-auth@4.21.1(next@14.2.5(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rollup@4.21.0)(webpack-sources@3.2.3)
+        specifier: 0.9.3
+        version: 0.9.3(encoding@0.1.13)(magicast@0.3.5)(next-auth@4.21.1(next@14.2.5(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rollup@4.21.0)(webpack-sources@3.2.3)
       '@tailvue/nuxt':
         specifier: 1.0.0
         version: 1.0.0(magicast@0.3.5)(rollup@4.21.0)(tailvue@1.0.0(vue@3.5.5(typescript@5.6.2)))(webpack-sources@3.2.3)
@@ -770,6 +770,7 @@ packages:
   '@koa/router@12.0.1':
     resolution: {integrity: sha512-ribfPYfHb+Uw3b27Eiw6NPqjhIhTpVFzEWLwyc/1Xp+DCdwRRyIlAUODX+9bPARF6aQtUu1+/PHzdNvRzcs/+Q==}
     engines: {node: '>= 12'}
+    deprecated: Use v12.0.2 or higher to fix the vulnerability issue
 
   '@kwsites/file-exists@1.1.1':
     resolution: {integrity: sha512-m9/5YGR18lIwxSFDwfE3oA7bWuq9kdau6ugN4H2rJeyhFQZcG9AgSHkQtSD15a8WvTgfz9aikZMrKPHvbpqFiw==}
@@ -1217,8 +1218,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@sidebase/nuxt-auth@0.9.2':
-    resolution: {integrity: sha512-IXar3ot/XbudDzfPM90xiFp9GQEsJ6/ZBHcgl5B02eUCcmNRSrfdy6lSjBRsUDWLoLjNQEuoiWYtYb35jB50Bw==}
+  '@sidebase/nuxt-auth@0.9.3':
+    resolution: {integrity: sha512-celbFy5j1IIFUpVQA+0CvqzxqFTdHS3SFMHnPGONzrjka0BDIDOHtMfZ7xyIgOb8OaBdibjRsqeUhhJmBYfkOA==}
     engines: {node: '>=20', pnpm: '>=9.4.0'}
     peerDependencies:
       next-auth: ~4.21.1
@@ -5522,7 +5523,7 @@ snapshots:
 
   '@nuxt/devtools-kit@1.4.1(magicast@0.3.5)(rollup@4.21.0)(vite@5.4.5(@types/node@22.5.5)(terser@5.31.6))(webpack-sources@3.2.3)':
     dependencies:
-      '@nuxt/kit': 3.13.1(magicast@0.3.5)(rollup@4.21.0)(webpack-sources@3.2.3)
+      '@nuxt/kit': 3.13.2(magicast@0.3.5)(rollup@4.21.0)(webpack-sources@3.2.3)
       '@nuxt/schema': 3.13.1(rollup@4.21.0)(webpack-sources@3.2.3)
       execa: 7.2.0
       vite: 5.4.5(@types/node@22.5.5)(terser@5.31.6)
@@ -5534,7 +5535,7 @@ snapshots:
 
   '@nuxt/devtools-kit@1.4.2(magicast@0.3.5)(rollup@4.21.0)(vite@5.4.5(@types/node@22.5.5)(terser@5.31.6))(webpack-sources@3.2.3)':
     dependencies:
-      '@nuxt/kit': 3.13.1(magicast@0.3.5)(rollup@4.21.0)(webpack-sources@3.2.3)
+      '@nuxt/kit': 3.13.2(magicast@0.3.5)(rollup@4.21.0)(webpack-sources@3.2.3)
       '@nuxt/schema': 3.13.1(rollup@4.21.0)(webpack-sources@3.2.3)
       execa: 7.2.0
       vite: 5.4.5(@types/node@22.5.5)(terser@5.31.6)
@@ -5795,7 +5796,7 @@ snapshots:
       std-env: 3.7.0
       ufo: 1.5.4
       uncrypto: 0.1.3
-      unimport: 3.11.1(rollup@4.21.0)(webpack-sources@3.2.3)
+      unimport: 3.12.0(rollup@4.21.0)(webpack-sources@3.2.3)
       untyped: 1.4.2
     transitivePeerDependencies:
       - rollup
@@ -5814,7 +5815,7 @@ snapshots:
       std-env: 3.7.0
       ufo: 1.5.4
       uncrypto: 0.1.3
-      unimport: 3.11.1(rollup@4.21.0)(webpack-sources@3.2.3)
+      unimport: 3.12.0(rollup@4.21.0)(webpack-sources@3.2.3)
       untyped: 1.4.2
     transitivePeerDependencies:
       - rollup
@@ -5833,7 +5834,7 @@ snapshots:
       std-env: 3.7.0
       ufo: 1.5.4
       uncrypto: 0.1.3
-      unimport: 3.11.1(rollup@4.21.0)(webpack-sources@3.2.3)
+      unimport: 3.12.0(rollup@4.21.0)(webpack-sources@3.2.3)
       untyped: 1.4.2
     transitivePeerDependencies:
       - rollup
@@ -6217,9 +6218,9 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.21.0':
     optional: true
 
-  '@sidebase/nuxt-auth@0.9.2(encoding@0.1.13)(magicast@0.3.5)(next-auth@4.21.1(next@14.2.5(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rollup@4.21.0)(webpack-sources@3.2.3)':
+  '@sidebase/nuxt-auth@0.9.3(encoding@0.1.13)(magicast@0.3.5)(next-auth@4.21.1(next@14.2.5(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rollup@4.21.0)(webpack-sources@3.2.3)':
     dependencies:
-      '@nuxt/kit': 3.13.1(magicast@0.3.5)(rollup@4.21.0)(webpack-sources@3.2.3)
+      '@nuxt/kit': 3.13.2(magicast@0.3.5)(rollup@4.21.0)(webpack-sources@3.2.3)
       defu: 6.1.4
       h3: 1.12.0
       knitwork: 1.1.0
