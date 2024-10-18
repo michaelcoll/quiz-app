@@ -43,8 +43,8 @@ importers:
         specifier: 1.2.1
         version: 1.2.1(@pinia/nuxt@0.5.5(magicast@0.3.5)(rollup@4.24.0)(typescript@5.6.3)(vue@3.5.5(typescript@5.6.3))(webpack-sources@3.2.3))(magicast@0.3.5)(pinia@2.2.3(typescript@5.6.3)(vue@3.5.5(typescript@5.6.3)))(rollup@4.24.0)(webpack-sources@3.2.3)
       '@sidebase/nuxt-auth':
-        specifier: 0.9.3
-        version: 0.9.3(encoding@0.1.13)(magicast@0.3.5)(next-auth@4.21.1(next@14.2.5(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rollup@4.24.0)(webpack-sources@3.2.3)
+        specifier: 0.9.4
+        version: 0.9.4(encoding@0.1.13)(magicast@0.3.5)(next-auth@4.21.1(next@14.2.5(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rollup@4.24.0)(webpack-sources@3.2.3)
       '@tailvue/nuxt':
         specifier: 1.0.0
         version: 1.0.0(magicast@0.3.5)(rollup@4.24.0)(tailvue@1.0.0(vue@3.5.5(typescript@5.6.3)))(webpack-sources@3.2.3)
@@ -1202,8 +1202,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@sidebase/nuxt-auth@0.9.3':
-    resolution: {integrity: sha512-celbFy5j1IIFUpVQA+0CvqzxqFTdHS3SFMHnPGONzrjka0BDIDOHtMfZ7xyIgOb8OaBdibjRsqeUhhJmBYfkOA==}
+  '@sidebase/nuxt-auth@0.9.4':
+    resolution: {integrity: sha512-TpOI9E6BJLjU558cl4AwE8tmGbvKt4GJtAmm8TUNJEEPLX6i5MbpzpJyoSXDALp19RqHa1INe7oDWggtEiba/w==}
     engines: {node: '>=20', pnpm: '>=9.4.0'}
     peerDependencies:
       next-auth: ~4.21.1
@@ -6110,7 +6110,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.24.0':
     optional: true
 
-  '@sidebase/nuxt-auth@0.9.3(encoding@0.1.13)(magicast@0.3.5)(next-auth@4.21.1(next@14.2.5(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rollup@4.24.0)(webpack-sources@3.2.3)':
+  '@sidebase/nuxt-auth@0.9.4(encoding@0.1.13)(magicast@0.3.5)(next-auth@4.21.1(next@14.2.5(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(rollup@4.24.0)(webpack-sources@3.2.3)':
     dependencies:
       '@nuxt/kit': 3.13.2(magicast@0.3.5)(rollup@4.24.0)(webpack-sources@3.2.3)
       defu: 6.1.4
