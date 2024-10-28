@@ -31,8 +31,8 @@ importers:
         specifier: 1.6.0
         version: 1.6.0(rollup@4.24.0)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.6))(vue@3.5.5(typescript@5.6.3))(webpack-sources@3.2.3)
       '@nuxt/icon':
-        specifier: 1.5.7
-        version: 1.5.7(magicast@0.3.5)(rollup@4.24.0)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.6))(vue@3.5.5(typescript@5.6.3))(webpack-sources@3.2.3)
+        specifier: 1.5.8
+        version: 1.5.8(magicast@0.3.5)(rollup@4.24.0)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.6))(vue@3.5.5(typescript@5.6.3))(webpack-sources@3.2.3)
       '@nuxtjs/eslint-config-typescript':
         specifier: 12.1.0
         version: 12.1.0(eslint@8.57.1)(typescript@5.6.3)
@@ -881,8 +881,8 @@ packages:
     peerDependencies:
       vite: '*'
 
-  '@nuxt/icon@1.5.7':
-    resolution: {integrity: sha512-i6pDpHlcx1qXlzS42E2hvOnMTPtSekvvzqIx1AY0g49bQUgFrtPEN2+EdRqg5hgIdo3MDT5T9957LbcK0qsU9Q==}
+  '@nuxt/icon@1.5.8':
+    resolution: {integrity: sha512-7FWyGjtm2DADbAB5kp+x4GuwlGSTAn0Ho4awLDuyIEJMwJDyKoeNjMxjXAmmBzr0ePgqeDOOhdDtfNuy3gpB/g==}
 
   '@nuxt/kit-edge@3.8.0-28284309.b3d3d7f4':
     resolution: {integrity: sha512-yUUBNl+VF/+q0MJEKYAOXv72wvXzqqRnYW0beQcpXIhVZI8K7buoLIaZeAAsGtbMoIjDGRVoRaRq1paTcYRHvA==}
@@ -5566,7 +5566,7 @@ snapshots:
       - vue
       - webpack-sources
 
-  '@nuxt/icon@1.5.7(magicast@0.3.5)(rollup@4.24.0)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.6))(vue@3.5.5(typescript@5.6.3))(webpack-sources@3.2.3)':
+  '@nuxt/icon@1.5.8(magicast@0.3.5)(rollup@4.24.0)(vite@5.4.8(@types/node@22.7.9)(terser@5.31.6))(vue@3.5.5(typescript@5.6.3))(webpack-sources@3.2.3)':
     dependencies:
       '@iconify/collections': 1.0.474
       '@iconify/types': 2.0.0
