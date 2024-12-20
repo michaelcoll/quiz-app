@@ -17,7 +17,7 @@
     "@nuxtjs/eslint-config-typescript": "12.1.0",
     "@nuxtjs/tailwindcss": "6.12.2",
     "@pinia-plugin-persistedstate/nuxt": "1.2.1",
-    "@sidebase/nuxt-auth": "0.9.4",
+    "@sidebase/nuxt-auth": "0.10.0",
     "@tailvue/nuxt": "1.0.0",
     "@types/node": "22.10.2",
     "@vue/eslint-config-prettier": "10.1.0",
