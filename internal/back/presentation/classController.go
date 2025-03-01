@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Michaël COLL.
+ * Copyright (c) 2022-2025 Michaël COLL.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ func (c *ApiController) classList(ctx *gin.Context) {
 		return
 	}
 
-	classes, total, err := c.classService.FindAllClasses(ctx.Request.Context(), end-start, start)
+	classes, total, err := c.classService.FindAllClasses(ctx.Request.Context(), end-start+1, start)
 	if err != nil {
 		handleError(ctx, err)
 		return

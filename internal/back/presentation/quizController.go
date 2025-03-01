@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Michaël COLL.
+ * Copyright (c) 2022-2025 Michaël COLL.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ func (c *ApiController) quizList(ctx *gin.Context) {
 		}
 	}
 
-	quizzes, total, err := c.quizService.FindAllActive(ctx.Request.Context(), userId, end-start, start)
+	quizzes, total, err := c.quizService.FindAllActive(ctx.Request.Context(), userId, end-start+1, start)
 	if err != nil {
 		handleError(ctx, err)
 		return
@@ -102,7 +102,7 @@ func (c *ApiController) sessionList(ctx *gin.Context) {
 		}
 	}
 
-	sessions, total, err := c.quizService.FindAllSessions(ctx.Request.Context(), quizActive, userId, end-start, start)
+	sessions, total, err := c.quizService.FindAllSessions(ctx.Request.Context(), quizActive, userId, end-start+1, start)
 	if err != nil {
 		handleError(ctx, err)
 		return
@@ -165,6 +165,15 @@ func (c *ApiController) addSessionAnswer(ctx *gin.Context) {
 
 func (c *ApiController) quizSessionList(ctx *gin.Context) {
 
+	classId, _ := ctx.GetQuery("classId")
+	withCurrentUserSessionParam, _ := ctx.GetQuery("withCurrentUserSession")
+	withCurrentUserSession := withCurrentUserSessionParam == "true"
+
+	if isStudent(ctx) && !withCurrentUserSession {
+		handleHttpError(ctx, http.StatusUnauthorized, "student can only access their own session")
+		return
+	}
+
 	unit := "quiz-session"
 	start, end, err := extractRangeHeader(ctx.GetHeader("Range"), unit)
 	if err != nil {
@@ -180,14 +189,7 @@ func (c *ApiController) quizSessionList(ctx *gin.Context) {
 		return
 	}
 
-	studentUserId := ""
-	if isStudent(ctx) {
-		studentUserId = userId
-	}
-
-	classId, _ := ctx.GetQuery("classId")
-
-	sessions, total, err := c.quizService.FindAllQuizSessions(ctx.Request.Context(), studentUserId, classId, end-start, start)
+	sessions, total, err := c.quizService.FindAllQuizSessions(ctx.Request.Context(), userId, classId, end-start+1, start)
 	if err != nil {
 		handleError(ctx, err)
 		return

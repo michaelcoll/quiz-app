@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Michaël COLL.
+ * Copyright (c) 2023-2025 Michaël COLL.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,4 +112,53 @@ func Test_addDeleteEndpoint(t *testing.T) {
 }
 
 func testHandlerFunc(_ *gin.Context) {
+}
+
+func Test_extractRangeHeader_validRange(t *testing.T) {
+	start, end, err := extractRangeHeader("bytes=0-25", "bytes")
+	assert.NoError(t, err)
+	assert.Equal(t, uint16(0), start)
+	assert.Equal(t, uint16(25), end)
+}
+
+func Test_extractRangeHeader_invalidFormat(t *testing.T) {
+	start, end, err := extractRangeHeader("invalid=0-25", "bytes")
+	assert.Error(t, err)
+	assert.Equal(t, uint16(0), start)
+	assert.Equal(t, uint16(0), end)
+}
+
+func Test_extractRangeHeader_invalidUnit(t *testing.T) {
+	start, end, err := extractRangeHeader("items=0-25", "bytes")
+	assert.Error(t, err)
+	assert.Equal(t, uint16(0), start)
+	assert.Equal(t, uint16(0), end)
+}
+
+func Test_extractRangeHeader_startGreaterThanEnd(t *testing.T) {
+	start, end, err := extractRangeHeader("bytes=25-0", "bytes")
+	assert.Error(t, err)
+	assert.Equal(t, uint16(0), start)
+	assert.Equal(t, uint16(0), end)
+}
+
+func Test_extractRangeHeader_missingEnd(t *testing.T) {
+	start, end, err := extractRangeHeader("bytes=0-", "bytes")
+	assert.Error(t, err)
+	assert.Equal(t, uint16(0), start)
+	assert.Equal(t, uint16(0), end)
+}
+
+func Test_extractRangeHeader_invalidStart(t *testing.T) {
+	start, end, err := extractRangeHeader("bytes=invalid-25", "bytes")
+	assert.Error(t, err)
+	assert.Equal(t, uint16(0), start)
+	assert.Equal(t, uint16(0), end)
+}
+
+func Test_extractRangeHeader_invalidEnd(t *testing.T) {
+	start, end, err := extractRangeHeader("bytes=0-invalid", "bytes")
+	assert.Error(t, err)
+	assert.Equal(t, uint16(0), start)
+	assert.Equal(t, uint16(0), end)
 }

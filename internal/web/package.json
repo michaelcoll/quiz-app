@@ -27,7 +27,8 @@
     "eslint-plugin-tailwindcss": "3.17.4",
     "nuxt": "3.12.4",
     "prettier": "3.3.3",
-    "typescript": "5.5.4"
+    "typescript": "5.5.4",
+    "vitest": "^2.0.5"
   },
   "dependencies": {
     "@highlightjs/vue-plugin": "2.1.0",

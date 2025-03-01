@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Michaël COLL.
+ * Copyright (c) 2022-2025 Michaël COLL.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -187,7 +187,7 @@ func extractRangeHeader(rangeHeader string, unit string) (uint16, uint16, error)
 		return 0, 0, Errorf(st, "End range is not valid")
 	}
 
-	if end != 0 && start >= end {
+	if start >= end {
 		return 0, 0, Errorf(st, "Range is not valid, start > end")
 	}
 

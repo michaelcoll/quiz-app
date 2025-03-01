@@ -24,6 +24,7 @@
   const total = ref(0);
 
   const { data: quizSessions } = await useApi<QuizSession[]>(`/api/v1/quiz-session`, {
+    params: { withCurrentUserSession: true },
     onRequest({ options }) {
       options.headers = options.headers || {};
       options.headers.Range = toRangeHeader("quiz-session", page.value, pageSize);
@@ -33,6 +34,10 @@
     },
     watch: [page],
   });
+
+  function setPage(pageNumber: number) {
+    page.value = pageNumber;
+  }
 
   function nextPage() {
     page.value++;
@@ -173,33 +178,51 @@
         </div>
       </div>
 
-      <div
-        v-if="total > pageSize"
-        class="mt-6 sm:flex sm:items-center sm:justify-between">
-        <div class="text-sm text-gray-500 dark:text-gray-400">
-          Page
-          <span class="font-medium text-gray-700 dark:text-gray-100"
-            >{{ page }} of {{ Math.ceil(total / pageSize) }}</span
+      <div v-if="total > pageSize" class="mt-6 flex items-center justify-between">
+        <button
+          :disabled="page == 1"
+          :class="{
+            'cursor-not-allowed bg-gray-500/50 text-gray-700/50 dark:text-gray-200/50':
+              page == 1,
+            'bg-gray-500 text-gray-700 hover:bg-gray-100 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-800':
+              page > 1,
+          }"
+          class="flex items-center gap-x-2 rounded-md border bg-white px-5 py-2 text-sm capitalize transition-colors duration-200 dark:border-gray-700 dark:bg-gray-900"
+          @click="previousPage">
+          <Icon class="size-5" name="solar:double-alt-arrow-left-line-duotone" />
+          <span> Previous </span>
+        </button>
+
+        <div class="hidden items-center gap-x-3 md:flex">
+          <a
+            v-for="i in Math.ceil(total / pageSize)"
+            :key="i"
+            href="#"
+            :class="{
+              'bg-blue-100/60 text-blue-500 dark:bg-gray-800': i === page,
+              'text-gray-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800':
+                i !== page,
+            }"
+            class="rounded-md px-2 py-1 text-sm"
+            @click="setPage(i)"
+            >{{ i }}</a
           >
         </div>
 
-        <div class="mt-4 flex items-center gap-x-4 sm:mt-0">
-          <a
-            v-if="page > 1"
-            class="flex w-1/2 items-center justify-center gap-x-2 rounded-md border bg-white px-5 py-2 text-sm capitalize text-gray-700 transition-colors duration-200 hover:bg-gray-100 sm:w-auto dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
-            @click="previousPage">
-            <Icon class="size-5" name="solar:double-alt-arrow-left-line-duotone" />
-            <span> Previous </span>
-          </a>
+        <button
+          :disabled="page * pageSize >= total"
+          :class="{
+            'cursor-not-allowed bg-gray-500/50 text-gray-700/50 dark:text-gray-200/50':
+              page * pageSize >= total,
+            'bg-gray-500 text-gray-700 hover:bg-gray-100 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-800':
+              page * pageSize < total,
+          }"
+          class="flex items-center gap-x-2 rounded-md border bg-white px-5 py-2 text-sm capitalize transition-colors duration-200 dark:border-gray-700 dark:bg-gray-900"
+          @click="nextPage">
+          <span> Next </span>
 
-          <a
-            v-if="page < Math.ceil(total / pageSize)"
-            class="flex w-1/2 items-center justify-center gap-x-2 rounded-md border bg-white px-5 py-2 text-sm capitalize text-gray-700 transition-colors duration-200 hover:bg-gray-100 sm:w-auto dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
-            @click="nextPage">
-            <span> Next </span>
-            <Icon class="size-5" name="solar:double-alt-arrow-right-line-duotone" />
-          </a>
-        </div>
+          <Icon class="size-5" name="solar:double-alt-arrow-right-line-duotone" />
+        </button>
       </div>
     </section>
   </div>
