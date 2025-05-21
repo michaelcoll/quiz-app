@@ -1,13 +1,14 @@
 module github.com/michaelcoll/quiz-app
 
-go 1.21
+go 1.23.0
+
 toolchain go1.24.1
 
 require (
 	github.com/fatih/color v1.18.0
 	github.com/gin-contrib/cors v1.7.5
 	github.com/gin-contrib/gzip v1.2.3
-	github.com/gin-gonic/gin v1.10.0
+	github.com/gin-gonic/gin v1.10.1
 	github.com/go-git/go-billy/v5 v5.6.2
 	github.com/go-git/go-git/v5 v5.16.0
 	github.com/google/uuid v1.6.0
