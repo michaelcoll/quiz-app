@@ -10,7 +10,7 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup Golang with cache
         uses: magnetikonline/action-golang-cache@v5
