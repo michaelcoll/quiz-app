@@ -28,9 +28,8 @@
     params: {
       classId: classFilter,
     },
-    onRequest({ options }) {
-      options.headers = options.headers || {};
-      options.headers.Range = toRangeHeader("quiz-session", page.value, pageSize);
+    headers: {
+      Range: toRangeHeader("quiz-session", page.value, pageSize),
     },
     onResponse({ response }) {
       total.value = extractTotalFromHeader(response);

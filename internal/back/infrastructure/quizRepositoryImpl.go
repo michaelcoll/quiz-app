@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Michaël COLL.
+ * Copyright (c) 2023-2025 Michaël COLL.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -308,7 +308,7 @@ func (r *QuizDBRepository) AddSessionAnswer(ctx context.Context, sessionUuid uui
 	})
 	if err != nil {
 		if err.Error() == "FOREIGN KEY constraint failed" || err.Error() == "session is over" {
-			return domain.Errorf(domain.InvalidArgument, err.Error())
+			return domain.Errorf(domain.InvalidArgument, "%s", err.Error())
 		}
 		return err
 	}

@@ -32,9 +32,8 @@
   const loggedUser = await useAuthStore().getUser;
 
   const { data: classes, refresh } = await useApi<Class[]>("/api/v1/class", {
-    onRequest({ options }) {
-      options.headers = options.headers || {};
-      options.headers.Range = toRangeHeader("class", page.value, pageSize);
+    headers: {
+      Range: toRangeHeader("class", page.value, pageSize),
     },
     onResponse({ response }) {
       total.value = extractTotalFromHeader(response);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Michaël COLL.
+ * Copyright (c) 2023-2025 Michaël COLL.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ func (c *GithubAccessTokenCaller) sendRequest(req *http.Request, token string, v
 	if res.StatusCode < http.StatusOK || res.StatusCode >= http.StatusBadRequest {
 		var errRes errorResponse
 		if err = json.NewDecoder(res.Body).Decode(&errRes); err == nil {
-			return domain.Errorf(domain.UnAuthorized, errRes.Message)
+			return domain.Errorf(domain.UnAuthorized, "%s", errRes.Message)
 		}
 
 		return domain.Errorf(domain.UnexpectedError, "unknown error, status code: %d", res.StatusCode)
