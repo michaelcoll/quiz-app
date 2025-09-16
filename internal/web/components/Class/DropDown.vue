@@ -10,9 +10,8 @@
   }>();
 
   const { data: classes } = await useApi<Class[]>("/api/v1/class", {
-    onRequest({ options }) {
-      options.headers = options.headers || {};
-      options.headers.Range = toRangeHeader("class", 1, 10);
+    headers: {
+      Range: toRangeHeader("class", 1, 10),
     },
   });
 

@@ -24,9 +24,8 @@
   const total = ref(0);
 
   const { data: quizSessions } = await useApi<QuizSession[]>(`/api/v1/quiz-session`, {
-    onRequest({ options }) {
-      options.headers = options.headers || {};
-      options.headers.Range = toRangeHeader("quiz-session", page.value, pageSize);
+    headers: {
+      Range: toRangeHeader("quiz-session", page.value, pageSize),
     },
     onResponse({ response }) {
       total.value = extractTotalFromHeader(response);

@@ -26,16 +26,14 @@
   const total = ref(0);
 
   const { data: classes } = await useApi<Class[]>("/api/v1/class", {
-    onRequest({ options }) {
-      options.headers = options.headers || {};
-      options.headers.Range = toRangeHeader("class", 1, 5);
+    headers: {
+      Range: toRangeHeader("class", 1, 5),
     },
   });
 
   const { data: quizzes, refresh } = await useApi<Quiz[]>("/api/v1/quiz", {
-    onRequest({ options }) {
-      options.headers = options.headers || {};
-      options.headers.Range = toRangeHeader("quiz", page.value, pageSize);
+    headers: {
+      Range: toRangeHeader("quiz", page.value, pageSize),
     },
     onResponse({ response }) {
       total.value = extractTotalFromHeader(response);

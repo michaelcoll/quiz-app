@@ -1,4 +1,4 @@
-FROM node:20-alpine AS dependency-base
+FROM node:22-alpine AS dependency-base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -16,7 +16,7 @@ FROM dependency-base AS production-base
 COPY . .
 RUN pnpm run build
 
-FROM node:20-alpine AS production
+FROM node:22-alpine AS production
 
 COPY --from=production-base /app/.output /app/.output
 
