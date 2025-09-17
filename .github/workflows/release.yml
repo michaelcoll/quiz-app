@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # build and publish in parallel: linux/amd64, linux/arm64
-        goos: [linux]
+        # build and publish in parallel: linux/amd64, linux/arm64, darwin/amd64, darwin/arm64
+        goos: [linux, darwin]
         goarch: [amd64, arm64]
         exclude:
           - goarch: arm64
@@ -24,14 +24,11 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 10
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 18.x
-          cache: 'pnpm'
-          cache-dependency-path: |
-            internal/web/pnpm-lock.yaml
+          node-version: 22.x
 
       - name: Prepare Vue App
         run: |
