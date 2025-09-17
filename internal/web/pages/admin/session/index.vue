@@ -19,7 +19,7 @@
   import { extractTotalFromHeader, toRangeHeader } from "~/helpers/pageable";
   import type { ComboItem } from "~/model/combo-item";
 
-  const pageSize = 8;
+  const pageSize = 500;
   const page = ref(1);
   const total = ref(0);
   const classFilter = ref<string>();
