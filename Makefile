@@ -6,7 +6,8 @@ prepare: ## Prepares the frontend
 		&& rm -fr .output \
         && rm -fr .nuxt \
         && rm -fr node_modules \
-		&& pnpm i
+		&& pnpm i \
+		&& pnpm dedupe
 
 dep-upgrade: dep-upgrade-go dep-upgrade-node ## Upgrades dependencies
 
