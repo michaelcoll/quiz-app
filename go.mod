@@ -18,7 +18,7 @@ require (
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
 	github.com/vitorsalgado/mocha/v3 v3.0.2
-	golang.org/x/net v0.44.0
+	golang.org/x/net v0.45.0
 )
 
 require (
