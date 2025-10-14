@@ -40,14 +40,16 @@ export const useAuthStore = defineStore("auth", {
     async getUser({ user }: AuthState): Promise<User> {
       if (user) {
         return Promise.resolve(user!);
-      } else {
+      }
+      else {
         const { data } = await useApi<User>(`/api/v1/user/me`);
 
         if (data.value != null) {
           user = data.value;
 
           return Promise.resolve(data.value!);
-        } else {
+        }
+        else {
           return Promise.reject(new Error("Fail to get current user !"));
         }
       }
@@ -59,7 +61,8 @@ export const useAuthStore = defineStore("auth", {
           this.token = session.access_token;
           this.exp = session.exp;
           return Promise.resolve(session.access_token);
-        } else {
+        }
+        else {
           return Promise.reject(new Error("No session data !"));
         }
       }

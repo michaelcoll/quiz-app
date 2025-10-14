@@ -11,8 +11,7 @@
  */
 
 // May contain unused imports in some cases
-// @ts-ignore
-import { SessionResult } from "./session-result";
+import type { SessionResult } from "./session-result";
 
 /**
  *
@@ -21,45 +20,45 @@ import { SessionResult } from "./session-result";
  */
 export interface QuizSessionUserSessionsInner {
   /**
-   * The date of creation of the quiz
-   * @type {string}
-   * @memberof QuizSessionUserSessionsInner
-   */
+     * The date of creation of the quiz
+     * @type {string}
+     * @memberof QuizSessionUserSessionsInner
+     */
   sessionId?: string;
   /**
-   * The id of the user
-   * @type {string}
-   * @memberof QuizSessionUserSessionsInner
-   */
+     * The id of the user
+     * @type {string}
+     * @memberof QuizSessionUserSessionsInner
+     */
   userId?: string;
   /**
-   * The firstname of the user
-   * @type {string}
-   * @memberof QuizSessionUserSessionsInner
-   */
+     * The firstname of the user
+     * @type {string}
+     * @memberof QuizSessionUserSessionsInner
+     */
   userName?: string;
   /**
-   * The avatar of the user
-   * @type {string}
-   * @memberof QuizSessionUserSessionsInner
-   */
+     * The avatar of the user
+     * @type {string}
+     * @memberof QuizSessionUserSessionsInner
+     */
   picture?: string;
   /**
-   * The class name of the user
-   * @type {string}
-   * @memberof QuizSessionUserSessionsInner
-   */
+     * The class name of the user
+     * @type {string}
+     * @memberof QuizSessionUserSessionsInner
+     */
   className?: string;
   /**
-   * The remaining seconds before the end of the session
-   * @type {number}
-   * @memberof QuizSessionUserSessionsInner
-   */
+     * The remaining seconds before the end of the session
+     * @type {number}
+     * @memberof QuizSessionUserSessionsInner
+     */
   remainingSec?: number | null;
   /**
-   *
-   * @type {SessionResult}
-   * @memberof QuizSessionUserSessionsInner
-   */
+     *
+     * @type {SessionResult}
+     * @memberof QuizSessionUserSessionsInner
+     */
   result?: SessionResult | null;
 }

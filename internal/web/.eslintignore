@@ -1,7 +1,0 @@
-.output
-.nuxt
-.nitro
-.cache
-dist
-
-node_modules

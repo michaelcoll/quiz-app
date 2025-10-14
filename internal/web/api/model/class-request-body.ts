@@ -17,9 +17,9 @@
  */
 export interface ClassRequestBody {
   /**
-   * The name of the class
-   * @type {string}
-   * @memberof ClassRequestBody
-   */
+     * The name of the class
+     * @type {string}
+     * @memberof ClassRequestBody
+     */
   name?: string;
 }

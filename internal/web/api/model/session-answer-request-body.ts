@@ -17,21 +17,21 @@
  */
 export interface SessionAnswerRequestBody {
   /**
-   * The sha1 of the question
-   * @type {string}
-   * @memberof SessionAnswerRequestBody
-   */
+     * The sha1 of the question
+     * @type {string}
+     * @memberof SessionAnswerRequestBody
+     */
   questionSha1?: string;
   /**
-   * The sha1 of the answer
-   * @type {string}
-   * @memberof SessionAnswerRequestBody
-   */
+     * The sha1 of the answer
+     * @type {string}
+     * @memberof SessionAnswerRequestBody
+     */
   answerSha1?: string;
   /**
-   * If the answer is checked or not
-   * @type {boolean}
-   * @memberof SessionAnswerRequestBody
-   */
+     * If the answer is checked or not
+     * @type {boolean}
+     * @memberof SessionAnswerRequestBody
+     */
   checked?: boolean;
 }

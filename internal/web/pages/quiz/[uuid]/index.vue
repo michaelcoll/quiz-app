@@ -15,14 +15,14 @@
   -->
 
 <script setup lang="ts">
-  import type { QuizSessionDetail } from "~/api/model";
+import type { QuizSessionDetail } from "~/api/model";
 
-  const route = useRoute();
-  const sessionUuid = route.params.uuid as string;
+const route = useRoute();
+const sessionUuid = route.params.uuid as string;
 
-  const { data: quizSession } = await useApi<QuizSessionDetail>(
-    `/api/v1/quiz-session/${sessionUuid}`,
-  );
+const { data: quizSession } = await useApi<QuizSessionDetail>(
+  `/api/v1/quiz-session/${sessionUuid}`,
+);
 </script>
 
 <template>
@@ -30,9 +30,13 @@
     <NuxtLoadingIndicator />
     <NavBar
       :remaining-sec="quizSession?.remainingSec"
-      :quiz-duration="quizSession?.quizDuration" />
+      :quiz-duration="quizSession?.quizDuration"
+    />
 
-    <section v-if="quizSession" class="container mx-auto mt-10 px-4">
+    <section
+      v-if="quizSession"
+      class="container mx-auto mt-10 px-4"
+    >
       <div class="sm:flex sm:items-center sm:justify-between">
         <div>
           <div class="flex items-center gap-x-3">
@@ -44,14 +48,22 @@
       </div>
 
       <div class="grid grid-cols-1 divide-y divide-gray-200 dark:divide-gray-700">
-        <div v-for="question in quizSession.questions" :key="question.sha1" class="mb-8">
+        <div
+          v-for="question in quizSession.questions"
+          :key="question.sha1"
+          class="mb-8"
+        >
           <QuizQuestion
             v-if="question.position && question.content"
             :pos="question.position"
             :content="question.content"
             :code="question.code"
-            :code-language="question.codeLanguage" />
-          <div v-for="answer in question.answers" :key="answer.sha1">
+            :code-language="question.codeLanguage"
+          />
+          <div
+            v-for="answer in question.answers"
+            :key="answer.sha1"
+          >
             <QuizAnswer
               :session-uuid="sessionUuid"
               :question-sha1="question.sha1 ?? ''"
@@ -59,7 +71,8 @@
               :display-result="quizSession.remainingSec == 0"
               :checked="answer.checked ?? false"
               :valid="answer.valid ?? false"
-              :content="answer.content ?? ''" />
+              :content="answer.content ?? ''"
+            />
           </div>
         </div>
       </div>

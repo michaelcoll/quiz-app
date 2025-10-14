@@ -17,15 +17,15 @@
  */
 export interface Class {
   /**
-   * The id of the class
-   * @type {string}
-   * @memberof Class
-   */
+     * The id of the class
+     * @type {string}
+     * @memberof Class
+     */
   id?: string;
   /**
-   * The name of the class
-   * @type {string}
-   * @memberof Class
-   */
+     * The name of the class
+     * @type {string}
+     * @memberof Class
+     */
   name?: string;
 }

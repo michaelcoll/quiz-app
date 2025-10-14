@@ -17,27 +17,27 @@
  */
 export interface QuizQuestionAnswer {
   /**
-   * The sha1 of the question answer
-   * @type {string}
-   * @memberof QuizQuestionAnswer
-   */
+     * The sha1 of the question answer
+     * @type {string}
+     * @memberof QuizQuestionAnswer
+     */
   sha1?: string;
   /**
-   * The question content
-   * @type {string}
-   * @memberof QuizQuestionAnswer
-   */
+     * The question content
+     * @type {string}
+     * @memberof QuizQuestionAnswer
+     */
   content?: string;
   /**
-   * if the answer is checked or not
-   * @type {boolean}
-   * @memberof QuizQuestionAnswer
-   */
+     * if the answer is checked or not
+     * @type {boolean}
+     * @memberof QuizQuestionAnswer
+     */
   checked?: boolean;
   /**
-   * if this is a valid answer
-   * @type {boolean}
-   * @memberof QuizQuestionAnswer
-   */
+     * if this is a valid answer
+     * @type {boolean}
+     * @memberof QuizQuestionAnswer
+     */
   valid?: boolean | null;
 }

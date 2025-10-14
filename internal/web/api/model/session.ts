@@ -11,8 +11,7 @@
  */
 
 // May contain unused imports in some cases
-// @ts-ignore
-import { SessionResult } from "./session-result";
+import type { SessionResult } from "./session-result";
 
 /**
  *
@@ -21,51 +20,51 @@ import { SessionResult } from "./session-result";
  */
 export interface Session {
   /**
-   * The id of the session
-   * @type {string}
-   * @memberof Session
-   */
+     * The id of the session
+     * @type {string}
+     * @memberof Session
+     */
   id?: string;
   /**
-   * The sha1 of the quiz
-   * @type {string}
-   * @memberof Session
-   */
+     * The sha1 of the quiz
+     * @type {string}
+     * @memberof Session
+     */
   quizSha1?: string | null;
   /**
-   * The name of the quiz
-   * @type {string}
-   * @memberof Session
-   */
+     * The name of the quiz
+     * @type {string}
+     * @memberof Session
+     */
   quizName?: string | null;
   /**
-   * If the session was realized on an active quiz or not
-   * @type {boolean}
-   * @memberof Session
-   */
+     * If the session was realized on an active quiz or not
+     * @type {boolean}
+     * @memberof Session
+     */
   quizActive?: boolean | null;
   /**
-   * The id of the user
-   * @type {string}
-   * @memberof Session
-   */
+     * The id of the user
+     * @type {string}
+     * @memberof Session
+     */
   userId?: string | null;
   /**
-   * The firstname of the user
-   * @type {string}
-   * @memberof Session
-   */
+     * The firstname of the user
+     * @type {string}
+     * @memberof Session
+     */
   userName?: string | null;
   /**
-   * The remaining seconds before the end of the session
-   * @type {number}
-   * @memberof Session
-   */
+     * The remaining seconds before the end of the session
+     * @type {number}
+     * @memberof Session
+     */
   remainingSec?: number | null;
   /**
-   *
-   * @type {SessionResult}
-   * @memberof Session
-   */
+     *
+     * @type {SessionResult}
+     * @memberof Session
+     */
   result?: SessionResult | null;
 }

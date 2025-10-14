@@ -17,15 +17,15 @@
  */
 export interface SessionResult {
   /**
-   * The number of good answer in the quiz
-   * @type {number}
-   * @memberof SessionResult
-   */
+     * The number of good answer in the quiz
+     * @type {number}
+     * @memberof SessionResult
+     */
   goodAnswer?: number | null;
   /**
-   * The total number of answer in the quiz
-   * @type {number}
-   * @memberof SessionResult
-   */
+     * The total number of answer in the quiz
+     * @type {number}
+     * @memberof SessionResult
+     */
   totalAnswer?: number | null;
 }

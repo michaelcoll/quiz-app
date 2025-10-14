@@ -11,8 +11,7 @@
  */
 
 // May contain unused imports in some cases
-// @ts-ignore
-import { Class } from "./class";
+import type { Class } from "./class";
 
 /**
  *
@@ -21,45 +20,45 @@ import { Class } from "./class";
  */
 export interface Quiz {
   /**
-   * The sha1 of the whole quiz
-   * @type {string}
-   * @memberof Quiz
-   */
+     * The sha1 of the whole quiz
+     * @type {string}
+     * @memberof Quiz
+     */
   sha1?: string;
   /**
-   * The filename of the quiz
-   * @type {string}
-   * @memberof Quiz
-   */
+     * The filename of the quiz
+     * @type {string}
+     * @memberof Quiz
+     */
   filename?: string;
   /**
-   * The name of the quiz
-   * @type {string}
-   * @memberof Quiz
-   */
+     * The name of the quiz
+     * @type {string}
+     * @memberof Quiz
+     */
   name?: string;
   /**
-   * The version of the quiz
-   * @type {number}
-   * @memberof Quiz
-   */
+     * The version of the quiz
+     * @type {number}
+     * @memberof Quiz
+     */
   version?: number;
   /**
-   * The creation date of the quiz
-   * @type {string}
-   * @memberof Quiz
-   */
+     * The creation date of the quiz
+     * @type {string}
+     * @memberof Quiz
+     */
   createdAt?: string;
   /**
-   * The duration of the quiz in seconds
-   * @type {number}
-   * @memberof Quiz
-   */
+     * The duration of the quiz in seconds
+     * @type {number}
+     * @memberof Quiz
+     */
   duration?: number;
   /**
-   *
-   * @type {Array<Class>}
-   * @memberof Quiz
-   */
+     *
+     * @type {Array<Class>}
+     * @memberof Quiz
+     */
   classes?: Array<Class>;
 }

@@ -11,11 +11,9 @@
  */
 
 // May contain unused imports in some cases
-// @ts-ignore
-import { QuizSessionUserSessionsInner } from "./quiz-session-user-sessions-inner";
+import type { QuizSessionUserSessionsInner } from "./quiz-session-user-sessions-inner";
 // May contain unused imports in some cases
-// @ts-ignore
-import { SessionResult } from "./session-result";
+import type { SessionResult } from "./session-result";
 
 /**
  *
@@ -24,75 +22,75 @@ import { SessionResult } from "./session-result";
  */
 export interface QuizSession {
   /**
-   * The sha1 of the whole quiz
-   * @type {string}
-   * @memberof QuizSession
-   */
+     * The sha1 of the whole quiz
+     * @type {string}
+     * @memberof QuizSession
+     */
   quizSha1?: string;
   /**
-   * The name of the quiz
-   * @type {string}
-   * @memberof QuizSession
-   */
+     * The name of the quiz
+     * @type {string}
+     * @memberof QuizSession
+     */
   name?: string;
   /**
-   * The duration of the quiz in seconds
-   * @type {number}
-   * @memberof QuizSession
-   */
+     * The duration of the quiz in seconds
+     * @type {number}
+     * @memberof QuizSession
+     */
   duration?: number;
   /**
-   * The filename of the quiz
-   * @type {string}
-   * @memberof QuizSession
-   */
+     * The filename of the quiz
+     * @type {string}
+     * @memberof QuizSession
+     */
   filename?: string | null;
   /**
-   * The version of the quiz
-   * @type {number}
-   * @memberof QuizSession
-   */
+     * The version of the quiz
+     * @type {number}
+     * @memberof QuizSession
+     */
   version?: number | null;
   /**
-   * The date of creation of the quiz
-   * @type {string}
-   * @memberof QuizSession
-   */
+     * The date of creation of the quiz
+     * @type {string}
+     * @memberof QuizSession
+     */
   createdAt?: string | null;
   /**
-   * The id of the session
-   * @type {string}
-   * @memberof QuizSession
-   */
+     * The id of the session
+     * @type {string}
+     * @memberof QuizSession
+     */
   sessionId?: string | null;
   /**
-   * The id of the user
-   * @type {string}
-   * @memberof QuizSession
-   */
+     * The id of the user
+     * @type {string}
+     * @memberof QuizSession
+     */
   userId?: string | null;
   /**
-   * The firstname of the user
-   * @type {string}
-   * @memberof QuizSession
-   */
+     * The firstname of the user
+     * @type {string}
+     * @memberof QuizSession
+     */
   userName?: string | null;
   /**
-   * The remaining seconds before the end of the session
-   * @type {number}
-   * @memberof QuizSession
-   */
+     * The remaining seconds before the end of the session
+     * @type {number}
+     * @memberof QuizSession
+     */
   remainingSec?: number | null;
   /**
-   *
-   * @type {SessionResult}
-   * @memberof QuizSession
-   */
+     *
+     * @type {SessionResult}
+     * @memberof QuizSession
+     */
   result?: SessionResult | null;
   /**
-   * The list of all user session on the quiz
-   * @type {Array<QuizSessionUserSessionsInner>}
-   * @memberof QuizSession
-   */
+     * The list of all user session on the quiz
+     * @type {Array<QuizSessionUserSessionsInner>}
+     * @memberof QuizSession
+     */
   userSessions?: Array<QuizSessionUserSessionsInner> | null;
 }

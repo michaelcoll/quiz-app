@@ -11,8 +11,7 @@
  */
 
 // May contain unused imports in some cases
-// @ts-ignore
-import { QuizQuestionAnswer } from "./quiz-question-answer";
+import type { QuizQuestionAnswer } from "./quiz-question-answer";
 
 /**
  *
@@ -21,39 +20,39 @@ import { QuizQuestionAnswer } from "./quiz-question-answer";
  */
 export interface QuizQuestion {
   /**
-   * The sha1 of the whole quiz question
-   * @type {string}
-   * @memberof QuizQuestion
-   */
+     * The sha1 of the whole quiz question
+     * @type {string}
+     * @memberof QuizQuestion
+     */
   sha1?: string;
   /**
-   * The number of the question
-   * @type {number}
-   * @memberof QuizQuestion
-   */
+     * The number of the question
+     * @type {number}
+     * @memberof QuizQuestion
+     */
   position?: number;
   /**
-   * The question content
-   * @type {string}
-   * @memberof QuizQuestion
-   */
+     * The question content
+     * @type {string}
+     * @memberof QuizQuestion
+     */
   content?: string;
   /**
-   * The question code of the content
-   * @type {string}
-   * @memberof QuizQuestion
-   */
+     * The question code of the content
+     * @type {string}
+     * @memberof QuizQuestion
+     */
   code?: string | null;
   /**
-   * The question code language of the content
-   * @type {string}
-   * @memberof QuizQuestion
-   */
+     * The question code language of the content
+     * @type {string}
+     * @memberof QuizQuestion
+     */
   codeLanguage?: string | null;
   /**
-   *
-   * @type {Array<QuizQuestionAnswer>}
-   * @memberof QuizQuestion
-   */
+     *
+     * @type {Array<QuizQuestionAnswer>}
+     * @memberof QuizQuestion
+     */
   answers?: Array<QuizQuestionAnswer>;
 }

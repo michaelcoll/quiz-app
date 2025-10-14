@@ -1,27 +1,29 @@
 <script setup lang="ts">
-  import dayjs from "dayjs";
+import dayjs from "dayjs";
 
-  import type { QuizSession } from "~/api/model";
-  import { toPercent } from "~/helpers/quiz";
+import type { QuizSession } from "~/api/model";
+import { toPercent } from "~/helpers/quiz";
 
-  const props = defineProps<{
-    quizSession: QuizSession;
-  }>();
+const props = defineProps<{
+  quizSession: QuizSession;
+}>();
 
-  const sessionsVisible = ref(false);
+const sessionsVisible = ref(false);
 
-  function formatDate(quiz: QuizSession): string {
-    return dayjs(quiz.createdAt).format("DD/MM/YYYY");
-  }
+function formatDate(quiz: QuizSession): string {
+  return dayjs(quiz.createdAt).format("DD/MM/YYYY");
+}
 </script>
 
 <template>
   <button
     class="flex w-full cursor-pointer flex-row rounded-md border border-transparent hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-800"
-    @click="sessionsVisible = !sessionsVisible">
+    @click="sessionsVisible = !sessionsVisible"
+  >
     <Icon
       class="mx-1 size-5 text-gray-800 dark:text-white"
-      name="solar:alt-arrow-down-line-duotone" />
+      name="solar:alt-arrow-down-line-duotone"
+    />
     <div>
       <h2 class="text-left font-medium text-gray-800 dark:text-white">
         {{ props.quizSession.name }}
@@ -32,18 +34,26 @@
     </div>
   </button>
   <Transition name="dropdown">
-    <table v-if="sessionsVisible" class="ml-7 mt-2">
-      <tr v-for="userSession in props.quizSession.userSessions" :key="userSession.userId">
+    <table
+      v-if="sessionsVisible"
+      class="ml-7 mt-2"
+    >
+      <tr
+        v-for="userSession in props.quizSession.userSessions"
+        :key="userSession.userId"
+      >
         <td class="w-12 p-2">
           <img
             class="size-6 shrink-0 rounded-full border border-white object-cover dark:border-gray-700"
             :src="userSession.picture"
-            :alt="userSession.userName" />
+            :alt="userSession.userName"
+          >
         </td>
         <td class="pl-2 pt-2">
           <NuxtLink :to="'/quiz/' + userSession.sessionId">
             <div
-              class="cursor-pointer rounded p-1 px-2 hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-800">
+              class="cursor-pointer rounded p-1 px-2 hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-800"
+            >
               <h2 class="font-medium text-gray-800 dark:text-white">
                 {{ userSession.userName }}
               </h2>
@@ -62,7 +72,8 @@
           <div class="my-1.5 h-1.5 w-full rounded-full bg-gray-200 dark:bg-gray-700">
             <div
               class="h-1.5 rounded-full bg-blue-600 dark:bg-blue-500"
-              :style="{ width: toPercent(userSession.result) + '%' }"></div>
+              :style="{ width: toPercent(userSession.result) + '%' }"
+            />
           </div>
         </td>
       </tr>

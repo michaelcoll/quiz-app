@@ -11,11 +11,9 @@
  */
 
 // May contain unused imports in some cases
-// @ts-ignore
-import { QuizQuestion } from "./quiz-question";
+import type { QuizQuestion } from "./quiz-question";
 // May contain unused imports in some cases
-// @ts-ignore
-import { SessionResult } from "./session-result";
+import type { SessionResult } from "./session-result";
 
 /**
  *
@@ -24,51 +22,51 @@ import { SessionResult } from "./session-result";
  */
 export interface QuizSessionDetail {
   /**
-   * The id of the session
-   * @type {string}
-   * @memberof QuizSessionDetail
-   */
+     * The id of the session
+     * @type {string}
+     * @memberof QuizSessionDetail
+     */
   sessionId?: string | null;
   /**
-   * The id of the user
-   * @type {string}
-   * @memberof QuizSessionDetail
-   */
+     * The id of the user
+     * @type {string}
+     * @memberof QuizSessionDetail
+     */
   userId?: string | null;
   /**
-   * The remaining seconds before the end of the session
-   * @type {number}
-   * @memberof QuizSessionDetail
-   */
+     * The remaining seconds before the end of the session
+     * @type {number}
+     * @memberof QuizSessionDetail
+     */
   remainingSec?: number | null;
   /**
-   * The duration in seconds of the quiz
-   * @type {number}
-   * @memberof QuizSessionDetail
-   */
+     * The duration in seconds of the quiz
+     * @type {number}
+     * @memberof QuizSessionDetail
+     */
   quizDuration?: number | null;
   /**
-   *
-   * @type {SessionResult}
-   * @memberof QuizSessionDetail
-   */
+     *
+     * @type {SessionResult}
+     * @memberof QuizSessionDetail
+     */
   result?: SessionResult | null;
   /**
-   * The sha1 of the whole quiz
-   * @type {string}
-   * @memberof QuizSessionDetail
-   */
+     * The sha1 of the whole quiz
+     * @type {string}
+     * @memberof QuizSessionDetail
+     */
   quizSha1?: string;
   /**
-   * The name of the quiz
-   * @type {string}
-   * @memberof QuizSessionDetail
-   */
+     * The name of the quiz
+     * @type {string}
+     * @memberof QuizSessionDetail
+     */
   name?: string;
   /**
-   *
-   * @type {Array<QuizQuestion>}
-   * @memberof QuizSessionDetail
-   */
+     *
+     * @type {Array<QuizQuestion>}
+     * @memberof QuizSessionDetail
+     */
   questions?: Array<QuizQuestion>;
 }

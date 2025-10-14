@@ -17,9 +17,9 @@
  */
 export interface Message {
   /**
-   * The message
-   * @type {string}
-   * @memberof Message
-   */
+     * The message
+     * @type {string}
+     * @memberof Message
+     */
   message?: string;
 }

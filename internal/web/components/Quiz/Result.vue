@@ -15,20 +15,25 @@
   -->
 
 <script setup lang="ts">
-  const props = defineProps({
-    percent: { type: Number, required: true },
-    to: { type: String, required: true },
-  });
-  const circumference = 26 * 2 * Math.PI;
+const props = defineProps({
+  percent: { type: Number, required: true },
+  to: { type: String, required: true },
+});
+const circumference = 26 * 2 * Math.PI;
 </script>
 
 <template>
   <NuxtLink :to="props.to">
     <div
-      class="flex h-10 items-center rounded-md bg-gray-50 px-8 shadow-md dark:bg-gray-800">
+      class="flex h-10 items-center rounded-md bg-gray-50 px-8 shadow-md dark:bg-gray-800"
+    >
       <div
-        class="-m-6 flex items-center justify-center overflow-hidden rounded-full bg-gray-50 dark:bg-gray-800">
-        <svg class="size-16 translate-x-1 translate-y-1" aria-hidden="true">
+        class="-m-6 flex items-center justify-center overflow-hidden rounded-full bg-gray-50 dark:bg-gray-800"
+      >
+        <svg
+          class="size-16 translate-x-1 translate-y-1"
+          aria-hidden="true"
+        >
           <circle
             class="text-gray-300/20"
             stroke-width="5"
@@ -36,7 +41,8 @@
             fill="transparent"
             r="26"
             cx="28"
-            cy="28" />
+            cy="28"
+          />
           <circle
             class="text-blue-500"
             stroke-width="5"
@@ -47,12 +53,10 @@
             fill="transparent"
             r="26"
             cx="28"
-            cy="28" />
+            cy="28"
+          />
         </svg>
-        <span class="absolute text-blue-500 shadow-blue-50"
-          ><span class="text-lg font-extrabold">{{ props.percent }}</span
-          >&nbsp;%</span
-        >
+        <span class="absolute text-blue-500 shadow-blue-50"><span class="text-lg font-extrabold">{{ props.percent }}</span>&nbsp;%</span>
       </div>
       <p class="ml-10 text-gray-500">Result</p>
     </div>

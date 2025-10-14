@@ -1,5 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  modules: [
+    "@nuxt/eslint",
+    "@nuxt/ui",
+    "@pinia/nuxt",
+    "pinia-plugin-persistedstate/nuxt",
+    "@sidebase/nuxt-auth",
+    "@tailvue/nuxt",
+    "@nuxt/icon",
+  ],
   ssr: false,
   devtools: { enabled: true },
 
@@ -13,20 +22,15 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: [
-    "@nuxtjs/tailwindcss",
-    "@pinia/nuxt",
-    "@pinia-plugin-persistedstate/nuxt",
-    "@sidebase/nuxt-auth",
-    "@tailvue/nuxt",
-    "@nuxt/icon",
-  ],
+  css: ["~/assets/css/main.css"],
 
   runtimeConfig: {
     apiBase: "http://localhost:8080",
     clientId: "afd22679cd8118504e36",
     clientSecret: "e32fe9cdc9e69367d1e5eb87880be8eb5e637190",
   },
+
+  compatibilityDate: "2025-07-15",
 
   nitro: {
     routeRules: {
@@ -37,6 +41,4 @@ export default defineNuxtConfig({
       },
     },
   },
-
-  compatibilityDate: "2024-08-20",
 });
