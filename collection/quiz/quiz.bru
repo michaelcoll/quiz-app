@@ -1,0 +1,19 @@
+meta {
+  name: quiz
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/v1/quiz
+  body: none
+  auth: bearer
+}
+
+headers {
+  Range: quiz=0-10
+}
+
+auth:bearer {
+  token: 
+}
