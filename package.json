@@ -4,13 +4,10 @@
   "author": "michaelcoll",
   "license": "Apache 2.0",
   "homepage": "https://github.com/michaelcoll/quiz-app#readme",
-  "scripts": {
-    "prepare": "husky install"
-  },
   "devDependencies": {
-    "@commitlint/cli": "19.4.0",
-    "@commitlint/config-conventional": "19.2.2",
-    "husky": "9.1.4",
-    "lint-staged": "15.2.9"
+    "@commitlint/cli": "19.8.1",
+    "@commitlint/config-conventional": "19.8.1",
+    "husky": "9.1.7",
+    "lint-staged": "16.2.0"
   }
 }

@@ -1,13 +1,17 @@
 build: build-web build-go ## Build the app
 
-prepare: ## Prepares the frontend
+clear-front: ## remove front build paths
+	cd internal/web \
+		&& rm -fr .output \
+		&& rm -fr .nuxt \
+		&& rm -fr node_modules
+
+prepare: clear-front ## Prepares the frontend
 	cd internal/web \
 		&& corepack enable && corepack prepare \
-		&& rm -fr .output \
-        && rm -fr .nuxt \
-        && rm -fr node_modules \
 		&& pnpm i \
-		&& pnpm dedupe
+		&& pnpm dedupe \
+		&& pnpm install @openapitools/openapi-generator-cli -g
 
 dep-upgrade: dep-upgrade-go dep-upgrade-node ## Upgrades dependencies
 
@@ -62,17 +66,19 @@ sqlc:
 
 .PHONY: ts-model
 ts-model: ## Generate typescript api model
-	openapi-generator-cli \
-		generate \
-		-i doc/openapi/spec.yml \
-		-g typescript-axios \
-		-o internal/web/api \
-		--additional-properties=apiPackage=api \
-		--additional-properties=modelPackage=model \
-		--additional-properties=withSeparateModelsAndApi=true \
-		--additional-properties=enablePostProcessFile=true \
-		&& find ./internal/web/api/model -type f -exec sed -i 's:/\* eslint-disable \*/::g' {} \; \
-		&& find ./internal/web/api/model -type f -exec sed -i 's@/\* tslint:disable \*/@@g' {} \; \
+	rm -fr api/model \
+		&& openapi-generator-cli \
+			generate \
+			-i doc/openapi/spec.yml \
+			-g typescript-axios \
+			-o internal/web/api \
+			--additional-properties=apiPackage=api \
+			--additional-properties=modelPackage=model \
+			--additional-properties=withSeparateModelsAndApi=true \
+			--additional-properties=enablePostProcessFile=true \
+		&& find ./internal/web/api/model -type f -exec sed -i '' 's:/\* eslint-disable \*/::g' {} \; \
+		&& find ./internal/web/api/model -type f -exec sed -i '' 's@/\* tslint:disable \*/@@g' {} \; \
+		&& find ./internal/web/api/model -type f -exec sed -i '' '/@ts-ignore/d' {} \; \
 		&& cd internal/web \
 		&& pnpm run lint
 
