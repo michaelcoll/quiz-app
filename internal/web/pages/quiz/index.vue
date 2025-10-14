@@ -19,7 +19,7 @@
   import { extractTotalFromHeader, toRangeHeader } from "~/helpers/pageable";
   import { toDurationStr, toPercent } from "~/helpers/quiz";
 
-  const pageSize = 8;
+  const pageSize = 15;
   const page = ref(1);
   const total = ref(0);
 

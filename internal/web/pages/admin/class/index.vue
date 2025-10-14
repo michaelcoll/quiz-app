@@ -23,7 +23,7 @@
   import { extractTotalFromHeader, toRangeHeader } from "~/helpers/pageable";
   import { useAuthStore } from "~/stores/auth";
 
-  const pageSize = 8;
+  const pageSize = 15;
   const page = ref(1);
   const total = ref(0);
   const className = ref<string>();
