@@ -21,6 +21,7 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"sort"
 
 	"github.com/google/uuid"
 
@@ -131,6 +132,10 @@ func (r *QuizDBRepository) FindAllActive(ctx context.Context, userId string, lim
 		domains = append(domains, d)
 	}
 
+	sort.Slice(domains, func(i, j int) bool {
+		return domains[i].Name < domains[j].Name
+	})
+
 	return domains, nil
 }
 
@@ -183,7 +188,7 @@ func (r *QuizDBRepository) Create(ctx context.Context, quiz *domain.Quiz) error 
 	for _, question := range quiz.Questions {
 		err := r.w.queries().CreateOrReplaceQuestion(ctx, sqlc.CreateOrReplaceQuestionParams{
 			Sha1:         question.Sha1,
-			Position:     int64(question.Position),
+			Position:     question.Position,
 			Content:      question.Content,
 			Code:         sql.NullString{String: question.Code, Valid: true},
 			CodeLanguage: sql.NullString{String: question.CodeLanguage, Valid: true},
