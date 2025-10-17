@@ -1,17 +1,17 @@
 meta {
-  name: quiz
+  name: quiz-session
   type: http
-  seq: 3
+  seq: 4
 }
 
 get {
-  url: {{baseUrl}}/api/v1/quiz
+  url: {{baseUrl}}/api/v1/quiz-session
   body: none
   auth: bearer
 }
 
 headers {
-  Range: quiz=0-8
+  Range: quiz-session=0-10
 }
 
 auth:bearer {

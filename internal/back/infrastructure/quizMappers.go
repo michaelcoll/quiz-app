@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Michaël COLL.
+ * Copyright (c) 2023-2025 Michaël COLL.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package infrastructure
 
 import (
+	"sort"
+
 	"github.com/michaelcoll/quiz-app/internal/back/domain"
 	"github.com/michaelcoll/quiz-app/internal/back/infrastructure/sqlc"
 )
@@ -124,6 +126,10 @@ func (r *QuizDBRepository) toQuizSessionArray(entities []sqlc.QuizSessionView, u
 		domains[i] = session
 		i++
 	}
+
+	sort.Slice(domains, func(i, j int) bool {
+		return domains[i].Name < domains[j].Name
+	})
 
 	return domains
 }
