@@ -7,7 +7,7 @@ toolchain go1.24.4
 require (
 	github.com/fatih/color v1.18.0
 	github.com/gin-contrib/cors v1.7.6
-	github.com/gin-contrib/gzip v1.2.4
+	github.com/gin-contrib/gzip v1.2.5
 	github.com/gin-gonic/gin v1.11.0
 	github.com/go-git/go-billy/v5 v5.6.2
 	github.com/go-git/go-git/v5 v5.16.3
