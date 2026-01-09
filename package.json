@@ -5,7 +5,7 @@
   "license": "Apache 2.0",
   "homepage": "https://github.com/michaelcoll/quiz-app#readme",
   "devDependencies": {
-    "@commitlint/cli": "20.2.0",
+    "@commitlint/cli": "20.3.1",
     "@commitlint/config-conventional": "20.2.0",
     "husky": "9.1.7",
     "lint-staged": "16.2.7"
