@@ -1,8 +1,6 @@
 module github.com/michaelcoll/quiz-app
 
-go 1.24.0
-
-toolchain go1.24.4
+go 1.25.0
 
 require (
 	github.com/fatih/color v1.18.0
@@ -18,7 +16,7 @@ require (
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
 	github.com/vitorsalgado/mocha/v3 v3.0.2
-	golang.org/x/net v0.50.0
+	golang.org/x/net v0.51.0
 )
 
 require (
