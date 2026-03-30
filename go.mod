@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/fatih/color v1.18.0
 	github.com/gin-contrib/cors v1.7.6
-	github.com/gin-contrib/gzip v1.2.5
+	github.com/gin-contrib/gzip v1.2.6
 	github.com/gin-gonic/gin v1.12.0
 	github.com/go-git/go-billy/v5 v5.8.0
 	github.com/go-git/go-git/v5 v5.17.1
